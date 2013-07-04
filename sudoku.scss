@@ -1,0 +1,165 @@
+// Determined values.
+$tileDimension: 50px;
+$tileBorderWidth: 1px;
+$tileFontMultipler: 0.5;
+$boardSize: 9;
+$sqrtBoardSize: 3; //IDK why SASS can't do this...
+
+$accentColor: #E01B5D;
+$accentColorTextDark: darken($accentColor, 40%);
+$accentColorTextLight: lighten($accentColor, 40%);
+$selectedColor: #FCF0AD;
+
+$tileDarkBorder: #333;
+$tileLightBorder: #eee;
+$tileBackground: #fff;
+
+$headerHeight: 40px;
+
+// Computed values.
+$tileFontSize: $tileFontMultipler * $tileDimension;
+$boardDimension: $tileDimension * $boardSize + $tileBorderWidth * ($boardSize + 1);
+$squareDimension: $tileDimension * $sqrtBoardSize + $tileBorderWidth * $sqrtBoardSize;
+
+@mixin gradient($from, $to) {
+  background-color: $from;
+  background-image: -moz-linear-gradient($from, $to);
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from($from), to($to));
+  background-image: -webkit-linear-gradient($from, $to);
+  background-image: -o-linear-gradient($from, $to);
+}
+
+@mixin radialGradient($from, $to) {
+  background-color: $from;
+  background-image: -moz-radial-gradient($from, $to);
+  background-image: -webkit-gradient(radial, 0% 0%, 0% 100%, from($from), to($to));
+  background-image: -webkit-radial-gradient($from, $to);
+  background-image: -o-radial-gradient($from, $to);
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Belgrano', serif;
+    @include radialGradient(#fff, #ccc);
+}
+
+a {
+    color: $accentColor;
+    text-decoration: none;
+    transition: all 0.5s;
+}
+
+a:hover {
+    color: $accentColorTextDark;
+}
+
+.leftBar, .rightBar {
+    font-size: 16px;
+    line-height: 1.5em;
+}
+
+.header {
+    width: $boardDimension;
+    height: $headerHeight;
+    line-height: $headerHeight;
+    text-align: center;
+    font-size: 2em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -$boardDimension / 2 - $headerHeight - 20px;
+    margin-left: -$boardDimension / 2;
+}
+
+.rightBar {
+    width: 100px;
+    height: $boardDimension;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -$boardDimension / 2;
+    margin-left: $boardDimension / 2 + 20px;
+}
+
+.rightBar a {
+    display: block;
+}
+
+.sudokuBoard {
+	width: $boardDimension;
+	height: $boardDimension;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -$boardDimension / 2;
+    margin-left: -$boardDimension / 2;
+	background: $tileDarkBorder;
+}
+
+.sudokuSquare {
+    display: inline-block;
+    width: $squareDimension;
+    background: $tileLightBorder;
+}
+
+.inputFix {
+    border: none;
+    padding: 0;
+    outline: none;
+    font-family: inherit;
+}
+
+.sudokuTile {
+    width: $tileDimension;
+    height: $tileDimension;
+    background: $tileBackground;
+    border-top:  $tileBorderWidth solid $tileLightBorder;
+    border-left: $tileBorderWidth solid $tileLightBorder;
+    display: inline-block;
+    font-size: $tileFontSize;
+    text-align: center;
+    color: $tileDarkBorder;
+    line-height: $tileDimension;
+    // TODO: scss does this for you?;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.sudokuTile:focus {
+    background: $accentColor;
+    color: $accentColorTextLight;
+    -moz-box-shadow:    inset 0 0 10px $accentColorTextDark;
+    -webkit-box-shadow: inset 0 0 10px $accentColorTextDark;
+    box-shadow:         inset 0 0 10px $accentColorTextDark;
+    border-top:  $tileBorderWidth solid $accentColorTextDark;
+    border-left: $tileBorderWidth solid $accentColorTextDark;
+    /*border-: 1px solid $accentColorTextDark;*/
+}
+
+.edgeTileLeft {
+    border-left: $tileBorderWidth solid $tileDarkBorder;
+}
+
+.edgeTileTop {
+    /* A hacky hack to prevent the triangles where border colors meet. */
+    box-shadow: 0 -1px 0 0px $tileDarkBorder;
+    border-top: none;
+    padding-top: 1px;
+}
+
+.edgeTileTop:focus {
+    border-top: $tileBorderWidth solid $accentColorTextDark;
+    padding-top:0;
+}
+
+::selection {
+    background: $accentColor;
+    color: $accentColorTextLight;
+}
