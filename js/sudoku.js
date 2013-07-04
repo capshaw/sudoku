@@ -51,7 +51,9 @@ var Sudoku = function () {
 
 			// Delete
 			if (e.keyCode == 8) {
+				e.preventDefault();
 				$(this).val("")
+				return false;
 			}
 
 			// Replace [1-9] in the input box
