@@ -48,7 +48,6 @@ var Sudoku = function () {
 
 	var bindElements = function () {
 		elements.tiles.keydown(function(e){
-			e.preventDefault();
 
 			// Delete
 			if (e.keyCode == 8) {
@@ -69,8 +68,6 @@ var Sudoku = function () {
 					case 40: moveByVector($(this),  0,  1); break; // down
 				}
 			}
-
-			return false;
 		});
 	}
 
