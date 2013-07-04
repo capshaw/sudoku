@@ -48,6 +48,12 @@ var Sudoku = function () {
 
 	var bindElements = function () {
 		elements.tiles.keydown(function(e){
+			e.preventDefault();
+
+			// Delete
+			if (e.keyCode == 8) {
+				$(this).val("")
+			}
 
 			// Replace [1-9] in the input box
 			if (e.keyCode <= 57 && e.keyCode >= 49) {
@@ -63,6 +69,8 @@ var Sudoku = function () {
 					case 40: moveByVector($(this),  0,  1); break; // down
 				}
 			}
+
+			return false;
 		});
 	}
 
