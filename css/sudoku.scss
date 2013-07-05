@@ -4,17 +4,18 @@ $tileBorderWidth: 1px;
 $tileFontMultipler: 0.5;
 $boardSize: 9;
 $sqrtBoardSize: 3; //IDK why SASS can't do this...
+$boardBorderDimension: 20px;
 
-$accentColor: #E01B5D;
+// pink: $accentColor: #E01B5D;
+$accentColor: #1B7AE0;
 $accentColorTextDark: darken($accentColor, 40%);
 $accentColorTextLight: lighten($accentColor, 40%);
-$selectedColor: #FCF0AD;
 
 $tileDarkBorder: #333;
-$tileLightBorder: #eee;
+$tileLightBorder: #ccc;
 $tileBackground: #fff;
 
-$headerHeight: 40px;
+$headerHeight: 80px;
 
 // Computed values.
 $tileFontSize: $tileFontMultipler * $tileDimension;
@@ -66,7 +67,9 @@ a:hover {
     height: $headerHeight;
     line-height: $headerHeight;
     text-align: center;
-    font-size: 2em;
+    font-size: 3em;
+    text-shadow: 2px 2px #ccc;
+    color: #333;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -94,9 +97,10 @@ a:hover {
     position: absolute;
     top: 50%;
     left: 50%;
-    margin-top: -$boardDimension / 2;
-    margin-left: -$boardDimension / 2;
+    margin-top: -$boardDimension / 2 - $boardBorderDimension;
+    margin-left: -$boardDimension / 2 - $boardBorderDimension;
 	background: $tileDarkBorder;
+    border: $boardBorderDimension solid $tileDarkBorder;
 }
 
 .sudokuSquare {
@@ -156,7 +160,7 @@ a:hover {
 
 .edgeTileTop:focus {
     border-top: $tileBorderWidth solid $accentColorTextDark;
-    padding-top:0;
+    margin-top: -1px;
 }
 
 ::selection {
