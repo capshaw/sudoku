@@ -1,13 +1,26 @@
 var sudoku;
+var verifier;
 
 $(document).ready(function(){
 	sudoku = Sudoku();
+	verifier = SudokuVerifier();
+
+	sudoku.setOnChangeHandler(function(){
+		var errors = verifier.verify(sudoku);
+		sudoku.showErrors(errors);
+	});
 	sudoku.init();
 })
 
 // The sudoku object handles the board, but no solving logic
 // (or creation logic for that matter). If desired, use the helpers for that.
 var Sudoku = function () {
+
+	var onChangeHandler = function () {}
+
+	var setOnChangeHandler = function (f) {
+		onChangeHandler = f;
+	}
 
 	var init = function () {
 		drawElements();
@@ -53,12 +66,14 @@ var Sudoku = function () {
 			if (e.keyCode == 8) {
 				e.preventDefault();
 				$(this).val("")
+				onChangeHandler();
 				return false;
 			}
 
 			// Replace [1-9] in the input box
 			if (e.keyCode <= 57 && e.keyCode >= 49) {
 				$(this).val(String.fromCharCode(e.keyCode));
+				onChangeHandler();
 			}
 
 			// Arrow keys move cooresponding directions
@@ -73,13 +88,18 @@ var Sudoku = function () {
 		});
 	}
 
+	var get = function (x, y) {
+		// todo: not this selector
+		return $('#tile-' + x + '-' + y).val();
+	}
+
 	var moveByVector = function (element, dx, dy) {
 		var x = parseInt(element.attr('data-x'));
 		var y = parseInt(element.attr('data-y'));
 
 		x = mod((x + dx), elements.dimension);
 		y = mod((y + dy), elements.dimension);
-		//TODO: replace this selector
+		// todo: not this selector
 		$('#tile-' + x + '-' + y).focus();
 	}
 
@@ -98,6 +118,14 @@ var Sudoku = function () {
 		elements.board.append(square);
 	}
 
+	var showErrors = function (problemTiles) {
+		elements.tiles.removeClass('sudokuTileError')
+		for(i in problemTiles) {
+			var tile = problemTiles[i];
+			$('#tile-' + tile.x + '-' + tile.y).addClass('sudokuTileError');
+		}
+	}
+
 	//
 	var generateXYthTile = function (x, y) {
 
@@ -107,7 +135,7 @@ var Sudoku = function () {
 		var tile = $('<input />', {
 			class: 'sudokuTile inputFix',
 			unselectable: 'on',
-			value: bs,
+			value: '',
 			id: 'tile-' + x + '-' + y
 		});
 
@@ -129,6 +157,67 @@ var Sudoku = function () {
 
 	return {
 		elements: elements,
-		init: init
+		get: get,
+		init: init,
+		setOnChangeHandler: setOnChangeHandler,
+		showErrors: showErrors
+	}
+}
+
+var Tuple = function (xx, yy) {
+
+	var x = xx;
+	var y = yy;
+
+	return {
+		x: x,
+		y: y
+	}
+
+}
+
+// Given a sudoku object, finds problems associated with it.
+var SudokuVerifier = function () {
+
+	var getValueChecker = function () {
+		var checker = {}
+		for(var i = 0; i < 9; i++) {
+			checker[i] = []
+		}
+		return checker;
+	}
+
+	var verify = function (sudoku) {
+
+		var errors = [];
+
+		// Check rows
+		// todo: refactor this nonsense
+		for(var i = 0; i < 9; i++) {
+			row = getValueChecker();
+			for(var j = 0; j < 9; j++) {
+				var val = sudoku.get(j, i);
+				if(!val) {
+					continue;
+				}
+				row[val].push(Tuple(j, i));
+			}
+			for(var key in row) {
+				var val = row[key];
+				if(val.length > 1) {
+					errors = errors.concat(val);
+				}
+			}
+		}
+
+		// Check columns
+		// Check squares
+		//console.log("verifying")
+		//console.log(errors);
+		return errors;
+	}
+
+	return {
+		verify: verify
 	}
 }

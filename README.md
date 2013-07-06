@@ -1,6 +1,4 @@
-Sudoku Generator & Solver
-=========================
+Sudoku
+======
 
 A sudoku generator and solver written in javascript.
-
-Test.

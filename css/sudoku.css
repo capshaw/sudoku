@@ -28,7 +28,7 @@ a:hover {
   line-height: 80px;
   text-align: center;
   font-size: 3em;
-  text-shadow: 2px 2px #ccc;
+  text-shadow: -1px -1px #cccccc;
   color: #333;
   position: absolute;
   top: 50%;
@@ -43,7 +43,7 @@ a:hover {
   top: 50%;
   left: 50%;
   margin-top: -230px;
-  margin-left: 250px; }
+  margin-left: 270px; }
 
 .rightBar a {
   display: block; }
@@ -95,8 +95,10 @@ a:hover {
   -webkit-box-shadow: inset 0 0 10px #05172a;
   box-shadow: inset 0 0 10px #05172a;
   border-top: 1px solid #05172a;
-  border-left: 1px solid #05172a;
-  /*border-: 1px solid $accentColorTextDark;*/ }
+  border-left: 1px solid #05172a; }
+
+.sudokuTileError {
+  color: #e01b1e; }
 
 .edgeTileLeft {
   border-left: 1px solid #333333; }
@@ -111,6 +113,11 @@ a:hover {
   border-top: 1px solid #05172a;
   margin-top: -1px; }
 
+.divider {
+  margin: 10px 0;
+  border-top: 1px dotted #cfcfcf; }
+
 ::selection {
   background: #1b7ae0;
-  color: #cee3f9; }
+  color: #cee3f9;
+  text-shadow: none; }
