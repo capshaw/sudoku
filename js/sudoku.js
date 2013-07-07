@@ -75,7 +75,7 @@ var Sudoku = function () {
 	var elements = reloadElements();
 
 	var bindElements = function () {
-		elements.tiles.keydown(function(e){
+		elements.tiles.keypress(function(e){
 
 			// Delete
 			if (e.keyCode == 8) {
