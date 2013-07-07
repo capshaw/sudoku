@@ -82,7 +82,7 @@ a:hover {
 }
 
 .rightBar {
-    width: 100px;
+    width: 120px;
     height: $boardDimension;
     position: absolute;
     top: 50%;
@@ -93,6 +93,26 @@ a:hover {
 
 .rightBar a {
     display: block;
+}
+
+.leftBar {
+    width: 100px;
+    text-align: right;
+    height: $boardDimension;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -$boardDimension / 2;
+    margin-left: -$boardDimension / 2 - $boardBorderDimension - 120px;
+}
+
+.bottomBar {
+    width: $boardDimension + 2 * $boardBorderDimension;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: $boardDimension / 2 + $boardBorderDimension + 20px;
+    margin-left: -$boardDimension / 2 - $boardBorderDimension;
 }
 
 .sudokuBoard {

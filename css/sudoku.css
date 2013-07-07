@@ -37,7 +37,7 @@ a:hover {
   margin-left: -230px; }
 
 .rightBar {
-  width: 100px;
+  width: 120px;
   height: 460px;
   position: absolute;
   top: 50%;
@@ -47,6 +47,24 @@ a:hover {
 
 .rightBar a {
   display: block; }
+
+.leftBar {
+  width: 100px;
+  text-align: right;
+  height: 460px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -230px;
+  margin-left: -370px; }
+
+.bottomBar {
+  width: 500px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: 270px;
+  margin-left: -250px; }
 
 .sudokuBoard {
   width: 460px;
