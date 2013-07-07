@@ -17,8 +17,8 @@ $(document).ready(function(){
 	sudoku.showPuzzle(rows);
 
 	// debug
-	//var errors = verifier.verify(sudoku);
-	//sudoku.showErrors(errors);
+	var errors = verifier.verify(sudoku);
+	sudoku.showErrors(errors);
 })
 
 // The sudoku object handles the board, but no solving logic
