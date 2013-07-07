@@ -72,18 +72,22 @@ var Sudoku = function () {
 
 			// Replace [1-9] in the input box
 			if (e.keyCode <= 57 && e.keyCode >= 49) {
+				e.preventDefault();
 				$(this).val(String.fromCharCode(e.keyCode));
 				onChangeHandler();
+				return false;
 			}
 
 			// Arrow keys move cooresponding directions
 			if (e.keyCode <= 40 && e.keyCode >= 37) {
+				e.preventDefault();
 				switch (e.keyCode) {
 					case 37: moveByVector($(this), -1,  0); break; // left
 					case 38: moveByVector($(this),  0, -1); break; // up
 					case 39: moveByVector($(this),  1,  0); break; // right
 					case 40: moveByVector($(this),  0,  1); break; // down
 				}
+				return false;
 			}
 		});
 	}
@@ -191,29 +195,34 @@ var SudokuVerifier = function () {
 
 		var errors = [];
 
-		// Check rows
-		// todo: refactor this nonsense
 		for(var i = 0; i < 9; i++) {
-			row = getValueChecker();
-			for(var j = 0; j < 9; j++) {
-				var val = sudoku.get(j, i);
-				if(!val) {
-					continue;
-				}
-				row[val].push(Tuple(j, i));
-			}
-			for(var key in row) {
-				var val = row[key];
-				if(val.length > 1) {
-					errors = errors.concat(val);
-				}
-			}
+			errors = errors.concat(verifyRow(i));
 		}
 
 		// Check columns
 		// Check squares
 		//console.log("verifying")
-		//console.log(errors);
+		// console.log(errors);
+		return errors;
+	}
+
+	var verifyRow = function (i) {
+		var row = getValueChecker();
+		var errors = [];
+
+		for(var j = 0; j < 9; j++) {
+			var val = sudoku.get(j, i);
+			if(!val) continue;
+			row[val].push(Tuple(j, i));
+		}
+
+		for(var key in row) {
+			var val = row[key];
+			if(val.length > 1) {
+				errors = errors.concat(val);
+			}
+		}
+
 		return errors;
 	}
 
