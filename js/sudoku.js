@@ -1,8 +1,10 @@
 var sudoku;
 var verifier;
+var generator;
 
 $(document).ready(function(){
 	sudoku = Sudoku();
+	generator = SudokuGenerator();
 	verifier = SudokuVerifier();
 
 	sudoku.setOnChangeHandler(function(){
@@ -10,6 +12,13 @@ $(document).ready(function(){
 		sudoku.showErrors(errors);
 	});
 	sudoku.init();
+
+	var rows = generator.generate();
+	sudoku.showPuzzle(rows);
+
+	// debug
+	//var errors = verifier.verify(sudoku);
+	//sudoku.showErrors(errors);
 })
 
 // The sudoku object handles the board, but no solving logic
@@ -27,16 +36,22 @@ var Sudoku = function () {
 		bindElements();
 	}
 
+	var showPuzzle = function (puzzle) {
+		for(var y = 0; y < puzzle.length; y++) {
+			for(var x = 0; x < puzzle[y].length; x++) {
+				set(x, y, puzzle[y][x]);
+			}
+		}
+	}
+
 	var drawElements = function () {
 
 		elements = reloadElements();
-
 		for(var i = 0; i < elements.dimension; i++) {
 			generateNthSquare(i);
 		}
 
 		elements = reloadElements();
-
 		for(var y = 0; y < elements.dimension; y++) {
 			for(var x = 0; x < elements.dimension; x++) {
 				generateXYthTile(x, y);
@@ -95,6 +110,11 @@ var Sudoku = function () {
 	var get = function (x, y) {
 		// todo: not this selector
 		return $('#tile-' + x + '-' + y).val();
+	}
+
+	var set = function (x, y, value) {
+		// todo: see if we can avoid this selector
+		$('#tile-' + x + '-' + y).val(value);
 	}
 
 	var moveByVector = function (element, dx, dy) {
@@ -164,10 +184,12 @@ var Sudoku = function () {
 		get: get,
 		init: init,
 		setOnChangeHandler: setOnChangeHandler,
-		showErrors: showErrors
+		showErrors: showErrors,
+		showPuzzle: showPuzzle
 	}
 }
 
+// A simple storage mechanism for an (x,y) pair.
 var Tuple = function (xx, yy) {
 
 	var x = xx;
@@ -180,13 +202,51 @@ var Tuple = function (xx, yy) {
 
 }
 
+// Generates a Sudoku puzzle
+var SudokuGenerator = function () {
+
+	var shuffle = function (array) {
+    	var counter = array.length, temp, index;
+
+    	// While there are elements in the array
+    	while (counter > 0) {
+       		// Pick a random index
+        	index = (Math.random() * counter--) | 0;
+
+        	// And swap the last element with it
+        	temp = array[counter];
+        	array[counter] = array[index];
+        	array[index] = temp;
+    	}
+
+    	return array;
+	}
+
+	var lastGenerated = [];
+
+	var generate = function () {
+		var rows = [];
+		for(var i = 0; i < 9; i++) {
+			var row = shuffle([1,2,3,4,5,6,7,8,9])
+			rows.push(row);
+		}
+		lastGenerated = rows;
+		return rows;
+	}
+
+	return {
+		generate: generate,
+		lastGenerated: lastGenerated
+	}
+}
+
 // Given a sudoku object, finds problems associated with it.
 var SudokuVerifier = function () {
 
 	var getValueChecker = function () {
 		var checker = {}
 		for(var i = 0; i < 9; i++) {
-			checker[i] = []
+			checker[i + 1] = []
 		}
 		return checker;
 	}
@@ -199,10 +259,38 @@ var SudokuVerifier = function () {
 			errors = errors.concat(verifyRow(i));
 		}
 
-		// Check columns
-		// Check squares
-		//console.log("verifying")
-		// console.log(errors);
+		for(var i = 0; i < 9; i++) {
+			errors = errors.concat(verifyColumn(i));
+		}
+
+		for(var x = 0; x < 3; x++) {
+			for(var y = 0; y < 3; y++) {
+				errors = errors.concat(verifySquare(x*3, y*3));
+			}
+		}
+
+		return errors;
+	}
+
+	var verifySquare = function (x, y) {
+		var square = getValueChecker();
+		var errors = [];
+
+		for(var dx = 0; dx < 3; dx++) {
+			for(var dy = 0; dy < 3; dy++) {
+				var val = sudoku.get(x + dx, y + dy);
+				if(!val) continue;
+				square[val].push(Tuple(x + dx, y + dy));
+			}
+		}
+
+		for(var key in square) {
+			var val = square[key];
+			if(val.length > 1) {
+				errors = errors.concat(val);
+			}
+		}
+
 		return errors;
 	}
 
@@ -218,6 +306,26 @@ var SudokuVerifier = function () {
 
 		for(var key in row) {
 			var val = row[key];
+			if(val.length > 1) {
+				errors = errors.concat(val);
+			}
+		}
+
+		return errors;
+	}
+
+	var verifyColumn = function (i) {
+		var column = getValueChecker();
+		var errors = [];
+
+		for(var j = 0; j < 9; j++) {
+			var val = sudoku.get(i, j);
+			if(!val) continue;
+			column[val].push(Tuple(i, j));
+		}
+
+		for(var key in column) {
+			var val = column[key];
 			if(val.length > 1) {
 				errors = errors.concat(val);
 			}
