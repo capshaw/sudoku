@@ -3,27 +3,28 @@ var verifier;
 var generator;
 
 $(document).ready(function(){
-	sudoku = Sudoku();
+
+	sudokuGUI = SudokuGUI();
 	generator = SudokuGenerator();
 	verifier = SudokuVerifier();
 
-	sudoku.setOnChangeHandler(function(){
-		var errors = verifier.verify(sudoku);
-		sudoku.showErrors(errors);
+	sudokuGUI.setOnChangeHandler(function(){
+		var errors = verifier.verify(sudokuGUI);
+		sudokuGUI.showErrors(errors);
 	});
-	sudoku.init();
+	sudokuGUI.init();
 
-	var rows = generator.generate();
-	sudoku.showPuzzle(rows);
+	var sudoku = generator.generate();
+	sudokuGUI.showPuzzle(sudoku);
 
 	// debug
 	var errors = verifier.verify(sudoku);
-	sudoku.showErrors(errors);
+	sudokuGUI.showErrors(errors);
 })
 
 // The sudoku object handles the board, but no solving logic
 // (or creation logic for that matter). If desired, use the helpers for that.
-var Sudoku = function () {
+var SudokuGUI = function () {
 
 	var onChangeHandler = function () {}
 
@@ -37,9 +38,9 @@ var Sudoku = function () {
 	}
 
 	var showPuzzle = function (puzzle) {
-		for(var y = 0; y < puzzle.length; y++) {
-			for(var x = 0; x < puzzle[y].length; x++) {
-				set(x, y, puzzle[y][x]);
+		for(var y = 0; y < 9; y++) {
+			for(var x = 0; x < 9; x++) {
+				set(x, y, puzzle.get(x,y));
 			}
 		}
 	}
@@ -75,20 +76,24 @@ var Sudoku = function () {
 	var elements = reloadElements();
 
 	var bindElements = function () {
+
+		// Separate function to handle numpads as well.
 		elements.tiles.keypress(function(e){
+			// Replace [1-9] in the input box
+			if (e.keyCode <= 57 && e.keyCode >= 49) {
+				e.preventDefault();
+				$(this).val(String.fromCharCode(e.keyCode));
+				onChangeHandler();
+				return false;
+			}
+		});
+
+		elements.tiles.keydown(function(e){
 
 			// Delete
 			if (e.keyCode == 8) {
 				e.preventDefault();
 				$(this).val("")
-				onChangeHandler();
-				return false;
-			}
-
-			// Replace [1-9] in the input box
-			if (e.keyCode <= 57 && e.keyCode >= 49) {
-				e.preventDefault();
-				$(this).val(String.fromCharCode(e.keyCode));
 				onChangeHandler();
 				return false;
 			}
@@ -104,6 +109,7 @@ var Sudoku = function () {
 				}
 				return false;
 			}
+
 		});
 	}
 
@@ -199,7 +205,30 @@ var Tuple = function (xx, yy) {
 		x: x,
 		y: y
 	}
+}
 
+// A container for a Sudoku puzzle.
+var Sudoku = function () {
+
+	var puzzle = {};
+
+	var get = function (x, y) {
+		if (puzzle[y] !== undefined && puzzle[y][x] !== undefined) {
+			return puzzle[y][x];
+		}
+	}
+
+	var set = function (x, y, v) {
+		if(puzzle[y] == undefined) {
+			puzzle[y] = {};
+		}
+		puzzle[y][x] = v;
+	}
+
+	return {
+		set: set,
+		get: get,
+	}
 }
 
 // Generates a Sudoku puzzle
@@ -222,16 +251,18 @@ var SudokuGenerator = function () {
     	return array;
 	}
 
-	var lastGenerated = [];
+	var lastGenerated = Sudoku();
 
 	var generate = function () {
-		var rows = [];
+		var sudoku = Sudoku();
 		for(var i = 0; i < 9; i++) {
 			var row = shuffle([1,2,3,4,5,6,7,8,9])
-			rows.push(row);
+			for(var j = 0; j < 9; j++) {
+				sudoku.set(j, i, row[j])
+			}
 		}
-		lastGenerated = rows;
-		return rows;
+		lastGenerated = sudoku;
+		return sudoku;
 	}
 
 	return {
@@ -256,23 +287,23 @@ var SudokuVerifier = function () {
 		var errors = [];
 
 		for(var i = 0; i < 9; i++) {
-			errors = errors.concat(verifyRow(i));
+			errors = errors.concat(verifyRow(sudoku, i));
 		}
 
 		for(var i = 0; i < 9; i++) {
-			errors = errors.concat(verifyColumn(i));
+			errors = errors.concat(verifyColumn(sudoku, i));
 		}
 
 		for(var x = 0; x < 3; x++) {
 			for(var y = 0; y < 3; y++) {
-				errors = errors.concat(verifySquare(x*3, y*3));
+				errors = errors.concat(verifySquare(sudoku, x*3, y*3));
 			}
 		}
 
 		return errors;
 	}
 
-	var verifySquare = function (x, y) {
+	var verifySquare = function (sudoku, x, y) {
 		var square = getValueChecker();
 		var errors = [];
 
@@ -294,7 +325,7 @@ var SudokuVerifier = function () {
 		return errors;
 	}
 
-	var verifyRow = function (i) {
+	var verifyRow = function (sudoku, i) {
 		var row = getValueChecker();
 		var errors = [];
 
@@ -314,7 +345,7 @@ var SudokuVerifier = function () {
 		return errors;
 	}
 
-	var verifyColumn = function (i) {
+	var verifyColumn = function (sudoku, i) {
 		var column = getValueChecker();
 		var errors = [];
 
