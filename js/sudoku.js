@@ -234,40 +234,41 @@ var Sudoku = function () {
 // Generates a Sudoku puzzle
 var SudokuGenerator = function () {
 
-	var shuffle = function (array) {
-    	var counter = array.length, temp, index;
+	var sudokuTemplate = [
+		[1, 2, 3, 4, 5, 6, 7, 8, 9],
+		[4, 5, 6, 7, 8, 9, 1, 2, 3],
+		[7, 8, 9, 1, 2, 3, 4, 5, 6],
+		[2, 3, 4, 5, 6, 7, 8, 9, 1],
+		[5, 6, 7, 8, 9, 1, 2, 3, 4],
+		[8, 9, 1, 2, 3, 4, 5, 6, 7],
+		[3, 4, 5, 6, 7, 8, 9, 1, 2],
+		[6, 7, 8, 9, 1, 2, 3, 4, 5],
+		[9, 1, 2, 3, 4, 5, 6, 7, 8]
+	]
 
-    	// While there are elements in the array
-    	while (counter > 0) {
-       		// Pick a random index
-        	index = (Math.random() * counter--) | 0;
+	var swapRows = function (puzzle, i, j) {
 
-        	// And swap the last element with it
-        	temp = array[counter];
-        	array[counter] = array[index];
-        	array[index] = temp;
-    	}
-
-    	return array;
 	}
 
-	var lastGenerated = Sudoku();
+	var swapColumns = function (puzzle, i, j) {
+		var temp
+	}
 
 	var generate = function () {
-		var sudoku = Sudoku();
-		for(var i = 0; i < 9; i++) {
-			var row = shuffle([1,2,3,4,5,6,7,8,9])
-			for(var j = 0; j < 9; j++) {
-				sudoku.set(j, i, row[j])
+		var puzzle = $.extend(true, {}, sudokuTemplate);
+
+		var sudoku = new Sudoku();
+		for(var y = 0; y < 9; y++) {
+			for(var x = 0; x < 9; x++) {
+				sudoku.set(x, y, puzzle[y][x])
 			}
 		}
-		lastGenerated = sudoku;
+
 		return sudoku;
 	}
 
 	return {
-		generate: generate,
-		lastGenerated: lastGenerated
+		generate: generate
 	}
 }
 
