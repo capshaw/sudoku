@@ -4,7 +4,7 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: 'Belgrano', serif;
-  background: url("../img/background.png");
+  background: #eee;
   background-size: cover; }
 
 a {
