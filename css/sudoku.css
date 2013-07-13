@@ -136,10 +136,17 @@ a {
 
 .back div {
   display: none;
-  margin: 20px; }
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  padding: 20px; }
 
 .back p a {
-  color: #1c59c7; }
+  color: #1c59c7;
+  position: relative;
+  z-index: 9001; }
 
 .back p {
   line-height: 1.6em; }

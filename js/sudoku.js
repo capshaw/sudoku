@@ -105,13 +105,8 @@ var SudokuGUI = function () {
 
 			// Disable changes when disabled
 			if($(this).hasClass('disabled')) {
-
-				if(e.keyCode == 8) {
-					e.preventDefault();
-					return false;
-				}
-
-				return true;
+				e.preventDefault();
+				return false;
 			}
 
 			// Replace [1-9] in the input box
@@ -139,13 +134,8 @@ var SudokuGUI = function () {
 
 			// Disable changes when disabled
 			if($(this).hasClass('disabled')) {
-
-				if(e.keyCode == 8) {
-					e.preventDefault();
-					return false;
-				}
-
-				return true;
+				e.preventDefault();
+				return false;
 			}
 
 			// Replace [1-9] in the input box

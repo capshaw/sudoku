@@ -206,11 +206,15 @@ a:hover {}
 
 .back div {
     display: none;
-    margin: 20px;
+    position: absolute;
+    top: 0; right: 0; left: 0; bottom: 0;
+    padding: 20px;
 }
 
 .back p a {
     color: $accentColor;
+    position: relative;
+    z-index: 9001;
 }
 
 .back p {
