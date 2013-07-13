@@ -12,27 +12,50 @@
 	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 </head>
 <body>
-	<div class='rightBar'>
-		<a href='#' id='newPuzzleLink'><i class='icon-puzzle-piece'></i> New Puzzle</a>
+	<a href='#' id='toggle-dropdown' class='dropdown-link'>
+		<!-- <i class='icon-plus'></i> -->
+		+
+	</a>
+	<div id='dropdown' class='link-dropdown'>
+		<a href='#'><i class='icon-puzzle-piece'></i> New Puzzle</a>
 		<a href='#'><i class='icon-undo'></i> Restart</a>
 		<a href='#'><i class='icon-magic'></i> Solve</a>
 		<div class='divider'></div>
-		<a href='#' id='options'><i class='icon-gear'></i> Options</a>
-		<a href='#'><i class='icon-question-sign'></i> Help</a>
+		<a href='#' id='options'>
+			<i class='icon-gear'></i> Options
+		</a>
+		<a href='#' id='instructions'>
+			<i class='icon-question-sign'></i> Instructions
+		</a>
+		<a href='#' id='about'>
+			<i class='icon-info-sign'></i> About
+		</a>
 	</div>
-	<div class='middle-box flip-container'>
+	<div id='flipBox' class='middle-box flip-container'>
 		<div class='flipper'>
 			<div id='SudokuBoard' class='sudokuBoard front'></div>
 			<div id='BackContent' class='back'>
 
+				<a href='#' id='x' class='upper-right-x'>&times;</a>
+
 				<div id='options-content'>
 					<h2>Options</h2>
-					<p>The options go here</p>
+					<p>The options go here if they ever exist :p</p>
+				</div>
+
+				<div id='instructions-content'>
+					<h2>Instructions</h2>
+					<p>
+						Click to select a field or use the arrow keys to navigate the grid. Using the number keys and the delete key, input numbers to complete the puzzle!
+					</p>
+					<p>
+						If you don't know the rules to sudoku, I suggest you read <a href='https://en.wikipedia.org/wiki/Sudoku'>the Wikipedia entry</a>.
+					</p>
 				</div>
 
 			</div>
 		</div>
 	</div>
-	<a href="https://github.com/capshaw/sudoku"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+	<a href="https://github.com/you"><img style="position: absolute; top: 0; right: 0; border: 0; width: 149px; height: 149px;" src="http://aral.github.com/fork-me-on-github-retina-ribbons/right-orange@2x.png" alt="Fork me on GitHub"></a>
 </body>
 </html>

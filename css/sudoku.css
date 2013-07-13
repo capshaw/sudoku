@@ -8,60 +8,49 @@ html, body {
   background-size: cover; }
 
 a {
-  color: #333;
   text-decoration: none;
-  transition: all 0.2s; }
+  transition: all 0.2s;
+  color: #333; }
 
-a:hover {
-  text-indent: -2px; }
-
-.leftBar, .rightBar {
-  font-size: 16px;
-  line-height: 1.5em; }
-
-.header {
-  width: 460px;
-  height: 80px;
-  line-height: 80px;
+.dropdown-link {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 40px;
+  width: 40px;
+  line-height: 40px;
+  font-size: 2em;
   text-align: center;
-  font-size: 2.5em;
-  color: #333;
-  opacity: 0.9;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -330px;
-  margin-left: -230px; }
+  margin-top: -250px;
+  margin-left: 270px;
+  background: rgba(255, 255, 255, 0.5);
+  transition: background 0.2s; }
 
-.rightBar {
-  width: 120px;
-  height: 460px;
+.dropdown-link.enabled {
+  background: white; }
+
+.dropdown-link:hover {
+  background: white; }
+
+.link-dropdown {
+  font-size: 16px;
+  line-height: 1.5em;
+  width: 180px;
   position: absolute;
+  padding: 20px 0;
+  background: #fff;
+  display: none;
   top: 50%;
   left: 50%;
-  margin-top: -230px;
+  margin-top: -210px;
   margin-left: 270px; }
 
-.rightBar a {
-  display: block; }
+.link-dropdown a {
+  display: block;
+  padding: 2px 20px; }
 
-.leftBar {
-  width: 100px;
-  text-align: right;
-  height: 460px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -230px;
-  margin-left: -370px; }
-
-.bottomBar {
-  width: 500px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: 270px;
-  margin-left: -250px; }
+.link-dropdown a:hover {
+  background: #efefef; }
 
 .sudokuBoard {
   width: 460px;
@@ -72,7 +61,7 @@ a:hover {
 .sudokuSquare {
   display: inline-block;
   width: 153px;
-  background: #cccccc; }
+  background: #eeeeee; }
 
 .inputFix {
   border: none;
@@ -84,8 +73,8 @@ a:hover {
   width: 50px;
   height: 50px;
   background: white;
-  border-top: 1px solid #cccccc;
-  border-left: 1px solid #cccccc;
+  border-top: 1px solid #eeeeee;
+  border-left: 1px solid #eeeeee;
   display: inline-block;
   font-size: 25px;
   text-align: center;
@@ -98,8 +87,8 @@ a:hover {
   -ms-user-select: none;
   user-select: none; }
 
-.disabled {
-  color: #333333; }
+.sudokuTileError {
+  color: #e01b1e; }
 
 .sudokuTile:focus {
   background: #1c59c7;
@@ -110,8 +99,12 @@ a:hover {
   border-top: 1px solid #030914;
   border-left: 1px solid #030914; }
 
-.sudokuTileError {
-  color: #e01b1e; }
+.edgeTileTop:focus {
+  border-top: 1px solid #030914;
+  margin-top: -1px; }
+
+.disabled {
+  color: #333333; }
 
 .edgeTileLeft {
   border-left: 1px solid #333333; }
@@ -121,10 +114,6 @@ a:hover {
   box-shadow: 0 -1px 0 0px #333333;
   border-top: none;
   padding-top: 1px; }
-
-.edgeTileTop:focus {
-  border-top: 1px solid #030914;
-  margin-top: -1px; }
 
 .divider {
   margin: 10px 0;
@@ -143,12 +132,31 @@ a:hover {
 .back {
   width: 460px;
   height: 460px;
-  background: #333333;
-  color: #fff; }
+  background: #fff; }
 
 .back div {
   display: none;
   margin: 20px; }
+
+.back p a {
+  color: #1c59c7; }
+
+.back p {
+  line-height: 1.6em; }
+
+.upper-right-x {
+  color: #ddd;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  text-align: center;
+  display: block;
+  font-size: 2.1em;
+  transition: color 0.6s; }
+
+.upper-right-x:hover {
+  color: #333; }
 
 /**
  * Flip module allows you to flip a container by adding a class to it.
@@ -203,6 +211,6 @@ a:hover {
   -o-transform: rotateY(180deg); }
 
 ::selection {
-  background: #1c59c7;
-  color: #bacff5;
+  background: #eee;
+  color: #333;
   text-shadow: none; }

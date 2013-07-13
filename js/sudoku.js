@@ -21,12 +21,20 @@ $(document).ready(function(){
 	var errors = verifier.verify(sudoku);
 	sudokuGUI.showErrors(errors);
 
-	$('#options').on("click", function (e) {
+	$('.link-dropdown a').on("click", function (e) {
 		e.preventDefault();
-		$('#options-content').show();
+		$('.back div').hide();
+		$('#' + $(this).attr('id') + '-content').show();
 		$('.flip-container').toggleClass('flip');
 		return false;
 	});
+
+	$('#toggle-dropdown').on("click", function (e) {
+		e.preventDefault();
+		$('#toggle-dropdown').toggleClass('enabled');
+		$('#dropdown').toggle();
+		return false;
+	})
 })
 
 // The sudoku object handles the board, but no solving logic
@@ -76,13 +84,21 @@ var SudokuGUI = function () {
 			area: 81,
 			board: $('#SudokuBoard'),
 			squares: $('.sudokuSquare'),
-			tiles: $('.sudokuTile')
+			tiles: $('.sudokuTile'),
+			xButton: $('#x'),
+			flipBox: $('#flipBox')
 		}
 	}
 
 	var elements = reloadElements();
 
 	var bindElements = function () {
+
+		elements.xButton.on("click", function(e){
+			e.preventDefault();
+			elements.flipBox.removeClass('flip');
+			return false;
+		});
 
 		// Separate function to handle numpads as well.
 		elements.tiles.keypress(function(e){

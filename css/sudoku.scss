@@ -17,7 +17,7 @@ $errorColorTextDark: darken($errorColor, 40%);
 $errorColorTextLight: lighten($errorColor, 40%);
 
 $tileDarkBorder: #333;
-$tileLightBorder: #ccc;
+$tileLightBorder: #eee;
 $tileBackground: #fff;
 
 $headerHeight: 80px;
@@ -55,67 +55,57 @@ html, body {
 }
 
 a {
-    color: #333;
     text-decoration: none;
     transition: all 0.2s;
+    color: #333;
 }
 
-a:hover {
-    text-indent: -2px;
+a:hover {}
+
+.dropdown-link {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 40px;
+    width: 40px;
+    line-height: 40px;
+    font-size: 2em;
+    text-align: center;
+    margin-top: -$boardDimension / 2 - $boardBorderDimension;
+    margin-left: $boardDimension / 2 + $boardBorderDimension + 20px;
+    background: rgba(255,255,255,0.5);
+    transition: background 0.2s;
 }
 
-.leftBar, .rightBar {
+.dropdown-link.enabled {
+    background: rgba(255,255,255,1);
+}
+
+.dropdown-link:hover {
+    background: rgba(255,255,255,1);
+}
+
+.link-dropdown {
     font-size: 16px;
     line-height: 1.5em;
-}
-
-.header {
-    width: $boardDimension;
-    height: $headerHeight;
-    line-height: $headerHeight;
-    text-align: center;
-    font-size: 2.5em;
-    color: #333;
-    opacity: 0.9;
+    width: 180px;
     position: absolute;
+    padding: 20px 0;
+    background: #fff;
+    display: none;
     top: 50%;
     left: 50%;
-    margin-top: -$boardDimension / 2 - $headerHeight - 20px;
-    margin-left: -$boardDimension / 2;
-}
-
-.rightBar {
-    width: 120px;
-    height: $boardDimension;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-top: -$boardDimension / 2;
+    margin-top: -$boardDimension / 2 - $boardBorderDimension + 40px;
     margin-left: $boardDimension / 2 + $boardBorderDimension + 20px;
 }
 
-.rightBar a {
+.link-dropdown a {
     display: block;
+    padding: 2px 20px;
 }
 
-.leftBar {
-    width: 100px;
-    text-align: right;
-    height: $boardDimension;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-top: -$boardDimension / 2;
-    margin-left: -$boardDimension / 2 - $boardBorderDimension - 120px;
-}
-
-.bottomBar {
-    width: $boardDimension + 2 * $boardBorderDimension;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-top: $boardDimension / 2 + $boardBorderDimension + 20px;
-    margin-left: -$boardDimension / 2 - $boardBorderDimension;
+.link-dropdown a:hover {
+    background: #efefef;
 }
 
 .sudokuBoard {
@@ -158,8 +148,8 @@ a:hover {
     user-select: none;
 }
 
-.disabled {
-    color: $tileDarkBorder;
+.sudokuTileError {
+    color: $errorColor;
 }
 
 .sudokuTile:focus {
@@ -172,8 +162,13 @@ a:hover {
     border-left: $tileBorderWidth solid $accentColorTextDark;
 }
 
-.sudokuTileError {
-    color: $errorColor;
+.edgeTileTop:focus {
+    border-top: $tileBorderWidth solid $accentColorTextDark;
+    margin-top: -1px;
+}
+
+.disabled {
+    color: $tileDarkBorder;
 }
 
 .edgeTileLeft {
@@ -185,11 +180,6 @@ a:hover {
     box-shadow: 0 -1px 0 0px $tileDarkBorder;
     border-top: none;
     padding-top: 1px;
-}
-
-.edgeTileTop:focus {
-    border-top: $tileBorderWidth solid $accentColorTextDark;
-    margin-top: -1px;
 }
 
 .divider {
@@ -211,8 +201,7 @@ a:hover {
 .back {
     width: $boardDimension;
     height: $boardDimension;
-    background: $tileDarkBorder;
-    color: #fff;
+    background: #fff;
 }
 
 .back div {
@@ -220,10 +209,34 @@ a:hover {
     margin: 20px;
 }
 
+.back p a {
+    color: $accentColor;
+}
+
+.back p {
+    line-height: 1.6em;
+}
+
+.upper-right-x {
+    color: #ddd;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    text-align: center;
+    display: block;
+    font-size: 2.1em;
+    transition: color 0.6s;
+}
+
+.upper-right-x:hover {
+    color: #333;
+}
+
 @import "flip";
 
 ::selection {
-    background: $accentColor;
-    color: $accentColorTextLight;
+    background: #eee;
+    color: #333;
     text-shadow: none;
 }
