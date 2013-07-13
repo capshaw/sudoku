@@ -93,7 +93,7 @@ var SudokuGUI = function () {
 		elements.toggleBackButtons.on("click", function (e) {
 			e.preventDefault();
 			elements.allBacks.hide();
-			$('#' + $(this).attr('id') + '-content').show();
+			$('#' + $(this).attr('id') + '-content').fadeIn('slow');
 			if(!elements.flipContainer.hasClass('flip')){
 				elements.flipContainer.addClass('flip');
 			}
