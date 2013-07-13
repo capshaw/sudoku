@@ -86,14 +86,21 @@ var SudokuGUI = function () {
 
 		elements.xButton.on("click", function(e){
 			e.preventDefault();
+			elements.allBacks.removeClass('showing');
 			elements.flipBox.removeClass('flip');
 			return false;
 		});
 
 		elements.toggleBackButtons.on("click", function (e) {
 			e.preventDefault();
+			var back = $('#' + $(this).attr('id') + '-content');
+			if(back.hasClass('showing')) {
+				return;
+			}
 			elements.allBacks.hide();
-			$('#' + $(this).attr('id') + '-content').fadeIn('slow');
+			elements.allBacks.removeClass('showing');
+			back.slideDown();
+			back.addClass('showing');
 			if(!elements.flipContainer.hasClass('flip')){
 				elements.flipContainer.addClass('flip');
 			}
