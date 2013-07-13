@@ -20,21 +20,6 @@ $(document).ready(function(){
 	// debug
 	var errors = verifier.verify(sudoku);
 	sudokuGUI.showErrors(errors);
-
-	$('.link-dropdown a').on("click", function (e) {
-		e.preventDefault();
-		$('.back div').hide();
-		$('#' + $(this).attr('id') + '-content').show();
-		$('.flip-container').toggleClass('flip');
-		return false;
-	});
-
-	$('#toggle-dropdown').on("click", function (e) {
-		e.preventDefault();
-		$('#toggle-dropdown').toggleClass('enabled');
-		$('#dropdown').toggle();
-		return false;
-	})
 })
 
 // The sudoku object handles the board, but no solving logic
@@ -86,7 +71,12 @@ var SudokuGUI = function () {
 			squares: $('.sudokuSquare'),
 			tiles: $('.sudokuTile'),
 			xButton: $('#x'),
-			flipBox: $('#flipBox')
+			flipBox: $('#flipBox'),
+			toggleBackButtons: $('.toggle-back'),
+			allBacks: $('.back div'),
+			flipContainer: $('.flip-container'),
+			toggleDropdown: $('#toggle-dropdown'),
+			dropDown: $('#dropdown')
 		}
 	}
 
@@ -97,6 +87,23 @@ var SudokuGUI = function () {
 		elements.xButton.on("click", function(e){
 			e.preventDefault();
 			elements.flipBox.removeClass('flip');
+			return false;
+		});
+
+		elements.toggleBackButtons.on("click", function (e) {
+			e.preventDefault();
+			elements.allBacks.hide();
+			$('#' + $(this).attr('id') + '-content').show();
+			if(!elements.flipContainer.hasClass('flip')){
+				elements.flipContainer.addClass('flip');
+			}
+			return false;
+		});
+
+		elements.toggleDropdown.on("click", function (e) {
+			e.preventDefault();
+			elements.toggleDropdown.toggleClass('enabled');
+			elements.dropDown.toggle();
 			return false;
 		});
 

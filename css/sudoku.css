@@ -145,8 +145,7 @@ a {
 
 .back p a {
   color: #1c59c7;
-  position: relative;
-  z-index: 9001; }
+  position: relative; }
 
 .back p {
   line-height: 1.6em; }
@@ -160,7 +159,8 @@ a {
   text-align: center;
   display: block;
   font-size: 2.1em;
-  transition: color 0.6s; }
+  transition: color 0.6s;
+  z-index: 9000; }
 
 .upper-right-x:hover {
   color: #333; }
