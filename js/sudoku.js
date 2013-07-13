@@ -79,10 +79,10 @@ var SudokuGUI = function () {
 
 		// Separate function to handle numpads as well.
 		elements.tiles.keypress(function(e){
-			// Don't let someone change a disabled tile
-			if ($(this).hasClass('disabled')) {
-				e.preventDefault();
-				return false;
+
+			// Disable changes when disabled
+			if($(this).hasClass('disabled')) {
+				return true;
 			}
 
 			// Replace [1-9] in the input box
@@ -108,10 +108,9 @@ var SudokuGUI = function () {
 				return false;
 			}
 
-			// Don't let someone change a disabled tile
-			if ($(this).hasClass('disabled')) {
-				e.preventDefault();
-				return false;
+			// Disable changes when disabled
+			if($(this).hasClass('disabled')) {
+				return true;
 			}
 
 			// Delete
