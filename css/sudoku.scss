@@ -57,7 +57,7 @@ html, body {
 a {
     text-decoration: none;
     transition: all 0.2s;
-    color: #333;
+    color: $tileDarkBorder;
 }
 
 a:hover {}
@@ -77,11 +77,7 @@ a:hover {}
     transition: background 0.2s;
 }
 
-.dropdown-link.enabled {
-    background: rgba(255,255,255,1);
-}
-
-.dropdown-link:hover {
+.dropdown-link.enabled, .dropdown-link:hover  {
     background: rgba(255,255,255,1);
 }
 
@@ -102,10 +98,12 @@ a:hover {}
 .link-dropdown a {
     display: block;
     padding: 2px 20px;
+    transition: none;
 }
 
 .link-dropdown a:hover {
-    background: #efefef;
+    background: $tileDarkBorder;
+    color: #fff;
 }
 
 .sudokuBoard {
@@ -184,7 +182,7 @@ a:hover {}
 
 .divider {
     margin: 10px 0;
-    border-top: 1px solid #333;
+    border-top: 1px solid $tileDarkBorder;
     opacity: 0.1;
 }
 
@@ -234,13 +232,13 @@ a:hover {}
 }
 
 .upper-right-x:hover {
-    color: #333;
+    color: $tileDarkBorder;
 }
 
 @import "flip";
 
 ::selection {
     background: #eee;
-    color: #333;
+    color: $tileDarkBorder;
     text-shadow: none;
 }

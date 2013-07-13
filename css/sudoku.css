@@ -10,7 +10,7 @@ html, body {
 a {
   text-decoration: none;
   transition: all 0.2s;
-  color: #333; }
+  color: #333333; }
 
 .dropdown-link {
   position: absolute;
@@ -26,10 +26,7 @@ a {
   background: rgba(255, 255, 255, 0.5);
   transition: background 0.2s; }
 
-.dropdown-link.enabled {
-  background: white; }
-
-.dropdown-link:hover {
+.dropdown-link.enabled, .dropdown-link:hover {
   background: white; }
 
 .link-dropdown {
@@ -47,10 +44,12 @@ a {
 
 .link-dropdown a {
   display: block;
-  padding: 2px 20px; }
+  padding: 2px 20px;
+  transition: none; }
 
 .link-dropdown a:hover {
-  background: #efefef; }
+  background: #333333;
+  color: #fff; }
 
 .sudokuBoard {
   width: 460px;
@@ -117,7 +116,7 @@ a {
 
 .divider {
   margin: 10px 0;
-  border-top: 1px solid #333;
+  border-top: 1px solid #333333;
   opacity: 0.1; }
 
 .middle-box {
@@ -163,7 +162,7 @@ a {
   z-index: 9000; }
 
 .upper-right-x:hover {
-  color: #333; }
+  color: #333333; }
 
 /**
  * Flip module allows you to flip a container by adding a class to it.
@@ -219,5 +218,5 @@ a {
 
 ::selection {
   background: #eee;
-  color: #333;
+  color: #333333;
   text-shadow: none; }
