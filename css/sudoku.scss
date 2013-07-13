@@ -7,7 +7,8 @@ $sqrtBoardSize: 3; //IDK why SASS can't do this...
 $boardBorderDimension: 20px;
 
 // pink: $accentColor: #E01B5D;
-$accentColor: #1B7AE0;
+// original blue: $accentColor: #1B7AE0;
+$accentColor: #1C59C7;
 $accentColorTextDark: darken($accentColor, 40%);
 $accentColorTextLight: lighten($accentColor, 40%);
 
@@ -48,17 +49,19 @@ html, body {
     margin: 0;
     padding: 0;
     font-family: 'Belgrano', serif;
-    @include radialGradient(#fff, #ccc);
+    background: url('../img/background.png');
+    background-size: cover;
+    //@include radialGradient(#fff, #ccc);
 }
 
 a {
-    color: $accentColor;
+    color: #333;
     text-decoration: none;
-    transition: all 0.5s;
+    transition: all 0.2s;
 }
 
 a:hover {
-    color: $accentColorTextDark;
+    text-indent: -2px;
 }
 
 .leftBar, .rightBar {
@@ -71,9 +74,9 @@ a:hover {
     height: $headerHeight;
     line-height: $headerHeight;
     text-align: center;
-    font-size: 3em;
-    text-shadow: -1px -1px #ccc;
+    font-size: 2.5em;
     color: #333;
+    opacity: 0.9;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -118,11 +121,6 @@ a:hover {
 .sudokuBoard {
 	width: $boardDimension;
 	height: $boardDimension;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-top: -$boardDimension / 2 - $boardBorderDimension;
-    margin-left: -$boardDimension / 2 - $boardBorderDimension;
 	background: $tileDarkBorder;
     border: $boardBorderDimension solid $tileDarkBorder;
 }
@@ -196,8 +194,33 @@ a:hover {
 
 .divider {
     margin: 10px 0;
-    border-top: 1px dotted #cfcfcf;
+    border-top: 1px solid #333;
+    opacity: 0.1;
 }
+
+.middle-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: $boardDimension + 2 * $boardBorderDimension;
+    height: $boardDimension + 2 * $boardBorderDimension;
+    margin-top: -$boardDimension / 2 - $boardBorderDimension;
+    margin-left: -$boardDimension / 2 - $boardBorderDimension;
+}
+
+.back {
+    width: $boardDimension;
+    height: $boardDimension;
+    background: $tileDarkBorder;
+    color: #fff;
+}
+
+.back div {
+    display: none;
+    margin: 20px;
+}
+
+@import "flip";
 
 ::selection {
     background: $accentColor;

@@ -20,6 +20,13 @@ $(document).ready(function(){
 	// debug
 	var errors = verifier.verify(sudoku);
 	sudokuGUI.showErrors(errors);
+
+	$('#options').on("click", function (e) {
+		e.preventDefault();
+		$('#options-content').show();
+		$('.flip-container').toggleClass('flip');
+		return false;
+	});
 })
 
 // The sudoku object handles the board, but no solving logic
@@ -82,12 +89,18 @@ var SudokuGUI = function () {
 
 			// Disable changes when disabled
 			if($(this).hasClass('disabled')) {
+
+				if(e.keyCode == 8) {
+					e.preventDefault();
+					return false;
+				}
+
 				return true;
 			}
 
 			// Replace [1-9] in the input box
 			if (e.keyCode <= 57 && e.keyCode >= 49) {
-				e.preventDefault();
+				e.preventDefault(e);
 				$(this).val(String.fromCharCode(e.keyCode));
 				onChangeHandler();
 				return false;
@@ -98,7 +111,7 @@ var SudokuGUI = function () {
 
 			// Arrow keys move cooresponding directions
 			if (e.keyCode <= 40 && e.keyCode >= 37) {
-				e.preventDefault();
+				e.preventDefault(e);
 				switch (e.keyCode) {
 					case 37: moveByVector($(this), -1,  0); break; // left
 					case 38: moveByVector($(this),  0, -1); break; // up
@@ -110,12 +123,26 @@ var SudokuGUI = function () {
 
 			// Disable changes when disabled
 			if($(this).hasClass('disabled')) {
+
+				if(e.keyCode == 8) {
+					e.preventDefault();
+					return false;
+				}
+
 				return true;
+			}
+
+			// Replace [1-9] in the input box
+			if (e.keyCode <= 57 && e.keyCode >= 49) {
+				e.preventDefault(e);
+				$(this).val(String.fromCharCode(e.keyCode));
+				onChangeHandler();
+				return false;
 			}
 
 			// Delete
 			if (e.keyCode == 8) {
-				e.preventDefault();
+				e.preventDefault(e);
 				$(this).val("")
 				onChangeHandler();
 				return false;

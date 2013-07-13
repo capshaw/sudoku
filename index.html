@@ -16,17 +16,30 @@
 <body>
 	<div class='header'>Sudoku</div>
 	<div class='rightBar'>
-		<div class='divider'></div>
+		<!-- <div class='divider'></div> -->
 		<a href='#' id='newPuzzleLink'><i class='icon-puzzle-piece'></i> New Puzzle</a>
 		<a href='#'><i class='icon-undo'></i> Restart</a>
 		<a href='#'><i class='icon-magic'></i> Solve</a>
 		<div class='divider'></div>
-		<a href='#'><i class='icon-gear'></i> Options</a>
+		<a href='#' id='options'><i class='icon-gear'></i> Options</a>
 		<a href='#'><i class='icon-question-sign'></i> Help</a>
-		<div class='divider'></div>
+		<!-- <div class='divider'></div> -->
 		<!-- wiill have instructions, preferences, about -->
 	</div>
-	<div id='SudokuBoard' class='sudokuBoard'></div>
+	<div class='middle-box flip-container'>
+		<div class='flipper'>
+			<div id='SudokuBoard' class='sudokuBoard front'></div>
+			<div id='BackContent' class='back'>
+
+				<div id='options-content'>
+					<h2>Options</h2>
+					<p>The options go here</p>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
 
 	<a href="https://github.com/capshaw/sudoku"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
 </body>
