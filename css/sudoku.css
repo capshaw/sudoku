@@ -97,7 +97,7 @@ a:hover {
   display: inline-block;
   font-size: 25px;
   text-align: center;
-  color: #333333;
+  color: #1661b2;
   line-height: 50px;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -105,6 +105,9 @@ a:hover {
   -o-user-select: none;
   -ms-user-select: none;
   user-select: none; }
+
+.disabled {
+  color: #333333; }
 
 .sudokuTile:focus {
   background: #1b7ae0;

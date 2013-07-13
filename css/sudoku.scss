@@ -149,7 +149,7 @@ a:hover {
     display: inline-block;
     font-size: $tileFontSize;
     text-align: center;
-    color: $tileDarkBorder;
+    color: darken($accentColor, 10%);
     line-height: $tileDimension;
     // TODO: scss does this for you?;
     -webkit-user-select: none;
@@ -158,6 +158,10 @@ a:hover {
     -o-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+.disabled {
+    color: $tileDarkBorder;
 }
 
 .sudokuTile:focus {

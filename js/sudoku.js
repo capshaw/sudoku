@@ -79,6 +79,12 @@ var SudokuGUI = function () {
 
 		// Separate function to handle numpads as well.
 		elements.tiles.keypress(function(e){
+			// Don't let someone change a disabled tile
+			if ($(this).hasClass('disabled')) {
+				e.preventDefault();
+				return false;
+			}
+
 			// Replace [1-9] in the input box
 			if (e.keyCode <= 57 && e.keyCode >= 49) {
 				e.preventDefault();
@@ -90,14 +96,6 @@ var SudokuGUI = function () {
 
 		elements.tiles.keydown(function(e){
 
-			// Delete
-			if (e.keyCode == 8) {
-				e.preventDefault();
-				$(this).val("")
-				onChangeHandler();
-				return false;
-			}
-
 			// Arrow keys move cooresponding directions
 			if (e.keyCode <= 40 && e.keyCode >= 37) {
 				e.preventDefault();
@@ -107,6 +105,20 @@ var SudokuGUI = function () {
 					case 39: moveByVector($(this),  1,  0); break; // right
 					case 40: moveByVector($(this),  0,  1); break; // down
 				}
+				return false;
+			}
+
+			// Don't let someone change a disabled tile
+			if ($(this).hasClass('disabled')) {
+				e.preventDefault();
+				return false;
+			}
+
+			// Delete
+			if (e.keyCode == 8) {
+				e.preventDefault();
+				$(this).val("")
+				onChangeHandler();
 				return false;
 			}
 
@@ -142,7 +154,7 @@ var SudokuGUI = function () {
 	// Generate the nth square in [0-dimensions)
 	var generateNthSquare = function (n) {
 		var square = $('<div />', {
-			class: 'sudokuSquare'
+			class: 'sudokuSquare',
 		});
 
 		elements.board.append(square);
@@ -171,6 +183,10 @@ var SudokuGUI = function () {
 
 		tile.attr('data-x', x);
 		tile.attr('data-y', y);
+
+		if(Math.floor(Math.random() * 2) == 0){
+			tile.addClass('disabled');
+		}
 
 		if(0 == x % 3){
 			tile.addClass('edgeTileLeft');
