@@ -68,12 +68,13 @@ var SudokuGUI = function () {
 			dimension: 9,
 			area: 81,
 			board: $('#SudokuBoard'),
-			squares: $('.sudokuSquare'),
-			tiles: $('.sudokuTile'),
+			squares: $('.sudoku-square'),
+			tiles: $('.sudoku-tile'),
 			xButton: $('#x'),
-			flipBox: $('#flipBox'),
+			BackContent: $('#BackContent'),
 			toggleBackButtons: $('.toggle-back'),
 			allBacks: $('.back div'),
+			front: $('.front'),
 			flipContainer: $('.flip-container'),
 			toggleDropdown: $('#toggle-dropdown'),
 			dropDown: $('#dropdown')
@@ -86,8 +87,10 @@ var SudokuGUI = function () {
 
 		elements.xButton.on("click", function(e){
 			e.preventDefault();
+			elements.BackContent.slideUp({
+				easing: 'easeInOutCubic'
+			});
 			elements.allBacks.removeClass('showing');
-			elements.flipBox.removeClass('flip');
 			return false;
 		});
 
@@ -99,11 +102,11 @@ var SudokuGUI = function () {
 			}
 			elements.allBacks.hide();
 			elements.allBacks.removeClass('showing');
-			back.slideDown();
+			back.show();
 			back.addClass('showing');
-			if(!elements.flipContainer.hasClass('flip')){
-				elements.flipContainer.addClass('flip');
-			}
+			elements.BackContent.slideDown({
+				easing: 'easeInOutCubic'
+			})
 			return false;
 		});
 
@@ -200,17 +203,17 @@ var SudokuGUI = function () {
 	// Generate the nth square in [0-dimensions)
 	var generateNthSquare = function (n) {
 		var square = $('<div />', {
-			class: 'sudokuSquare',
+			class: 'sudoku-square',
 		});
 
 		elements.board.append(square);
 	}
 
 	var showErrors = function (problemTiles) {
-		elements.tiles.removeClass('sudokuTileError')
+		elements.tiles.removeClass('sudoku-tile-error')
 		for(i in problemTiles) {
 			var tile = problemTiles[i];
-			$('#tile-' + tile.x + '-' + tile.y).addClass('sudokuTileError');
+			$('#tile-' + tile.x + '-' + tile.y).addClass('sudoku-tile-error');
 		}
 	}
 
@@ -221,7 +224,7 @@ var SudokuGUI = function () {
 		var bs = (x % 3) + (y % 3) * 3 + 1;
 
 		var tile = $('<input />', {
-			class: 'sudokuTile inputFix',
+			class: 'sudoku-tile input-fix',
 			unselectable: 'on',
 			value: '',
 			id: 'tile-' + x + '-' + y
@@ -235,11 +238,11 @@ var SudokuGUI = function () {
 		}
 
 		if(0 == x % 3){
-			tile.addClass('edgeTileLeft');
+			tile.addClass('edget-tile-left');
 		}
 
 		if(0 == y % 3){
-			tile.addClass('edgeTileTop');
+			tile.addClass('edge-tile-top');
 		}
 
 		n = Math.floor(x / 3) + Math.floor(y / 3) * 3;

@@ -12,6 +12,11 @@ a {
   transition: all 0.2s;
   color: #333333; }
 
+::selection {
+  background: #eee;
+  color: #333333;
+  text-shadow: none; }
+
 .dropdown-link {
   position: absolute;
   left: 50%;
@@ -51,24 +56,32 @@ a {
   background: #333333;
   color: #fff; }
 
-.sudokuBoard {
+.divider {
+  margin: 10px 0;
+  border-top: 1px solid #333333;
+  opacity: 0.1; }
+
+.sudoku-board {
   width: 460px;
   height: 460px;
   background: #333333;
-  border: 20px solid #333333; }
+  border: 20px solid #333333;
+  position: absolute;
+  left: 0;
+  top: 0; }
 
-.sudokuSquare {
+.sudoku-square {
   display: inline-block;
   width: 153px;
   background: #eeeeee; }
 
-.inputFix {
+.input-fix {
   border: none;
   padding: 0;
   outline: none;
   font-family: inherit; }
 
-.sudokuTile {
+.sudoku-tile {
   width: 50px;
   height: 50px;
   background: white;
@@ -77,7 +90,7 @@ a {
   display: inline-block;
   font-size: 25px;
   text-align: center;
-  color: #16459a;
+  color: #1661b2;
   line-height: 50px;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -86,38 +99,32 @@ a {
   -ms-user-select: none;
   user-select: none; }
 
-.sudokuTileError {
+.sudoku-tile-error {
   color: #e01b1e; }
 
-.sudokuTile:focus {
-  background: #1c59c7;
-  color: #bacff5;
-  -moz-box-shadow: inset 0 0 10px #030914;
-  -webkit-box-shadow: inset 0 0 10px #030914;
-  box-shadow: inset 0 0 10px #030914;
-  border-top: 1px solid #030914;
-  border-left: 1px solid #030914; }
-
-.edgeTileTop:focus {
-  border-top: 1px solid #030914;
-  margin-top: -1px; }
+.sudoku-tile:focus {
+  background: #1b7ae0;
+  color: #cee3f9;
+  -moz-box-shadow: inset 0 0 10px #05172a;
+  -webkit-box-shadow: inset 0 0 10px #05172a;
+  box-shadow: inset 0 0 10px #05172a;
+  border-top: 1px solid #05172a;
+  border-left: 1px solid #05172a; }
 
 .disabled {
   color: #333333; }
 
-.edgeTileLeft {
+.edge-tile-left {
   border-left: 1px solid #333333; }
 
-.edgeTileTop {
-  /* A hacky hack to prevent the triangles where border colors meet. */
+.edge-tile-top {
   box-shadow: 0 -1px 0 0px #333333;
   border-top: none;
   padding-top: 1px; }
 
-.divider {
-  margin: 10px 0;
-  border-top: 1px solid #333333;
-  opacity: 0.1; }
+.edge-tile-top:focus {
+  border-top: 1px solid #05172a;
+  margin-top: -1px; }
 
 .middle-box {
   position: absolute;
@@ -129,9 +136,13 @@ a {
   margin-left: -250px; }
 
 .back {
-  width: 460px;
-  height: 460px;
-  background: #fff; }
+  width: 500px;
+  height: 500px;
+  background: #fff;
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: none; }
 
 .back div {
   display: none;
@@ -142,12 +153,12 @@ a {
   bottom: 0;
   padding: 20px; }
 
-.back p a {
-  color: #1c59c7;
-  position: relative; }
-
 .back p {
   line-height: 1.6em; }
+
+.back p a {
+  color: #1b7ae0;
+  position: relative; }
 
 .upper-right-x {
   color: #ddd;
@@ -163,60 +174,3 @@ a {
 
 .upper-right-x:hover {
   color: #333333; }
-
-/**
- * Flip module allows you to flip a container by adding a class to it.
- * When the "flip" class is added to the container, the back is shown.
- * Otherwise, the front is shown.
- */
-/* entire container, keeps perspective */
-.flip-container {
-  perspective: 1000; }
-
-/* flip the pane when hovered */
-.flip-container.flip .flipper {
-  transform: rotateY(180deg);
-  -webkit-transform: rotateY(180deg);
-  -ms-transform: rotateY(180deg);
-  -moz-transform: rotateY(180deg);
-  -o-transform: rotateY(180deg); }
-
-/* flip speed goes here */
-.flipper {
-  transition: 0.6s;
-  transform-style: preserve-3d;
-  -webkit-transform-style: preserve-3d;
-  -ms-transform-style: preserve-3d;
-  -moz-transform-style: preserve-3d;
-  -o-transform-style: preserve-3d;
-  position: relative;
-  width: 100%;
-  height: 100%; }
-
-/* hide back of pane during swap */
-.front, .back {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  -ms-backface-visibility: hidden;
-  -moz-backface-visibility: hidden;
-  -o-backface-visibility: hidden;
-  position: absolute;
-  top: 0;
-  left: 0; }
-
-/* front pane, placed above back */
-.front {
-  z-index: 2; }
-
-/* back, initially hidden pane */
-.back {
-  transform: rotateY(180deg);
-  -webkit-transform: rotateY(180deg);
-  -ms-transform: rotateY(180deg);
-  -moz-transform: rotateY(180deg);
-  -o-transform: rotateY(180deg); }
-
-::selection {
-  background: #eee;
-  color: #333333;
-  text-shadow: none; }
