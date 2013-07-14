@@ -238,7 +238,7 @@ var SudokuGUI = function () {
 		}
 
 		if(0 == x % 3){
-			tile.addClass('edge-tile-left');
+			tile.addClass('edget-tile-left');
 		}
 
 		if(0 == y % 3){
