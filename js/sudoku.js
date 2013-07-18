@@ -226,6 +226,7 @@ var SudokuGUI = function () {
 		var tile = $('<input />', {
 			class: 'sudoku-tile input-fix',
 			unselectable: 'on',
+			readonly : 'readonly',
 			value: '',
 			id: 'tile-' + x + '-' + y
 		});
