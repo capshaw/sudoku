@@ -14,11 +14,7 @@ $(document).ready(function(){
 
 	var puzzle = generator.generate();
 	sudokuGUI.showPuzzle(puzzle, true);
-
-	// debug
-	//var errors = verifier.verify(sudokuGUI.getPuzzle());
-	//sudokuGUI.showErrors(errors);
-})
+});
 
 // The sudoku object handles the board, but no solving logic
 // (or creation logic for that matter). If desired, use the helpers for that.
@@ -89,7 +85,8 @@ var SudokuGUI = function () {
 			toggleDropdown: $('#toggle-dropdown'),
 			dropDown: $('#dropdown'),
 			solveButton: $('#solveButton'),
-			newPuzzleButton: $("#newPuzzleButton")
+			newPuzzleButton: $("#newPuzzleButton"),
+			restartButton: $("#restartButton")
 		}
 	}
 
@@ -115,6 +112,12 @@ var SudokuGUI = function () {
 			sudokuGUI.showPuzzle(puzzle, true);
 			return false;
 		});
+
+		elements.restartButton.on("click", function(e) {
+			e.preventDefault();
+			sudokuGUI.showPuzzle(generator.getLastGeneratedPuzzle(), false);
+			return false;
+		})
 
 		elements.xButton.on("click", function(e){
 			e.preventDefault();
@@ -399,6 +402,7 @@ var Sudoku = function () {
 // Generates a Sudoku puzzle
 var SudokuGenerator = function () {
 
+	var lastGeneratedPuzzle = new Sudoku();
 	var sudokuTemplate = [
 		[1, 2, 3, 4, 5, 6, 7, 8, 9],
 		[4, 5, 6, 7, 8, 9, 1, 2, 3],
@@ -501,11 +505,17 @@ var SudokuGenerator = function () {
 			}
 		}
 
+		lastGeneratedPuzzle = sudoku.getClone();
 		return sudoku;
 	}
 
+	var getLastGeneratedPuzzle = function () {
+		return lastGeneratedPuzzle;
+	}
+
 	return {
-		generate: generate
+		generate: generate,
+		getLastGeneratedPuzzle: getLastGeneratedPuzzle
 	}
 }
 
