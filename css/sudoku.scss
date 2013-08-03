@@ -121,9 +121,9 @@ a:hover {}
 // Elements that have to do with the sudoku grid, etc.
 
 .sudoku-board {
-	width: $boardDimension;
-	height: $boardDimension;
-	background: $tileDarkBorder;
+    width: $boardDimension;
+    height: $boardDimension;
+    background: $tileDarkBorder;
     border: $boardBorderDimension solid $tileDarkBorder;
     position: absolute;
     left: 0;

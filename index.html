@@ -1,57 +1,57 @@
 <!DOCTYPE html>
 <html lang='en'>
 <head>
-	<meta charset='utf-8' />
-	<meta name="description" content="A sudoku generator and solver.">
-	<link rel="icon" type="image/x-icon" href="img/foreach.png" />
-	<title>Sudoku</title>
-	<link href='http://fonts.googleapis.com/css?family=Belgrano' rel='stylesheet' type='text/css'>
-	<script type='text/javascript' src='http://code.jquery.com/jquery-1.10.2.min.js'></script>
-	<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js'></script>
-	<link rel='stylesheet' type='text/css' href='css/sudoku.css' />
-	<script type='text/javascript' src='js/sudoku.js'></script>
-	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <meta charset='utf-8' />
+    <meta name="description" content="A sudoku generator and solver.">
+    <link rel="icon" type="image/x-icon" href="img/foreach.png" />
+    <title>Sudoku</title>
+    <link href='http://fonts.googleapis.com/css?family=Belgrano' rel='stylesheet' type='text/css'>
+    <script type='text/javascript' src='http://code.jquery.com/jquery-1.10.2.min.js'></script>
+    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js'></script>
+    <link rel='stylesheet' type='text/css' href='css/sudoku.css' />
+    <script type='text/javascript' src='js/sudoku.js'></script>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 </head>
 <body>
-	<a href='#' id='toggle-dropdown' class='dropdown-link'>+</a>
-	<div id='dropdown' class='link-dropdown'>
-		<a href='#' id='newPuzzleButton'><i class='icon-puzzle-piece'></i> New Puzzle</a>
-		<a href='#' id='restartButton'><i class='icon-undo'></i> Restart</a>
-		<a href='#' id='solveButton'><i class='icon-magic'></i> Solve</a>
-		<div class='divider'></div>
-		<a href='#' id='options' class='toggle-back'><i class='icon-gear'></i> Options</a>
-		<a href='#' id='instructions' class='toggle-back'><i class='icon-question-sign'></i> Instructions</a>
-		<a href='#' id='about' class='toggle-back'><i class='icon-info-sign'></i> About</a>
-	</div>
-	<div id='container' class='middle-box flip-container'>
-		<div id='SudokuBoard' class='sudoku-board'></div>
-		<div id='BackContent' class='back'>
-			<a href='#' id='x' class='upper-right-x'>&times;</a>
-			<div id='options-content'>
-				<h2>Options</h2>
-				<p class='option'>
-					There are no options right now. "You can have any color so long as it's black."
-				</p>
-			</div>
-			<div id='instructions-content'>
-				<h2>Instructions</h2>
-				<p>
-					Click to select a field or use the arrow keys to navigate the grid. Using the number keys and the delete key, input numbers to complete the puzzle!
-				</p>
-			</div>
-			<div id='about-content'>
-				<h2>About</h2>
-				<p>
-					Made by <a href='http://capshaw.me'>Andrew Capshaw</a> in the Summer of 2013.
-				</p>
-				<p>
-					A long, long time ago I built a similar app using a PHP backend and a submittable form frontend. I figured I'd redo it completely as a client-side app just for fun!
-				</p>
-			</div>
-		</div>
-	</div>
-	<a href='https://github.com/capshaw/sudoku'>
-		<img class='fork-me' src='img/fork-me@2x.png' alt='Fork me on GitHub'>
-	</a>
+    <a href='#' id='toggle-dropdown' class='dropdown-link'>+</a>
+    <div id='dropdown' class='link-dropdown'>
+        <a href='#' id='newPuzzleButton'><i class='icon-puzzle-piece'></i> New Puzzle</a>
+        <a href='#' id='restartButton'><i class='icon-undo'></i> Restart</a>
+        <a href='#' id='solveButton'><i class='icon-magic'></i> Solve</a>
+        <div class='divider'></div>
+        <a href='#' id='options' class='toggle-back'><i class='icon-gear'></i> Options</a>
+        <a href='#' id='instructions' class='toggle-back'><i class='icon-question-sign'></i> Instructions</a>
+        <a href='#' id='about' class='toggle-back'><i class='icon-info-sign'></i> About</a>
+    </div>
+    <div id='container' class='middle-box flip-container'>
+        <div id='SudokuBoard' class='sudoku-board'></div>
+        <div id='BackContent' class='back'>
+            <a href='#' id='x' class='upper-right-x'>&times;</a>
+            <div id='options-content'>
+                <h2>Options</h2>
+                <p class='option'>
+                    There are no options right now. "You can have any color so long as it's black."
+                </p>
+            </div>
+            <div id='instructions-content'>
+                <h2>Instructions</h2>
+                <p>
+                    Click to select a field or use the arrow keys to navigate the grid. Using the number keys and the delete key, input numbers to complete the puzzle!
+                </p>
+            </div>
+            <div id='about-content'>
+                <h2>About</h2>
+                <p>
+                    Made by <a href='http://capshaw.me'>Andrew Capshaw</a> in the Summer of 2013.
+                </p>
+                <p>
+                    A long, long time ago I built a similar app using a PHP backend and a submittable form frontend. I figured I'd redo it completely as a client-side app just for fun!
+                </p>
+            </div>
+        </div>
+    </div>
+    <a href='https://github.com/capshaw/sudoku'>
+        <img class='fork-me' src='img/fork-me@2x.png' alt='Fork me on GitHub'>
+    </a>
 </body>
 </html>
