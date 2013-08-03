@@ -1,14 +1,12 @@
-var sudokuGUI;
+var sudoku;
 var verifier;
 var generator;
-var solver;
 
 $(document).ready(function(){
 
 	sudokuGUI = SudokuGUI();
 	generator = SudokuGenerator();
 	verifier = SudokuVerifier();
-	solver = SudokuSolver();
 
 	sudokuGUI.setOnChangeHandler(function(){
 		var errors = verifier.verify(sudokuGUI);
@@ -16,11 +14,11 @@ $(document).ready(function(){
 	});
 	sudokuGUI.init();
 
-	var puzzle = generator.generate();
-	sudokuGUI.showPuzzle(puzzle);
+	var sudoku = generator.generate();
+	sudokuGUI.showPuzzle(sudoku);
 
 	// debug
-	var errors = verifier.verify(sudokuGUI.getPuzzle());
+	var errors = verifier.verify(sudoku);
 	sudokuGUI.showErrors(errors);
 })
 
@@ -45,16 +43,6 @@ var SudokuGUI = function () {
 				set(x, y, puzzle.get(x,y));
 			}
 		}
-	}
-
-	var getPuzzle = function () {
-		var puzzle = new Sudoku();
-		for(var y = 0; y < 9; y++) {
-			for(var x = 0; x < 9; x++){
-				puzzle.set(x, y, get(x, y));
-			}
-		}
-		return puzzle;
 	}
 
 	var drawElements = function () {
@@ -89,34 +77,13 @@ var SudokuGUI = function () {
 			front: $('.front'),
 			flipContainer: $('.flip-container'),
 			toggleDropdown: $('#toggle-dropdown'),
-			dropDown: $('#dropdown'),
-			solveButton: $('#solveButton'),
-			newPuzzleButton: $("#newPuzzleButton")
+			dropDown: $('#dropdown')
 		}
 	}
 
 	var elements = reloadElements();
 
 	var bindElements = function () {
-
-		elements.solveButton.on("click", function(e) {
-			e.preventDefault();
-			// todo: better way to do this repeatedly in various click handlers
-			// that will have it?
-			elements.BackContent.slideUp({
-				easing: 'easeInOutCubic'
-			});
-			elements.allBacks.removeClass('showing');
-			sudokuGUI.showPuzzle(solver.solve(sudokuGUI.getPuzzle()));
-			return false;
-		});
-
-		elements.newPuzzleButton.on("click", function(e) {
-			e.preventDefault();
-			var puzzle = generator.generate();
-			sudokuGUI.showPuzzle(puzzle);
-			return false;
-		});
 
 		elements.xButton.on("click", function(e){
 			e.preventDefault();
@@ -146,7 +113,12 @@ var SudokuGUI = function () {
 		elements.toggleDropdown.on("click", function (e) {
 			e.preventDefault();
 			elements.toggleDropdown.toggleClass('enabled');
-			elements.dropDown.toggle();
+			if(elements.toggleDropdown.hasClass('enabled')){
+				elements.dropDown.slideDown();
+				console.log("slidedown");
+			}else{
+				elements.dropDown.slideUp();
+			}
 			return false;
 		});
 
@@ -250,6 +222,7 @@ var SudokuGUI = function () {
 		}
 	}
 
+	//
 	var generateXYthTile = function (x, y) {
 
 		var unique = x + y * elements.dimension;
@@ -258,7 +231,6 @@ var SudokuGUI = function () {
 		var tile = $('<input />', {
 			class: 'sudoku-tile input-fix',
 			unselectable: 'on',
-			readonly : 'readonly',
 			value: '',
 			id: 'tile-' + x + '-' + y
 		});
@@ -289,8 +261,7 @@ var SudokuGUI = function () {
 		init: init,
 		setOnChangeHandler: setOnChangeHandler,
 		showErrors: showErrors,
-		showPuzzle: showPuzzle,
-		getPuzzle: getPuzzle
+		showPuzzle: showPuzzle
 	}
 }
 
@@ -309,62 +280,24 @@ var Tuple = function (xx, yy) {
 // A container for a Sudoku puzzle.
 var Sudoku = function () {
 
-	var filledTiles = 0;
 	var puzzle = {};
 
 	var get = function (x, y) {
 		if (puzzle[y] !== undefined && puzzle[y][x] !== undefined) {
 			return puzzle[y][x];
 		}
-		return -1;
 	}
 
 	var set = function (x, y, v) {
-		if(get(x, y) == -1){
-			filledTiles += 1;
-		}
 		if(puzzle[y] == undefined) {
 			puzzle[y] = {};
 		}
 		puzzle[y][x] = v;
 	}
 
-	var getRow = function (y) {
-		if(puzzle[y] !== undefined) {
-			return puzzle[y];
-		}
-		return {};
-	}
-
-	var getColumn = function (x) {
-		var column = {};
-		for(var y = 0; y < 9; y++){
-			column[y] = get(x, y);
-		}
-		return column;
-	}
-
-	var getSquare = function (x, y) {
-		var square = [];
-		for(var dx = 0; dx < 3; dx++) {
-			for(var dy = 0; dy < 3; dy++) {
-				square.push(get(x * 3 + dx, y * 3 + dy));
-			}
-		}
-		return square;
-	}
-
-	var getFilledTiles = function () {
-		return filledTiles;
-	}
-
 	return {
 		set: set,
 		get: get,
-		getRow: getRow,
-		getColumn: getColumn,
-		getSquare: getSquare,
-		getFilledTiles: getFilledTiles
 	}
 }
 
@@ -546,86 +479,5 @@ var SudokuVerifier = function () {
 
 	return {
 		verify: verify
-	}
-}
-
-// Profides functionality for solving a sudoku puzzle.
-var SudokuSolver = function () {
-
-	var isSolvable = function (puzzle) {
-		puzzle = solve(puzzle);
-		return (puzzle.getFilledTiles() == 81);
-	}
-
-	var solve = function (puzzle) {
-
-		var lastFilledTileCount;
-		do {
-			lastFilledTileCount = puzzle.getFilledTiles();
-
-			var columns = [];
-			for(var j = 0; j < 9; j++){
-				columns.push(puzzle.getColumn(j));
-			}
-
-			var rows = [];
-			for(var i = 0; i < 9; i++){
-				rows.push(puzzle.getRow(i));
-			}
-
-			var squares = [];
-			for(var y = 0; y < 3; y++){
-				for(var x = 0; x < 3; x++){
-					squares.push(puzzle.getSquare(x, y));
-				}
-			}
-
-			for(var y = 0; y < 9; y++) {
-				for(var x = 0; x < 9; x++) {
-
-					if(puzzle.get(x, y) > 0 && puzzle.get(x, y) < 9){
-						continue;
-					}
-
-					// Set every digit to be available.
-					var choices = [0,0,0,0,0,0,0,0,0];
-					var row = rows[y];
-					var column = columns[x];
-					var square = squares[Math.floor(x/3) + Math.floor(y/3) * 3]
-
-					// Mark used digits
-					var pos;
-					for(pos in row){
-						choices[row[pos] - 1] = 1;
-					}
-					for(pos in column){
-						choices[column[pos] - 1] = 1;
-					}
-					for(pos in square){
-						choices[square[pos] - 1] = 1;
-					}
-
-					// Process to see what remains.
-					possibleAnswers = [];
-					for(var h = 0; h < 9; h++){
-						if(choices[h] == 0){
-							possibleAnswers.push(h + 1);
-						}
-					}
-
-					// Set at answer if only one choice remains.
-					if(possibleAnswers.length == 1){
-						puzzle.set(x, y, possibleAnswers[0]);
-					}
-				}
-			}
-		} while (lastFilledTileCount < puzzle.getFilledTiles());
-
-		return puzzle;
-	}
-
-	return {
-		isSolvable: isSolvable,
-		solve: solve
 	}
 }
