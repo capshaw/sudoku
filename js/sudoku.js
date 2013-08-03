@@ -10,39 +10,37 @@ $(document).ready(function(){
 	verifier = SudokuVerifier();
 	solver = SudokuSolver();
 
-	sudokuGUI.setOnChangeHandler(function(){
-		var errors = verifier.verify(sudokuGUI);
-		sudokuGUI.showErrors(errors);
-	});
 	sudokuGUI.init();
 
 	var puzzle = generator.generate();
-	sudokuGUI.showPuzzle(puzzle);
+	sudokuGUI.showPuzzle(puzzle, true);
 
 	// debug
-	var errors = verifier.verify(sudokuGUI.getPuzzle());
-	sudokuGUI.showErrors(errors);
+	//var errors = verifier.verify(sudokuGUI.getPuzzle());
+	//sudokuGUI.showErrors(errors);
 })
 
 // The sudoku object handles the board, but no solving logic
 // (or creation logic for that matter). If desired, use the helpers for that.
 var SudokuGUI = function () {
 
-	var onChangeHandler = function () {}
-
-	var setOnChangeHandler = function (f) {
-		onChangeHandler = f;
-	}
-
 	var init = function () {
 		drawElements();
 		bindElements();
 	}
 
-	var showPuzzle = function (puzzle) {
+	var onChangeHandler = function(){
+		var errors = verifier.verify(getPuzzle());
+		showErrors(errors);
+	};
+
+	var showPuzzle = function (puzzle, firstTime) {
 		for(var y = 0; y < 9; y++) {
 			for(var x = 0; x < 9; x++) {
 				set(x, y, puzzle.get(x,y));
+				if(firstTime){
+					toggleDisabledState(x,y, (puzzle.get(x,y) != -1));
+				}
 			}
 		}
 	}
@@ -107,14 +105,14 @@ var SudokuGUI = function () {
 				easing: 'easeInOutCubic'
 			});
 			elements.allBacks.removeClass('showing');
-			sudokuGUI.showPuzzle(solver.solve(sudokuGUI.getPuzzle()));
+			sudokuGUI.showPuzzle(solver.solve(sudokuGUI.getPuzzle(), false));
 			return false;
 		});
 
 		elements.newPuzzleButton.on("click", function(e) {
 			e.preventDefault();
 			var puzzle = generator.generate();
-			sudokuGUI.showPuzzle(puzzle);
+			sudokuGUI.showPuzzle(puzzle, true);
 			return false;
 		});
 
@@ -213,8 +211,19 @@ var SudokuGUI = function () {
 	}
 
 	var set = function (x, y, value) {
+		if(value == -1) value = "";
 		// todo: see if we can avoid this selector
 		$('#tile-' + x + '-' + y).val(value);
+	}
+
+	var toggleDisabledState = function (x, y, disabled) {
+		// todo: see if we can avoid this selector
+		var tile = $('#tile-' + x + '-' + y);
+		if(disabled){
+			tile.addClass('disabled');
+		}else{
+			tile.removeClass('disabled');
+		}
 	}
 
 	var moveByVector = function (element, dx, dy) {
@@ -266,10 +275,6 @@ var SudokuGUI = function () {
 		tile.attr('data-x', x);
 		tile.attr('data-y', y);
 
-		if(Math.floor(Math.random() * 2) == 0){
-			tile.addClass('disabled');
-		}
-
 		if(0 == x % 3){
 			tile.addClass('edge-tile-left');
 		}
@@ -287,7 +292,6 @@ var SudokuGUI = function () {
 		elements: elements,
 		get: get,
 		init: init,
-		setOnChangeHandler: setOnChangeHandler,
 		showErrors: showErrors,
 		showPuzzle: showPuzzle,
 		getPuzzle: getPuzzle
@@ -295,7 +299,7 @@ var SudokuGUI = function () {
 }
 
 // A simple storage mechanism for an (x,y) pair.
-var Tuple = function (xx, yy) {
+var Tuple = function (xx, yy, vv) {
 
 	var x = xx;
 	var y = yy;
@@ -312,21 +316,31 @@ var Sudoku = function () {
 	var filledTiles = 0;
 	var puzzle = {};
 
-	var get = function (x, y) {
-		if (puzzle[y] !== undefined && puzzle[y][x] !== undefined) {
-			return puzzle[y][x];
-		}
-		return -1;
-	}
-
 	var set = function (x, y, v) {
 		if(get(x, y) == -1){
 			filledTiles += 1;
+		}
+		if(v == -1) {
+			filledTiles -= 1;
 		}
 		if(puzzle[y] == undefined) {
 			puzzle[y] = {};
 		}
 		puzzle[y][x] = v;
+	}
+
+	var remove = function (x, y) {
+		if (puzzle[y] !== undefined && puzzle[y][x] !== undefined) {
+			filledTiles -= 1;
+			puzzle[y][x] = -1;
+		}
+	}
+
+	var get = function (x, y) {
+		if (puzzle[y] !== undefined && puzzle[y][x] !== undefined) {
+			return puzzle[y][x];
+		}
+		return -1;
 	}
 
 	var getRow = function (y) {
@@ -345,13 +359,25 @@ var Sudoku = function () {
 	}
 
 	var getSquare = function (x, y) {
-		var square = [];
-		for(var dx = 0; dx < 3; dx++) {
-			for(var dy = 0; dy < 3; dy++) {
-				square.push(get(x * 3 + dx, y * 3 + dy));
+		var square = {};
+		for(var dy = 0; dy < 3; dy++) {
+			square[y * 3 + dy] = {};
+			for(var dx = 0; dx < 3; dx++) {
+				tuple = Tuple(x * 3 + dx, y * 3 + dy);
+				square[tuple.y][tuple.x] = get(tuple.x, tuple.y);
 			}
 		}
 		return square;
+	}
+
+	var getClone = function () {
+		var clone = Sudoku();
+		for(var y = 0; y < 9; y++) {
+			for(var x = 0; x < 9; x++) {
+				clone.set(x, y, get(x,y));
+			}
+		}
+		return clone;
 	}
 
 	var getFilledTiles = function () {
@@ -360,10 +386,12 @@ var Sudoku = function () {
 
 	return {
 		set: set,
+		remove: remove,
 		get: get,
 		getRow: getRow,
 		getColumn: getColumn,
 		getSquare: getSquare,
+		getClone: getClone,
 		getFilledTiles: getFilledTiles
 	}
 }
@@ -423,11 +451,16 @@ var SudokuGenerator = function () {
 		var puzzle = $.extend(true, {}, sudokuTemplate);
 
 		for(var i = 0; i < 1000; i++) {
+
+			// Pick a random type of swapping to do.
 			var type = Math.floor((Math.random() * 3)); // 0 - 2
+
+			// Random numbers in the specified ranges.
 			var a = Math.floor((Math.random() * 9));	// 0 - 8
 			var c = Math.floor((Math.random() * 9));	// 0 - 8
 			var v = Math.floor((Math.random() * 3));	// 0 - 2
 			var b = Math.floor(a/3) * 3 + v;
+
 			switch(type){
 				case 0: puzzle = swapRows(puzzle, a, b); break;
 				case 1: puzzle = swapColumns(puzzle, a, b); break;
@@ -439,6 +472,32 @@ var SudokuGenerator = function () {
 		for(var y = 0; y < 9; y++) {
 			for(var x = 0; x < 9; x++) {
 				sudoku.set(x, y, puzzle[y][x])
+			}
+		}
+
+		for(var retries = 0; retries < 10; retries++){
+			var lastRemovedValues = {};
+			while(solver.isSolvable(sudoku)) {
+				var x = Math.floor((Math.random() * 9));
+				var y = Math.floor((Math.random() * 9));
+				var nx = 8 - x;
+				var ny = 8 - y;
+
+				lastRemovedValues = {};
+				lastRemovedValues[y] = {};
+				lastRemovedValues[ny] = {};
+
+				lastRemovedValues[y][x] = sudoku.get(x, y);
+				lastRemovedValues[ny][nx] = sudoku.get(nx, ny);
+
+				sudoku.remove(x, y);
+				sudoku.remove(nx, ny);
+			}
+
+			for(var y in lastRemovedValues){
+				for(var x in lastRemovedValues[y]){
+					sudoku.set(x, y, lastRemovedValues[y][x]);
+				}
 			}
 		}
 
@@ -461,41 +520,42 @@ var SudokuVerifier = function () {
 		return checker;
 	}
 
-	var verify = function (sudoku) {
+	var verify = function (puzzle) {
 
 		var errors = [];
 
 		for(var i = 0; i < 9; i++) {
-			errors = errors.concat(verifyRow(sudoku, i));
+			errors = errors.concat(verifyRow(puzzle, i));
 		}
 
 		for(var i = 0; i < 9; i++) {
-			errors = errors.concat(verifyColumn(sudoku, i));
+			errors = errors.concat(verifyColumn(puzzle, i));
 		}
 
 		for(var x = 0; x < 3; x++) {
 			for(var y = 0; y < 3; y++) {
-				errors = errors.concat(verifySquare(sudoku, x*3, y*3));
+				errors = errors.concat(verifySquare(puzzle, x*3, y*3));
 			}
 		}
 
 		return errors;
 	}
 
-	var verifySquare = function (sudoku, x, y) {
-		var square = getValueChecker();
+	// todo: refactor using new getSquare
+	var verifySquare = function (puzzle, x, y) {
+		var checker = getValueChecker();
 		var errors = [];
 
 		for(var dx = 0; dx < 3; dx++) {
 			for(var dy = 0; dy < 3; dy++) {
-				var val = sudoku.get(x + dx, y + dy);
+				var val = puzzle.get(x + dx, y + dy);
 				if(!val) continue;
-				square[val].push(Tuple(x + dx, y + dy));
+				checker[val].push(Tuple(x + dx, y + dy));
 			}
 		}
 
-		for(var key in square) {
-			var val = square[key];
+		for(var key in checker) {
+			var val = checker[key];
 			if(val.length > 1) {
 				errors = errors.concat(val);
 			}
@@ -504,6 +564,7 @@ var SudokuVerifier = function () {
 		return errors;
 	}
 
+	// todo: refactor using new getRow
 	var verifyRow = function (sudoku, i) {
 		var row = getValueChecker();
 		var errors = [];
@@ -524,6 +585,7 @@ var SudokuVerifier = function () {
 		return errors;
 	}
 
+	// todo: refactor using new getColumn
 	var verifyColumn = function (sudoku, i) {
 		var column = getValueChecker();
 		var errors = [];
@@ -553,37 +615,39 @@ var SudokuVerifier = function () {
 var SudokuSolver = function () {
 
 	var isSolvable = function (puzzle) {
-		puzzle = solve(puzzle);
-		return (puzzle.getFilledTiles() == 81);
+		var clone = solve(puzzle);
+		return (clone.getFilledTiles() == 81);
 	}
 
 	var solve = function (puzzle) {
 
+		var clone = puzzle.getClone();
+
 		var lastFilledTileCount;
 		do {
-			lastFilledTileCount = puzzle.getFilledTiles();
+			lastFilledTileCount = clone.getFilledTiles();
 
 			var columns = [];
 			for(var j = 0; j < 9; j++){
-				columns.push(puzzle.getColumn(j));
+				columns.push(clone.getColumn(j));
 			}
 
 			var rows = [];
 			for(var i = 0; i < 9; i++){
-				rows.push(puzzle.getRow(i));
+				rows.push(clone.getRow(i));
 			}
 
 			var squares = [];
 			for(var y = 0; y < 3; y++){
 				for(var x = 0; x < 3; x++){
-					squares.push(puzzle.getSquare(x, y));
+					squares.push(clone.getSquare(x, y));
 				}
 			}
 
 			for(var y = 0; y < 9; y++) {
 				for(var x = 0; x < 9; x++) {
 
-					if(puzzle.get(x, y) > 0 && puzzle.get(x, y) < 9){
+					if(clone.get(x, y) > 0 && clone.get(x, y) < 9){
 						continue;
 					}
 
@@ -601,8 +665,10 @@ var SudokuSolver = function () {
 					for(pos in column){
 						choices[column[pos] - 1] = 1;
 					}
-					for(pos in square){
-						choices[square[pos] - 1] = 1;
+					for(yy in square){
+						for(xx in square[yy]){
+							choices[square[yy][xx] - 1] = 1;
+						}
 					}
 
 					// Process to see what remains.
@@ -615,13 +681,13 @@ var SudokuSolver = function () {
 
 					// Set at answer if only one choice remains.
 					if(possibleAnswers.length == 1){
-						puzzle.set(x, y, possibleAnswers[0]);
+						clone.set(x, y, possibleAnswers[0]);
 					}
 				}
 			}
-		} while (lastFilledTileCount < puzzle.getFilledTiles());
+		} while (lastFilledTileCount < clone.getFilledTiles());
 
-		return puzzle;
+		return clone;
 	}
 
 	return {
