@@ -1,45 +1,46 @@
-// Determined values.
-$tileDimension: 50px;
-$tileBorderWidth: 1px;
-$tileFontMultipler: 0.5;
-$boardSize: 9;
-$sqrtBoardSize: 3; //IDK why SASS can't do this...
-$boardBorderDimension: 20px;
+// The sudoku tiles, all 81 of them.
+$tile-dimension: 50px;
+$tile-border-width: 1px;
+$tile-font-multiplier: 0.5;
+$tile-font-size: $tile-font-multiplier * $tile-dimension;
+$tile-background: #fff;
+$tile-dark-border: #333;
+$tile-light-border: #eee;
 
-$accentColor: #1B7AE0;
-$accentColorTextDark: darken($accentColor, 40%);
-$accentColorTextLight: lighten($accentColor, 40%);
+// The single board to hold all of the sudoku tiles.
+$board-dimension: 9;
+$board-sqrt-width: 3;
+$board-border-width: 20px;
+$board-width: $tile-dimension * $board-dimension + $tile-border-width * ($board-dimension + 1);
+$square-width: $tile-dimension * $board-sqrt-width + $tile-border-width * $board-sqrt-width;
 
-$errorColor: #E01B1E;
-$errorColorTextDark: darken($errorColor, 40%);
-$errorColorTextLight: lighten($errorColor, 40%);
+// Color scheme for the page.
+$accent-color: #1B7AE0;
+$accent-color-dark: darken($accent-color, 40%);
+$accent-color-light: lighten($accent-color, 40%);
+$error-color: #E01B1E;
 
-$tileDarkBorder: #333;
-$tileLightBorder: #eee;
-$tileBackground: #fff;
-
-$headerHeight: 80px;
-
-// Computed values.
-$tileFontSize: $tileFontMultipler * $tileDimension;
-$boardDimension: $tileDimension * $boardSize + $tileBorderWidth * ($boardSize + 1);
-$squareDimension: $tileDimension * $sqrtBoardSize + $tileBorderWidth * $sqrtBoardSize;
-
+// Mixin for making a linear gradient using browser vendor prefixes.
 @mixin gradient($from, $to) {
-  background-color: $from;
-  background-image: -moz-linear-gradient($from, $to);
-  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from($from), to($to));
-  background-image: -webkit-linear-gradient($from, $to);
-  background-image: -o-linear-gradient($from, $to);
+    background-color: $from;
+    background-image: -moz-linear-gradient($from, $to);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from($from), to($to));
+    background-image: -webkit-linear-gradient($from, $to);
+    background-image: -o-linear-gradient($from, $to);
 }
 
+// Mixin for making a radial gradient using browser vendor prefixes.
 @mixin radialGradient($from, $to) {
-  background-color: $from;
-  background-image: -moz-radial-gradient($from, $to);
-  background-image: -webkit-gradient(radial, 0% 0%, 0% 100%, from($from), to($to));
-  background-image: -webkit-radial-gradient($from, $to);
-  background-image: -o-radial-gradient($from, $to);
+    background-color: $from;
+    background-image: -moz-radial-gradient($from, $to);
+    background-image: -webkit-gradient(radial, 0% 0%, 0% 100%, from($from), to($to));
+    background-image: -webkit-radial-gradient($from, $to);
+    background-image: -o-radial-gradient($from, $to);
 }
+
+/*-----------------------------------*\
+    Page
+\*-----------------------------------*/
 
 html, body {
     width: 100%;
@@ -47,47 +48,29 @@ html, body {
     margin: 0;
     padding: 0;
     font-family: 'Belgrano', serif;
-    background: #eee;//url('../img/background.png');
+    background: #eee;
     background-size: cover;
-    //@include radialGradient(#fff, #ccc);
+}
+
+::selection {
+    background: #eee;
+    color: $tile-dark-border;
+    text-shadow: none;
 }
 
 a {
     text-decoration: none;
     transition: all 0.2s;
-    color: $tileDarkBorder;
+    color: $tile-dark-border;
 }
 
 a:hover {}
 
-::selection {
-    background: #eee;
-    color: $tileDarkBorder;
-    text-shadow: none;
-}
+/*-----------------------------------*\
+    Dropdown
+\*-----------------------------------*/
 
-// Classes having to do with dropdown links on right hand side.
-
-.dropdown-link {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    height: 40px;
-    width: 40px;
-    line-height: 40px;
-    font-size: 2em;
-    text-align: center;
-    margin-top: -$boardDimension / 2 - $boardBorderDimension;
-    margin-left: $boardDimension / 2 + $boardBorderDimension + 20px;
-    background: rgba(255,255,255,0.5);
-    transition: background 0.2s;
-}
-
-.dropdown-link.enabled, .dropdown-link:hover  {
-    background: rgba(255,255,255,1);
-}
-
-.link-dropdown {
+.dropdown {
     font-size: 16px;
     line-height: 1.5em;
     width: 180px;
@@ -97,120 +80,143 @@ a:hover {}
     display: none;
     top: 50%;
     left: 50%;
-    margin-top: -$boardDimension / 2 - $boardBorderDimension + 40px;
-    margin-left: $boardDimension / 2 + $boardBorderDimension + 20px;
+    margin-top: -$board-width / 2 - $board-border-width + 40px;
+    margin-left: $board-width / 2 + $board-border-width + 20px;
+
+    a {
+        display: block;
+        padding: 2px 20px;
+        transition: none;
+    }
+
+    a:hover {
+        background: $tile-dark-border;
+        color: #fff;
+    }
+
+    .divider {
+        margin: 10px 0;
+        border-top: 1px solid $tile-dark-border;
+        opacity: 0.1;
+    }
 }
 
-.link-dropdown a {
-    display: block;
-    padding: 2px 20px;
-    transition: none;
+.toggle-dropdown {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 40px;
+    width: 40px;
+    line-height: 40px;
+    font-size: 2em;
+    text-align: center;
+    margin-top: -$board-width / 2 - $board-border-width;
+    margin-left: $board-width / 2 + $board-border-width + 20px;
+    background: rgba(255,255,255,0.5);
+    transition: background 0.2s;
 }
 
-.link-dropdown a:hover {
-    background: $tileDarkBorder;
-    color: #fff;
+.toggle-dropdown.enabled, .toggle-dropdown:hover  {
+    background: rgba(255,255,255,1);
 }
 
-.divider {
-    margin: 10px 0;
-    border-top: 1px solid $tileDarkBorder;
-    opacity: 0.1;
-}
-
-// Elements that have to do with the sudoku grid, etc.
+/*-----------------------------------*\
+    Sudoku Board
+\*-----------------------------------*/
 
 .sudoku-board {
-    width: $boardDimension;
-    height: $boardDimension;
-    background: $tileDarkBorder;
-    border: $boardBorderDimension solid $tileDarkBorder;
+    width: $board-width;
+    height: $board-width;
+    background: $tile-dark-border;
+    border: $board-border-width solid $tile-dark-border;
     position: absolute;
     left: 0;
     top: 0;
+
+    .sudoku-square {
+        display: inline-block;
+        width: $square-width;
+        background: $tile-light-border;
+    }
+
+    .input-fix {
+        border: none;
+        padding: 0;
+        outline: none;
+        font-family: inherit;
+    }
+
+    .sudoku-tile {
+        width: $tile-dimension;
+        height: $tile-dimension;
+        background: $tile-background;
+        border-top:  $tile-border-width solid $tile-light-border;
+        border-left: $tile-border-width solid $tile-light-border;
+        display: inline-block;
+        font-size: $tile-font-size;
+        text-align: center;
+        color: darken($accent-color, 10%);
+        line-height: $tile-dimension;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .sudoku-tile-error {
+        color: $error-color;
+    }
+
+    .sudoku-tile:focus {
+        background: $accent-color;
+        color: $accent-color-light;
+        -moz-box-shadow:    inset 0 0 10px $accent-color-dark;
+        -webkit-box-shadow: inset 0 0 10px $accent-color-dark;
+        box-shadow:         inset 0 0 10px $accent-color-dark;
+        border-top:  $tile-border-width solid $accent-color-dark;
+        border-left: $tile-border-width solid $accent-color-dark;
+    }
+
+    .disabled {
+        color: $tile-dark-border;
+    }
+
+    .edge-tile-left {
+        border-left: $tile-border-width solid $tile-dark-border;
+    }
+
+    .edge-tile-top {
+        // A hacky hack to prevent the triangles where border colors meet.
+        box-shadow: 0 -1px 0 0px $tile-dark-border;
+        border-top: none;
+        padding-top: 1px;
+    }
+
+    .edge-tile-top:focus {
+        border-top: $tile-border-width solid $accent-color-dark;
+        margin-top: -1px;
+    }
 }
 
-.sudoku-square {
-    display: inline-block;
-    width: $squareDimension;
-    background: $tileLightBorder;
-}
-
-.input-fix {
-    border: none;
-    padding: 0;
-    outline: none;
-    font-family: inherit;
-}
-
-.sudoku-tile {
-    width: $tileDimension;
-    height: $tileDimension;
-    background: $tileBackground;
-    border-top:  $tileBorderWidth solid $tileLightBorder;
-    border-left: $tileBorderWidth solid $tileLightBorder;
-    display: inline-block;
-    font-size: $tileFontSize;
-    text-align: center;
-    color: darken($accentColor, 10%);
-    line-height: $tileDimension;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -o-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-.sudoku-tile-error {
-    color: $errorColor;
-}
-
-.sudoku-tile:focus {
-    background: $accentColor;
-    color: $accentColorTextLight;
-    -moz-box-shadow:    inset 0 0 10px $accentColorTextDark;
-    -webkit-box-shadow: inset 0 0 10px $accentColorTextDark;
-    box-shadow:         inset 0 0 10px $accentColorTextDark;
-    border-top:  $tileBorderWidth solid $accentColorTextDark;
-    border-left: $tileBorderWidth solid $accentColorTextDark;
-}
-
-.disabled {
-    color: $tileDarkBorder;
-}
-
-.edge-tile-left {
-    border-left: $tileBorderWidth solid $tileDarkBorder;
-}
-
-.edge-tile-top {
-    // A hacky hack to prevent the triangles where border colors meet.
-    box-shadow: 0 -1px 0 0px $tileDarkBorder;
-    border-top: none;
-    padding-top: 1px;
-}
-
-.edge-tile-top:focus {
-    border-top: $tileBorderWidth solid $accentColorTextDark;
-    margin-top: -1px;
-}
-
-// The container which has the sudoku and slide down contents.
+/*-----------------------------------*\
+    Container and "back"-side pages.
+\*-----------------------------------*/
 
 .middle-box {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: $boardDimension + 2 * $boardBorderDimension;
-    height: $boardDimension + 2 * $boardBorderDimension;
-    margin-top: -$boardDimension / 2 - $boardBorderDimension;
-    margin-left: -$boardDimension / 2 - $boardBorderDimension;
+    width: $board-width + 2 * $board-border-width;
+    height: $board-width + 2 * $board-border-width;
+    margin-top: -$board-width / 2 - $board-border-width;
+    margin-left: -$board-width / 2 - $board-border-width;
 }
 
 .back {
-    width: $boardDimension + 2 * $boardBorderDimension;
-    height: $boardDimension + 2 * $boardBorderDimension;
+    width: $board-width + 2 * $board-border-width;
+    height: $board-width + 2 * $board-border-width;
     background: #fff;
     position: absolute;
     left: 0;
@@ -230,12 +236,12 @@ a:hover {}
 }
 
 .back p a {
-    color: $accentColor;
+    color: $accent-color;
     position: relative;
 }
 
 .upper-right-x {
-    color: $tileDarkBorder;
+    color: $tile-dark-border;
     position: absolute;
     top: 0;
     right: 0;
@@ -252,6 +258,10 @@ a:hover {}
 .upper-right-x:hover {
     color: #ccc;
 }
+
+/*-----------------------------------*\
+    "Fork me" Link
+\*-----------------------------------*/
 
 .fork-me {
     position: absolute;
