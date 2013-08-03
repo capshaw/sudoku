@@ -4,7 +4,7 @@ A sudoku generator and solver written in javascript. Built using the javascript 
 
 ## Solver Limitations
 
-As of right now the solver can only solve puzzles that don't require backtracking to solve. Recursive backtracking is planned eventually, but opens up a lot of problems (*Is there exactly one solution to this puzzle?*).
+As of right now the solver can only solve puzzles that don't require backtracking to solve. Recursive backtracking is planned eventually, but opens up a lot of problems (Answering: Is there exactly one solution to this puzzle? becomes a little harder).
 
 ## Planned features
 
