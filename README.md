@@ -2,6 +2,8 @@
 
 A sudoku generator and solver written in javascript. Built using the javascript module design pattern.
 
+![The sudoku app UI.](img/ui.png)
+
 ## Solver Limitations
 
 As of right now the solver can only solve puzzles that don't require backtracking to solve. Recursive backtracking is planned eventually, but opens up a lot of problems (puzzles need to be ensured to have exactly one solution, not many).
