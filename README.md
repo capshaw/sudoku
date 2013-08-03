@@ -14,3 +14,4 @@ As of right now the solver can only solve puzzles that don't require backtrackin
 + Option to turn off viewing errors.
 + "Check" button to verify solution (mostly if errors are off)
 + Helper functionality (Give the user one filled in box)
++ Mobile/tablet friendly styling.
