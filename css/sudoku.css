@@ -176,3 +176,11 @@ a {
 
 .upper-right-x:hover {
   color: #ccc; }
+
+.fork-me {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 0;
+  width: 149px;
+  height: 149px; }
