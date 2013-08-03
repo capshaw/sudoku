@@ -92,22 +92,25 @@ var SudokuGUI = function () {
 
     var elements = reloadElements();
 
+    var hideAllBacks = function () {
+        elements.BackContent.slideUp({
+            easing: 'easeInOutCubic'
+        });
+        elements.allBacks.removeClass('showing');
+    }
+
     var bindElements = function () {
 
         elements.solveButton.on("click", function(e) {
             e.preventDefault();
-            // todo: better way to do this repeatedly in various click handlers
-            // that will have it?
-            elements.BackContent.slideUp({
-                easing: 'easeInOutCubic'
-            });
-            elements.allBacks.removeClass('showing');
+            hideAllBacks();
             sudokuGUI.showPuzzle(solver.solve(sudokuGUI.getPuzzle(), false));
             return false;
         });
 
         elements.newPuzzleButton.on("click", function(e) {
             e.preventDefault();
+            hideAllBacks();
             var puzzle = generator.generate();
             sudokuGUI.showPuzzle(puzzle, true);
             return false;
@@ -115,6 +118,7 @@ var SudokuGUI = function () {
 
         elements.restartButton.on("click", function(e) {
             e.preventDefault();
+            hideAllBacks();
             sudokuGUI.showPuzzle(generator.getLastGeneratedPuzzle(), false);
             return false;
         })
