@@ -1,8 +1,8 @@
 // A simple storage mechanism for an (x,y) pair.
-var Tuple = function (xx, yy) {
+var Tuple = function (xin, yin) {
 
-    var x = xx;
-    var y = yy;
+    var x = xin;
+    var y = yin;
 
     return {
         x: x,

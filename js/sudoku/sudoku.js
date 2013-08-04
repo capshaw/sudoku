@@ -5,12 +5,6 @@ var Sudoku = function () {
     var puzzle = {};
 
     var set = function (x, y, v) {
-        if(get(x, y) == -1){
-            filledTiles += 1;
-        }
-        if(v == -1) {
-            filledTiles -= 1;
-        }
         if(puzzle[y] == undefined) {
             puzzle[y] = {};
         }
@@ -18,10 +12,7 @@ var Sudoku = function () {
     }
 
     var remove = function (x, y) {
-        if (puzzle[y] !== undefined && puzzle[y][x] !== undefined) {
-            filledTiles -= 1;
-            puzzle[y][x] = -1;
-        }
+        set(x, y, -1);
     }
 
     var get = function (x, y) {
@@ -69,7 +60,15 @@ var Sudoku = function () {
     }
 
     var getFilledTiles = function () {
-        return filledTiles;
+        var count = 0;
+        for(var y = 0; y < 9; y++){
+            for(var x = 0; x < 9; x++){
+                if(get(x, y) != -1 && get(x, y) != ""){
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 
     return {
