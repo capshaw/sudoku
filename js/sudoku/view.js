@@ -7,50 +7,17 @@ var SudokuGUI = function () {
         bindElements();
     }
 
-    var onChangeHandler = function(){
-        var errors = verifier.verify(getPuzzle());
-        showErrors(errors);
-    };
-
-    var showPuzzle = function (puzzle, firstTime) {
-        for(var y = 0; y < 9; y++) {
-            for(var x = 0; x < 9; x++) {
-                set(x, y, puzzle.get(x,y));
-                if(firstTime){
-                    toggleDisabledState(x,y, (puzzle.get(x,y) != -1));
-                }
-            }
-        }
-    }
-
-    var getPuzzle = function () {
-        var puzzle = new Sudoku();
-        for(var y = 0; y < 9; y++) {
+    var getTileSelectors = function () {
+        tiles = {};
+        for(var y = 0; y < 9; y++){
+            tiles[y] = {}
             for(var x = 0; x < 9; x++){
-                puzzle.set(x, y, get(x, y));
+                tiles[y][x] = $('#tile-' + x + '-' + y);
             }
         }
-        return puzzle;
+        return tiles;
     }
 
-    var drawElements = function () {
-
-        elements = reloadElements();
-        for(var i = 0; i < elements.dimension; i++) {
-            generateNthSquare(i);
-        }
-
-        elements = reloadElements();
-        for(var y = 0; y < elements.dimension; y++) {
-            for(var x = 0; x < elements.dimension; x++) {
-                generateXYthTile(x, y);
-            }
-        }
-
-        elements = reloadElements();
-    }
-
-    // Reloads all of the elements that are accessible via this object
     var reloadElements = function () {
         return {
             dimension: 9,
@@ -68,18 +35,12 @@ var SudokuGUI = function () {
             dropDown: $('#dropdown'),
             solveButton: $('#solveButton'),
             newPuzzleButton: $("#newPuzzleButton"),
-            restartButton: $("#restartButton")
+            restartButton: $("#restartButton"),
+            tileSelectors: getTileSelectors()
         }
     }
 
     var elements = reloadElements();
-
-    var hideAllBacks = function () {
-        elements.BackContent.slideUp({
-            easing: 'easeInOutCubic'
-        });
-        elements.allBacks.removeClass('showing');
-    }
 
     var bindElements = function () {
 
@@ -190,24 +151,71 @@ var SudokuGUI = function () {
                 onChangeHandler();
                 return false;
             }
-
         });
     }
 
+    var onChangeHandler = function(){
+        var errors = verifier.verify(getPuzzle());
+        showErrors(errors);
+    };
+
+    var showPuzzle = function (puzzle, firstTime) {
+        for(var y = 0; y < 9; y++) {
+            for(var x = 0; x < 9; x++) {
+                set(x, y, puzzle.get(x,y));
+                if(firstTime){
+                    toggleDisabledState(x,y, (puzzle.get(x,y) != -1));
+                }
+            }
+        }
+    }
+
+    var getPuzzle = function () {
+        var puzzle = new Sudoku();
+        for(var y = 0; y < 9; y++) {
+            for(var x = 0; x < 9; x++){
+                puzzle.set(x, y, get(x, y));
+            }
+        }
+        return puzzle;
+    }
+
+    var drawElements = function () {
+
+        elements = reloadElements();
+        for(var i = 0; i < elements.dimension; i++) {
+            generateNthSquare(i);
+        }
+
+        elements = reloadElements();
+        for(var y = 0; y < elements.dimension; y++) {
+            for(var x = 0; x < elements.dimension; x++) {
+                generateXYthTile(x, y);
+            }
+        }
+
+        elements = reloadElements();
+    }
+
+    var hideAllBacks = function () {
+        elements.BackContent.slideUp({
+            easing: 'easeInOutCubic'
+        });
+        elements.allBacks.removeClass('showing');
+    }
+
     var get = function (x, y) {
-        // todo: not this selector
-        return $('#tile-' + x + '-' + y).val();
+        return elements.tileSelectors[y][x].val();
     }
 
     var set = function (x, y, value) {
         if(value == -1) value = "";
-        // todo: see if we can avoid this selector
-        $('#tile-' + x + '-' + y).val(value);
+        elements.tileSelectors[y][x].val(value);
     }
 
     var toggleDisabledState = function (x, y, disabled) {
         // todo: see if we can avoid this selector
-        var tile = $('#tile-' + x + '-' + y);
+        var tile = elements.tileSelectors[y][x];
         if(disabled){
             tile.addClass('disabled');
         }else{
@@ -218,11 +226,9 @@ var SudokuGUI = function () {
     var moveByVector = function (element, dx, dy) {
         var x = parseInt(element.attr('data-x'));
         var y = parseInt(element.attr('data-y'));
-
         x = mod((x + dx), elements.dimension);
         y = mod((y + dy), elements.dimension);
-        // todo: not this selector
-        $('#tile-' + x + '-' + y).focus();
+        elements.tileSelectors[y][x].focus();
     }
 
     // Modulo because javascript's '%' is remainder not modulo
@@ -244,7 +250,7 @@ var SudokuGUI = function () {
         elements.tiles.removeClass('sudoku-tile-error')
         for(i in problemTiles) {
             var tile = problemTiles[i];
-            $('#tile-' + tile.x + '-' + tile.y).addClass('sudoku-tile-error');
+            elements.tileSelectors[y][x].addClass('sudoku-tile-error');
         }
     }
 

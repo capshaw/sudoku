@@ -58,7 +58,6 @@ var SudokuSolver = function () {
                     }
                 }
             }
-            console.log(lastFilledTileCount + " " + clone.getFilledTiles())
         } while (lastFilledTileCount < clone.getFilledTiles());
 
         return clone;
