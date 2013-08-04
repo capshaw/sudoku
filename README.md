@@ -17,3 +17,4 @@ As of right now the solver can only solve puzzles that don't require backtrackin
 + "Check" button to verify solution (mostly if errors are off)
 + Helper functionality (Give the user one filled in box)
 + Mobile/tablet friendly styling.
++ Add win state. Something should happen when you win.
