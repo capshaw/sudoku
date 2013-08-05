@@ -250,7 +250,7 @@ var SudokuGUI = function () {
         elements.tiles.removeClass('sudoku-tile-error')
         for(i in problemTiles) {
             var tile = problemTiles[i];
-            elements.tileSelectors[y][x].addClass('sudoku-tile-error');
+            elements.tileSelectors[tile.y][tile.x].addClass('sudoku-tile-error');
         }
     }
 
