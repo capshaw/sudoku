@@ -87,6 +87,10 @@ a:hover {}
         display: block;
         padding: 2px 20px;
         transition: none;
+
+        i {
+            margin-right: 0.25em;
+        }
     }
 
     a:hover {
