@@ -1,276 +1,161 @@
-// The sudoku tiles, all 81 of them.
-$tile-dimension: 50px;
-$tile-border-width: 1px;
-$tile-font-multiplier: 0.5;
-$tile-font-size: $tile-font-multiplier * $tile-dimension;
-$tile-background: #fff;
-$tile-dark-border: #333;
-$tile-light-border: #eee;
-
-// The single board to hold all of the sudoku tiles.
-$board-dimension: 9;
-$board-sqrt-width: 3;
-$board-border-width: 20px;
-$board-width: $tile-dimension * $board-dimension + $tile-border-width * ($board-dimension + 1);
-$square-width: $tile-dimension * $board-sqrt-width + $tile-border-width * $board-sqrt-width;
-
-// Color scheme for the page.
-$accent-color: #1B7AE0;
-$accent-color-dark: darken($accent-color, 40%);
-$accent-color-light: lighten($accent-color, 40%);
-$error-color: #E01B1E;
-
-// Mixin for making a linear gradient using browser vendor prefixes.
-@mixin gradient($from, $to) {
-    background-color: $from;
-    background-image: -moz-linear-gradient($from, $to);
-    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from($from), to($to));
-    background-image: -webkit-linear-gradient($from, $to);
-    background-image: -o-linear-gradient($from, $to);
-}
-
-// Mixin for making a radial gradient using browser vendor prefixes.
-@mixin radialGradient($from, $to) {
-    background-color: $from;
-    background-image: -moz-radial-gradient($from, $to);
-    background-image: -webkit-gradient(radial, 0% 0%, 0% 100%, from($from), to($to));
-    background-image: -webkit-radial-gradient($from, $to);
-    background-image: -o-radial-gradient($from, $to);
-}
-
-/*-----------------------------------*\
-    Page
-\*-----------------------------------*/
-
-html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: 'Belgrano', serif;
+body {
     background: #eee;
-    background-size: cover;
-}
+    font-family: sans-serif;
 
-::selection {
-    background: #eee;
-    color: $tile-dark-border;
-    text-shadow: none;
+    @media print {
+        background: #fff;
+    }
 }
 
 a {
-    text-decoration: none;
-    transition: all 0.2s;
-    color: $tile-dark-border;
+    color: #000;
 }
 
-a:hover {}
+.hidden {
+    display: none !important;
+}
 
-/*-----------------------------------*\
-    Dropdown
-\*-----------------------------------*/
+#loadingPopover {
+    background: rgba(240, 240, 240, 0.8) url("../img/loading.gif") no-repeat center center;
+    backdrop-filter: blur(5px);
+    position: fixed;
+    left: 200px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
 
-.dropdown {
-    font-size: 16px;
-    line-height: 1.5em;
-    width: 180px;
-    position: absolute;
-    padding: 20px 0;
+#options {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 200px;
     background: #fff;
-    display: none;
-    top: 50%;
-    left: 50%;
-    margin-top: -$board-width / 2 - $board-border-width + 40px;
-    margin-left: $board-width / 2 + $board-border-width + 20px;
+    padding: 20px;
 
-    a {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+
+    h2 {
+        font-size: 110%;
+        border-bottom: 1px solid #000;
+    }
+
+    label {
         display: block;
-        padding: 2px 20px;
-        transition: none;
+        margin-top: 20px;
+        font-weight: bold;
+    }
 
-        i {
-            margin-right: 0.25em;
+    @media print {
+        display: none;
+    }
+}
+
+.logo {
+    display: inline-block;
+    background: url('../img/paper-sudoku.png') no-repeat;
+    width: 200px;
+    height: 20px;
+    background-size: contain;
+}
+
+.paperset {
+    margin-top: 20px;
+    margin-left: 200px;
+
+    @media print {
+        margin-left: 0;
+        margin-top: 0;
+    }
+
+    &.size-A6 {
+        .paper {
+            width: 105mm;
+            height: 148mm;
+        }
+    }
+    
+    &.size-A5 {
+        .paper {
+            width: 	148mm;
+            height: 210mm;
         }
     }
 
-    a:hover {
-        background: $tile-dark-border;
-        color: #fff;
+    &.size-Letter {
+        .paper {
+            width: 8.5in;
+            height: 11in;
+        }
     }
 
-    .divider {
-        margin: 10px 0;
-        border-top: 1px solid $tile-dark-border;
-        opacity: 0.1;
+    .paper {
+        background: #fff;
+        margin: 20px auto;
+
+        width: 119mm;
+        height: 158mm;
+
+        padding: 20px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
+
+        @media print {
+            box-shadow: none;
+            margin: auto;
+            padding: 0;
+            break-before: always;
+        }
+
+        &.title-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            h1 {
+                font-size: 3em;
+                margin: 0;
+                text-align: center;
+            }
+            
+            h2 {
+                font-size: 2em;
+                text-align: center;
+            }
+        }
+
+        table {
+            margin-bottom: 20px;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-collapse: collapse;
+
+            td {
+                border: 1px solid black;
+                aspect-ratio: 1 / 1;
+                text-align: center;
+            }
+
+            tr:nth-of-type(3n) {
+                td {
+                    border-bottom: 4px solid black;
+                }
+            }
+
+            tr:nth-of-type(1) {
+                td {
+                    border-top: 4px solid black;
+                }
+            }
+
+            td:nth-of-type(3n) {
+                border-right: 4px solid black;
+            }
+
+            td:nth-of-type(1) {
+                border-left: 4px solid black;
+            }
+        }
     }
-}
-
-.toggle-dropdown {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    height: 40px;
-    width: 40px;
-    line-height: 40px;
-    font-size: 2em;
-    text-align: center;
-    margin-top: -$board-width / 2 - $board-border-width;
-    margin-left: $board-width / 2 + $board-border-width + 20px;
-    background: rgba(255,255,255,0.5);
-    transition: background 0.2s;
-}
-
-.toggle-dropdown.enabled, .toggle-dropdown:hover  {
-    background: rgba(255,255,255,1);
-}
-
-/*-----------------------------------*\
-    Sudoku Board
-\*-----------------------------------*/
-
-.sudoku-board {
-    width: $board-width;
-    height: $board-width;
-    background: $tile-dark-border;
-    border: $board-border-width solid $tile-dark-border;
-    position: absolute;
-    left: 0;
-    top: 0;
-
-    .sudoku-square {
-        display: inline-block;
-        width: $square-width;
-        background: $tile-light-border;
-    }
-
-    .input-fix {
-        border: none;
-        padding: 0;
-        outline: none;
-        font-family: inherit;
-    }
-
-    .sudoku-tile {
-        width: $tile-dimension;
-        height: $tile-dimension;
-        background: $tile-background;
-        border-top:  $tile-border-width solid $tile-light-border;
-        border-left: $tile-border-width solid $tile-light-border;
-        display: inline-block;
-        font-size: $tile-font-size;
-        text-align: center;
-        color: darken($accent-color, 10%);
-        line-height: $tile-dimension;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -o-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-
-    .sudoku-tile-error {
-        color: $error-color;
-    }
-
-    .sudoku-tile:focus {
-        background: $accent-color;
-        color: $accent-color-light;
-        -moz-box-shadow:    inset 0 0 10px $accent-color-dark;
-        -webkit-box-shadow: inset 0 0 10px $accent-color-dark;
-        box-shadow:         inset 0 0 10px $accent-color-dark;
-        border-top:  $tile-border-width solid $accent-color-dark;
-        border-left: $tile-border-width solid $accent-color-dark;
-    }
-
-    .disabled {
-        color: $tile-dark-border;
-    }
-
-    .edge-tile-left {
-        border-left: $tile-border-width solid $tile-dark-border;
-    }
-
-    .edge-tile-top {
-        // A hacky hack to prevent the triangles where border colors meet.
-        box-shadow: 0 -1px 0 0px $tile-dark-border;
-        border-top: none;
-        padding-top: 1px;
-    }
-
-    .edge-tile-top:focus {
-        border-top: $tile-border-width solid $accent-color-dark;
-        margin-top: -1px;
-    }
-}
-
-/*-----------------------------------*\
-    Container and "back"-side pages.
-\*-----------------------------------*/
-
-.middle-box {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: $board-width + 2 * $board-border-width;
-    height: $board-width + 2 * $board-border-width;
-    margin-top: -$board-width / 2 - $board-border-width;
-    margin-left: -$board-width / 2 - $board-border-width;
-}
-
-.back {
-    width: $board-width + 2 * $board-border-width;
-    height: $board-width + 2 * $board-border-width;
-    background: #fff;
-    position: absolute;
-    left: 0;
-    top: 0;
-    display: none;
-}
-
-.back div {
-    display: none;
-    position: absolute;
-    top: 0; right: 0; left: 0; bottom: 0;
-    padding: 20px;
-}
-
-.back p {
-    line-height: 1.6em;
-}
-
-.back p a {
-    color: $accent-color;
-    position: relative;
-}
-
-.upper-right-x {
-    color: $tile-dark-border;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-    display: block;
-    font-size: 2.1em;
-    transition: color 0.6s;
-    z-index: 9000;
-}
-
-.upper-right-x:hover {
-    color: #ccc;
-}
-
-/*-----------------------------------*\
-    "Fork me" Link
-\*-----------------------------------*/
-
-.fork-me {
-    position: absolute;
-    top: 0; right: 0;
-    border: 0;
-    width: 149px;
-    height: 149px;
 }

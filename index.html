@@ -1,70 +1,205 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
-    <meta charset='utf-8' />
-    <meta name='description' content='A sudoku generator and solver.'>
-    <link rel='icon' type='image/x-icon' href='img/foreach.png'>
-    <title>Sudoku</title>
-    <link href='https://fonts.googleapis.com/css?family=Belgrano' rel='stylesheet' type='text/css'>
-    <script type='text/javascript' src='https://code.jquery.com/jquery-1.10.2.min.js'></script>
-    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js'></script>
-    <link rel='stylesheet' type='text/css' href='css/sudoku.css'>
-    <script src='js/head.load.min.js'></script>
-    <script src='js/main.js'></script>
-    <link href='//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css' rel='stylesheet'>
+    <meta charset="utf-8"/>
+    <meta name="description" content="A Sudoku generator for creating printed sets."/>
+    <title>Paper Sudoku | Sudoku for Printing</title>
+    <link rel="icon" type="image/png" href="img/icon.png" />
+    <link rel="stylesheet" type="text/css" href="css/sudoku.css"/>
+    <!-- 
+        TODO: The 2013 version of this used head.js for dependency management. I have removed that 
+        in this stepping-stone version, but there is still a need to modernize how these 'classes'
+        work together. This TODO represents updating these to a modern module-driven style.
+    -->
+    <script type="text/javascript" src="js/sudoku/generator.js"></script>
+    <script type="text/javascript" src="js/sudoku/solver.js"></script>
+    <script type="text/javascript" src="js/sudoku/sudoku.js"></script>
+    <script type="text/javascript" src="js/sudoku/value-checker.js"></script>
+    <script type="text/javascript" src="js/sudoku/verifier.js"></script>
+    <script type="text/javascript" src="js/util/tuple.js"></script>
 </head>
 <body>
-    <a href='#' id='toggle-dropdown' class='toggle-dropdown'>+</a>
-    <div id='dropdown' class='dropdown'>
-        <a href='#' id='newPuzzleButton'>
-            <i class='icon-puzzle-piece'></i> New Puzzle
-        </a>
-        <a href='#' id='restartButton'>
-            <i class='icon-undo'></i> Restart
-        </a>
-        <a href='#' id='solveButton'>
-            <i class='icon-magic'></i> Solve
-        </a>
-        <div class='divider'></div>
-        <a href='#' id='options' class='toggle-back'>
-            <i class='icon-gear'></i> Options
-        </a>
-        <a href='#' id='instructions' class='toggle-back'>
-            <i class='icon-question-sign'></i> Instructions
-        </a>
-        <a href='#' id='about' class='toggle-back'>
-            <i class='icon-info-sign'></i> About
-        </a>
+    <div id="loadingPopover" class="loading hidden"></div>
+    <div id="options">
+        <div class="logo" aria-label="Paper Sudoku logo"></div>
+        <h2>
+            About
+        </h2>
+        <p>
+            Welcome! This is a sudoku generator optimized for print or tablet usage.
+        </p>
+        <p>
+            To use, first configure your options below and then use your browser print 
+            functionality. Be mindful of the browser options and paper size you have set there.
+        </p>
+        <h2>
+            Options
+        </h2>
+        <form onChange="regenerateSudoku()">
+            <label for="configurationNumPuzzles">
+                Number of puzzles
+            </label>
+            <input id="configurationNumPuzzles" type="number" min="1" max="1000" value="5"/>
+            <!-- 
+                TODO: This 'configurationShowSolutions' checkbox is styled somewhat strangely here. Consider 
+                improving how this looks and feels. 
+            -->
+            <label for="configurationShowSolutions">
+                Include solutions
+            </label>
+            <input id="configurationShowSolutions" type="checkbox" checked="true"/>
+            <label for="configurationPaperSize">
+                Paper Size
+            </label>
+            <select id="configurationPaperSize">
+                <option value="A5">A5</option>
+                <option value="A6">A6</option>
+                <option value="Letter">Letter</option>
+            </select>
+            <label>
+                Difficulty
+            </label>
+            <em>
+                Coming someday
+            </em>
+            <label>
+                Require symmetry
+            </label>
+            <em>
+                Coming someday
+            </em>
+        </form>
     </div>
-    <div id='container' class='middle-box flip-container'>
-        <div id='SudokuBoard' class='sudoku-board'></div>
-        <div id='BackContent' class='back'>
-            <a href='#' id='x' class='upper-right-x'>&times;</a>
-            <div id='options-content'>
-                <h2>Options</h2>
-                <p class='option'>
-                    There are no options right now. "You can have any color so long as it's black."
-                </p>
-            </div>
-            <div id='instructions-content'>
-                <h2>Instructions</h2>
-                <p>
-                    Click to select a field or use the arrow keys to navigate the grid. Using the number keys and the delete key, input numbers to complete the puzzle!
-                </p>
-            </div>
-            <div id='about-content'>
-                <h2>About</h2>
-                <p>
-                    Made by <a href='http://capshaw.me'>Andrew Capshaw</a> in the Summer of 2013.
-                </p>
-                <p>
-                    A long, long time ago I built a similar app using a PHP backend and a submittable form frontend. I figured I'd redo it completely as a client-side app just for fun!
-                </p>
-            </div>
+    <div class="paperset" id="overallContainer">
+        <div id="puzzlesContainer"></div>
+        <div id="solutionsHeader" class="paper title-page">
+            <h2>
+                Solutions
+            </h2>
         </div>
+        <div id="solutionsContainer"></div>
     </div>
-    <a href='https://github.com/capshaw/sudoku'>
-        <img class='fork-me' src='img/fork-me@2x.png' alt='Fork me on GitHub'>
-    </a>
+    <script type="text/javascript">
+        const HIDDEN_CLASS_NAME = 'hidden';
+        const EMPTY_CONTAINER_STATE = '';
+
+        /**
+         * TODO: these are required to be global due to the way the 2013 version was written. 
+         * 
+         * Rewrite so that is not required.
+         */
+        const generator = SudokuGenerator();
+        const verifier = SudokuVerifier();
+        const solver = SudokuSolver();
+
+        function regenerateSudoku() {
+            const loadingPopover = document.getElementById('loadingPopover');
+            const pagesContainer = document.getElementById('puzzlesContainer');
+            const solutionsContainer = document.getElementById('solutionsContainer');
+            const solutionsHeader = document.getElementById('solutionsHeader');
+            
+            // Reset the visibility of all containers and remove their content
+            loadingPopover.classList.remove(HIDDEN_CLASS_NAME);
+            solutionsHeader.classList.add(HIDDEN_CLASS_NAME);
+            pagesContainer.innerHTML = EMPTY_CONTAINER_STATE;
+            solutionsContainer.innerHTML = EMPTY_CONTAINER_STATE;
+
+            // Generate the puzzles and set the correct visibility of various elements
+            setTimeout(() => {
+                generatePuzzles();
+                loadingPopover.classList.add(HIDDEN_CLASS_NAME);
+            }, 50);
+        }
+
+        /**
+         * Returns the HTML representation of a sudoku row.
+         */
+        function displayRow(row) {
+            return `<tr>${displayColumns(row)}</tr>`;
+        }
+
+        /**
+         * Returns the HTML representation of the columns within a sudoku row.
+         */
+        function displayColumns(row) {
+            var columns = '';
+            for (var i = 0; i < 9; i++) {
+                columns += `<td>${row[i] == -1 ? '&nbsp;' : row[i]}</td>`;
+            }
+            return columns;
+        }
+
+        /**
+         * Given either a puzzle or a solution to a sudoku, returns an HTML representation of that 
+         * puzzle or solution.
+         */
+        function displayPuzzle(pid, puzzleOrSolution, isSolution, showSolutions) {
+            const puzzleNumber = pid + 1;
+            const puzzleTitle = isSolution ? `Solution ${puzzleNumber}` : `${puzzleNumber}`;
+
+            const solutionId = `solution-${puzzleNumber}`;
+            const puzzleId = `puzzle-${puzzleNumber}`;
+            const id = isSolution ? solutionId : puzzleId;
+            const antiId = isSolution ? puzzleId : solutionId;
+            const jumpToAntiText = isSolution ? `Jump to puzzle` : `Jump to solution`;
+            const jumpToAntiLink = `<a href="#${antiId}">${jumpToAntiText}</a>`;
+
+            return `
+                <div class="paper" id="${id}">
+                    <h2>${puzzleTitle}</h2>
+                    <table>
+                        ${(function generateRows(puzzleOrSolution) {
+                            var rows = '';
+                            for (var j = 0; j < 9; j++) {
+                                rows += displayRow(puzzleOrSolution.getRow(j));
+                            }
+                            return rows;
+                        })(puzzleOrSolution)}
+                    </table>
+                    ${showSolutions ? jumpToAntiLink : ''}
+                </div>
+            `;
+        }
+
+        /**
+         * Based on the configurations the user has set, generate and display requested puzzles.
+         */
+        function generatePuzzles() {
+            const overallContainerElement = document.getElementById('overallContainer');
+            const solutionsHeader = document.getElementById('solutionsHeader');
+            const puzzlesContainer = document.getElementById('puzzlesContainer');
+            const solutionsContainer = document.getElementById('solutionsContainer');
+
+            // The DOM elements for the various configurations allowable
+            const configurationNumPuzzlesElement = document.getElementById('configurationNumPuzzles');
+            const configurationPaperSizeElement = document.getElementById('configurationPaperSize');
+            const configurationShowSolutionsElement = document.getElementById('configurationShowSolutions');
+
+            // The value of the configurations allowable
+            const configurationNumPuzzles = parseInt(configurationNumPuzzlesElement.value);
+            const configurationPaperSize = configurationPaperSizeElement.value;
+            const configurationShowSolutions = configurationShowSolutionsElement.checked;
+
+            // Modify visibility and shape of various elements based upon the configurations
+            // TODO: make this more robust against 'paperset' name changes
+            overallContainerElement.classList = `paperset size-${configurationPaperSize}`;
+            if (configurationShowSolutions) {
+                solutionsHeader.classList.remove(HIDDEN_CLASS_NAME);
+            }
+
+            // Generate `n` puzzles and display them and their solutions as configured
+            for (var pid = 0; pid < configurationNumPuzzles; pid++) {
+                const puzzle = generator.generate();
+                const solution = solver.solve(puzzle);
+
+                puzzlesContainer.innerHTML += displayPuzzle(pid, puzzle, false, configurationShowSolutions);
+                if (configurationShowSolutions) {
+                    solutionsContainer.innerHTML += displayPuzzle(pid, solution, true, configurationShowSolutions);
+                }
+            }
+        }
+
+        regenerateSudoku();
+    </script>
 </body>
 </html>

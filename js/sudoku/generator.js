@@ -51,7 +51,7 @@ var SudokuGenerator = function () {
     }
 
     var generate = function () {
-        var puzzle = $.extend(true, {}, sudokuTemplate);
+        var puzzle = JSON.parse(JSON.stringify(sudokuTemplate));
 
         for(var i = 0; i < 1000; i++) {
 
