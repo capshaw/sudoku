@@ -1,6 +1,7 @@
 // Generates a Sudoku puzzle
 var SudokuGenerator = function () {
 
+    const solver = SudokuSolver();
     var lastGeneratedPuzzle = new Sudoku();
     var sudokuTemplate = [
         [1, 2, 3, 4, 5, 6, 7, 8, 9],

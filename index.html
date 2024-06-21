@@ -83,13 +83,7 @@
         const HIDDEN_CLASS_NAME = 'hidden';
         const EMPTY_CONTAINER_STATE = '';
 
-        /**
-         * TODO: these are required to be global due to the way the 2013 version was written. 
-         * 
-         * Rewrite so that is not required.
-         */
         const generator = SudokuGenerator();
-        const verifier = SudokuVerifier();
         const solver = SudokuSolver();
 
         function regenerateSudoku() {
