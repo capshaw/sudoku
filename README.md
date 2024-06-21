@@ -1,4 +1,4 @@
-![Paper Sudoku](img/paper-sudoku.png)
+# Sudoku for Paper
 
 ## What is this?
 
@@ -10,7 +10,7 @@ This project has gone through several iterations over the decade or so that it h
 
 Currently, the solver can only solve relatively simple sudoku instances that don't require backtracking or other more complex deduction strategies to solve. That is left as an exercise to the reader.
 
-# Build
+## Build
 
 There is no build step for the Javascript side of this project. Simply host this folder with whatever simple HTTP server you'd like. Locally I use Python's built in HTTP server:
 
@@ -26,7 +26,7 @@ sass --watch css/sudoku.scss:css/sudoku.css
 
 For convenience, I've included the built CSS in the repo. Not a best practice, but convenient for anyone who just wants to play with the Javascript. I also have a desire to move away from SASS here, but that is in the TODO pile.
 
-# TODOs and potential next steps
+## TODOs and potential next steps
 
 - SASS should no longer be necessary, remove it.
 - Redo generator in modern module-oriented javascript
