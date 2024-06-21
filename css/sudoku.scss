@@ -73,6 +73,10 @@ a {
         .paper {
             width: 105mm;
             height: 148mm;
+
+            &.title-page {
+                line-height: calc(148mm - 40px);
+            }
         }
     }
     
@@ -80,6 +84,10 @@ a {
         .paper {
             width: 	148mm;
             height: 210mm;
+
+            &.title-page {
+                line-height: calc(210mm - 40px);
+            }
         }
     }
 
@@ -87,6 +95,10 @@ a {
         .paper {
             width: 8.5in;
             height: 11in;
+
+            &.title-page {
+                line-height: calc(11in - 40px);
+            }
         }
     }
 
@@ -109,19 +121,20 @@ a {
         }
 
         &.title-page {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            // Unfortunately flexbox seems to break `break-before` so use old-school text centering
 
             h1 {
                 font-size: 3em;
                 margin: 0;
                 text-align: center;
+                vertical-align: middle;
             }
             
             h2 {
                 font-size: 2em;
+                margin: 0;
                 text-align: center;
+                vertical-align: middle;
             }
         }
 
