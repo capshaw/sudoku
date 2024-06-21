@@ -68,6 +68,12 @@
             <em>
                 Coming someday
             </em>
+            <label>
+                Number per page
+            </label>
+            <em>
+                Coming someday
+            </em>
         </form>
     </div>
     <div class="paperset" id="overallContainer">
@@ -118,7 +124,8 @@
         function displayColumns(row) {
             var columns = '';
             for (var i = 0; i < 9; i++) {
-                columns += `<td>${row[i] == -1 ? '&nbsp;' : row[i]}</td>`;
+                // Being overly specific with width is helpful for some browsers
+                columns += `<td width="11.11%">${row[i] == -1 ? '&nbsp;' : row[i]}</td>`;
             }
             return columns;
         }
