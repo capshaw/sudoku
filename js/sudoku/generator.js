@@ -1,6 +1,7 @@
 // Generates a Sudoku puzzle
 var SudokuGenerator = function () {
 
+    const EASY_STARTING_TILE_LIMIT = 50;
     const solver = SudokuSolver();
     var lastGeneratedPuzzle = new Sudoku();
     var sudokuTemplate = [
@@ -46,12 +47,18 @@ var SudokuGenerator = function () {
         return puzzle;
     }
 
-    var choose = function (choices) {
-        index = Math.floor(Math.random() * choices.length);
-        return choices[index];
+    const shouldContinueRemovingValues = function (sudoku, difficulty) {
+        switch (difficulty.name) {
+            case Difficulty.Easy.name: return (
+                solver.isSolvable(sudoku) &&
+                sudoku.getFilledTiles() >= EASY_STARTING_TILE_LIMIT
+            );
+            case Difficulty.Medium.name: return solver.isSolvable(sudoku);
+            default: throw new Error(`Unsupported difficulty ${difficulty.name}`);
+        }
     }
 
-    var generate = function () {
+    const generate = function (difficulty) {
         var puzzle = JSON.parse(JSON.stringify(sudokuTemplate));
 
         for(var i = 0; i < 1000; i++) {
@@ -81,7 +88,7 @@ var SudokuGenerator = function () {
 
         for(var retries = 0; retries < 10; retries++){
             var lastRemovedValues = {};
-            while(solver.isSolvable(sudoku)) {
+            while(shouldContinueRemovingValues(sudoku, difficulty)) {
                 var x = Math.floor((Math.random() * 9));
                 var y = Math.floor((Math.random() * 9));
                 var nx = 8 - x;

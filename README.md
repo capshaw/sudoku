@@ -31,5 +31,5 @@ For convenience, I've included the built CSS in the repo. Not a best practice, b
 - SASS should no longer be necessary, remove it.
 - Redo generator in modern module-oriented javascript
 - The utility is not currently mobile / small screen friendly. Fix that.
-- There is only one 'difficulty level' for these puzzles. Potentially, enable creation of easy, medium, and hard puzzles.
 - Make symmetry optional
+- Don't needlessly regenerate sudoku (paper size change, etc)

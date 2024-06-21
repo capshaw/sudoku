@@ -11,6 +11,7 @@
         in this stepping-stone version, but there is still a need to modernize how these 'classes'
         work together. This TODO represents updating these to a modern module-driven style.
     -->
+    <script type="text/javascript" src="js/sudoku/difficulty.js"></script>
     <script type="text/javascript" src="js/sudoku/generator.js"></script>
     <script type="text/javascript" src="js/sudoku/solver.js"></script>
     <script type="text/javascript" src="js/sudoku/sudoku.js"></script>
@@ -56,12 +57,13 @@
                 <option value="A6">A6</option>
                 <option value="Letter">Letter</option>
             </select>
-            <label>
+            <label for="configurationDifficulty">
                 Difficulty
             </label>
-            <em>
-                Coming someday
-            </em>
+            <select id="configurationDifficulty">
+                <option value="Easy">Easy</option>
+                <option value="Medium" selected>Medium</option>
+            </select>
             <label>
                 Require symmetry
             </label>
@@ -175,11 +177,13 @@
             const configurationNumPuzzlesElement = document.getElementById('configurationNumPuzzles');
             const configurationPaperSizeElement = document.getElementById('configurationPaperSize');
             const configurationShowSolutionsElement = document.getElementById('configurationShowSolutions');
+            const configurationDifficultyElement = document.getElementById('configurationDifficulty');
 
             // The value of the configurations allowable
             const configurationNumPuzzles = parseInt(configurationNumPuzzlesElement.value);
             const configurationPaperSize = configurationPaperSizeElement.value;
             const configurationShowSolutions = configurationShowSolutionsElement.checked;
+            const configurationDifficulty = new Difficulty(configurationDifficultyElement.value);
 
             // Modify visibility and shape of various elements based upon the configurations
             // TODO: make this more robust against 'paperset' name changes
@@ -190,7 +194,7 @@
 
             // Generate `n` puzzles and display them and their solutions as configured
             for (var pid = 0; pid < configurationNumPuzzles; pid++) {
-                const puzzle = generator.generate();
+                const puzzle = generator.generate(configurationDifficulty);
                 const solution = solver.solve(puzzle);
 
                 puzzlesContainer.innerHTML += displayPuzzle(pid, puzzle, false, configurationShowSolutions);
