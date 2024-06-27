@@ -5,29 +5,85 @@ class PaperSudoku {
     static HIDDEN_CLASS_NAME = 'hidden';
     static EMPTY_CONTAINER_STATE = '';
 
+    static ID_LOADING_POPOVER = 'loadingPopover';
+    static ID_OVERALL_CONTAINER = 'overallContainer';
+    static ID_PUZZLES_CONTAINER = 'puzzlesContainer';
+    static ID_SOLUTIONS_CONTAINER = 'solutionsContainer';
+    static ID_SOLUTIONS_HEADER = 'solutionsHeader';
+
+    static ID_CONFIG_NUM_PUZZLES = 'configurationNumPuzzles';
+    static ID_CONFIG_PAPER_SIZE = 'configurationPaperSize';
+    static ID_CONFIG_SHOW_SOLUTIONS = 'configurationShowSolutions';
+    static ID_CONFIG_DIFFICULTY = 'configurationDifficulty';
+    static ID_CONFIG_REQUIRE_SYMMETRY = 'configurationRequireSymmetry';
+
     constructor() {
         this.generator = SudokuGenerator();
         this.solver = SudokuSolver();
     }
 
     regenerateSudoku() {
-        // TODO: container names as configuration somewhere
-        const loadingPopover = document.getElementById('loadingPopover');
-        const pagesContainer = document.getElementById('puzzlesContainer');
-        const solutionsContainer = document.getElementById('solutionsContainer');
-        const solutionsHeader = document.getElementById('solutionsHeader');
-        
         // Reset the visibility of all containers and remove their content
-        loadingPopover.classList.remove(PaperSudoku.HIDDEN_CLASS_NAME);
-        solutionsHeader.classList.add(PaperSudoku.HIDDEN_CLASS_NAME);
-        pagesContainer.innerHTML = PaperSudoku.EMPTY_CONTAINER_STATE;
-        solutionsContainer.innerHTML = PaperSudoku.EMPTY_CONTAINER_STATE;
+        this.hideSolutionsHeader();
+        this.showLoadingPopover();
+        this.emptyPuzzlesContainer();
+        this.emptySolutionsContainer();
 
         // Generate the puzzles and set the correct visibility of various elements
         setTimeout(() => {
             this.generatePuzzles();
-            loadingPopover.classList.add(PaperSudoku.HIDDEN_CLASS_NAME);
+            this.hideLoadingPopover();
         }, 50);
+    }
+
+    getConfigurationNumPuzzles() {
+        return parseInt(document.getElementById(PaperSudoku.ID_CONFIG_NUM_PUZZLES).value);
+    }
+
+    getConfigurationPaperSize() {
+        return document.getElementById(PaperSudoku.ID_CONFIG_PAPER_SIZE).value;
+    }
+
+    getConfigurationShowSolutions() {
+        return document.getElementById(PaperSudoku.ID_CONFIG_SHOW_SOLUTIONS).checked;
+    }
+
+    getConfigurationDifficulty() {
+        return new Difficulty(document.getElementById(PaperSudoku.ID_CONFIG_DIFFICULTY).value);
+    }
+
+    getConfigurationRequireSymmetry() {
+        return document.getElementById(PaperSudoku.ID_CONFIG_REQUIRE_SYMMETRY).checked;
+    }
+
+    emptySolutionsContainer() {
+        document.getElementById(PaperSudoku.ID_SOLUTIONS_CONTAINER).innerHTML = PaperSudoku.EMPTY_CONTAINER_STATE;
+    }
+
+    emptyPuzzlesContainer() {
+        document.getElementById(PaperSudoku.ID_PUZZLES_CONTAINER).innerHTML = PaperSudoku.EMPTY_CONTAINER_STATE;
+    }
+
+    showSolutionsHeader() {
+        document.getElementById(PaperSudoku.ID_SOLUTIONS_HEADER).classList.remove(PaperSudoku.HIDDEN_CLASS_NAME);
+    }
+
+    hideSolutionsHeader() {
+        document.getElementById(PaperSudoku.ID_SOLUTIONS_HEADER).classList.add(PaperSudoku.HIDDEN_CLASS_NAME);
+    }
+
+    showLoadingPopover() {
+        document.getElementById(PaperSudoku.ID_LOADING_POPOVER).classList.remove(PaperSudoku.HIDDEN_CLASS_NAME);
+    }
+
+    hideLoadingPopover() {
+        document.getElementById(PaperSudoku.ID_LOADING_POPOVER).classList.add(PaperSudoku.HIDDEN_CLASS_NAME);
+    }
+
+    setPaperSize(paperSize) {
+        // TODO: make this more robust against 'paperset' name changes
+        const overallContainerElement = document.getElementById(PaperSudoku.ID_OVERALL_CONTAINER);
+        overallContainerElement.classList = `paperset size-${paperSize}`;
     }
 
     /**
@@ -82,44 +138,39 @@ class PaperSudoku {
         `;
     }
 
+    addPuzzleToPuzzlesContainer(pid, puzzle) {
+        const puzzlesContainer = document.getElementById(PaperSudoku.ID_PUZZLES_CONTAINER);
+        puzzlesContainer.innerHTML += this.displayPuzzle(pid, puzzle, false, configurationShowSolutions);
+    }
+
+    addSolutionToSolutionsContainer(pid, solution) {
+        const solutionsContainer = document.getElementById(PaperSudoku.ID_SOLUTIONS_CONTAINER);
+        solutionsContainer.innerHTML += this.displayPuzzle(pid, solution, true, configurationShowSolutions);
+    }
+
     /**
      * Based on the configurations the user has set, generate and display requested puzzles.
      */
     generatePuzzles() {
-        const overallContainerElement = document.getElementById('overallContainer');
-        const solutionsHeader = document.getElementById('solutionsHeader');
-        const puzzlesContainer = document.getElementById('puzzlesContainer');
-        const solutionsContainer = document.getElementById('solutionsContainer');
+        this.setPaperSize(this.getConfigurationPaperSize());
 
-        // The DOM elements for the various configurations allowable
-        const configurationNumPuzzlesElement = document.getElementById('configurationNumPuzzles');
-        const configurationPaperSizeElement = document.getElementById('configurationPaperSize');
-        const configurationShowSolutionsElement = document.getElementById('configurationShowSolutions');
-        const configurationDifficultyElement = document.getElementById('configurationDifficulty');
-        const configurationRequireSymmetryElement = document.getElementById('configurationRequireSymmetry');
-
-        // The value of the configurations allowable
-        const configurationNumPuzzles = parseInt(configurationNumPuzzlesElement.value);
-        const configurationPaperSize = configurationPaperSizeElement.value;
-        const configurationShowSolutions = configurationShowSolutionsElement.checked;
-        const configurationDifficulty = new Difficulty(configurationDifficultyElement.value);
-        const configurationRequireSymmetry = configurationRequireSymmetryElement.checked;
-
-        // Modify visibility and shape of various elements based upon the configurations
-        // TODO: make this more robust against 'paperset' name changes
-        overallContainerElement.classList = `paperset size-${configurationPaperSize}`;
+        const configurationShowSolutions = this.getConfigurationShowSolutions();
         if (configurationShowSolutions) {
-            solutionsHeader.classList.remove(PaperSudoku.HIDDEN_CLASS_NAME);
+            this.showSolutionsHeader();
         }
+
+        const configurationNumPuzzles = this.getConfigurationNumPuzzles();
+        const configurationDifficulty = this.getConfigurationDifficulty();
+        const configurationRequireSymmetry = this.getConfigurationRequireSymmetry();
 
         // Generate `n` puzzles and display them and their solutions as configured
         for (var pid = 0; pid < configurationNumPuzzles; pid++) {
             const puzzle = this.generator.generate(configurationDifficulty, configurationRequireSymmetry);
             const solution = this.solver.solve(puzzle);
 
-            puzzlesContainer.innerHTML += this.displayPuzzle(pid, puzzle, false, configurationShowSolutions);
+            this.addPuzzleToPuzzlesContainer(pid, puzzle);
             if (configurationShowSolutions) {
-                solutionsContainer.innerHTML += this.displayPuzzle(pid, solution, true, configurationShowSolutions);
+                this.addSolutionToSolutionsContainer(pid, solution);
             }
         }
     }

@@ -5,6 +5,10 @@ body {
     @media print {
         background: #fff;
     }
+
+    ::selection {
+        background-color: rgb(255, 182, 208);
+    }
 }
 
 a {

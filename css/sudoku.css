@@ -4,6 +4,8 @@ body {
   @media print {
     body {
       background: #fff; } }
+  body ::selection {
+    background-color: #ffb6d0; }
 
 a {
   color: #000; }
