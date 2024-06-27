@@ -11,6 +11,7 @@ class PaperSudoku {
     }
 
     regenerateSudoku() {
+        // TODO: container names as configuration somewhere
         const loadingPopover = document.getElementById('loadingPopover');
         const pagesContainer = document.getElementById('puzzlesContainer');
         const solutionsContainer = document.getElementById('solutionsContainer');
@@ -54,7 +55,7 @@ class PaperSudoku {
      */
     displayPuzzle(pid, puzzleOrSolution, isSolution, showSolutions) {
         const puzzleNumber = pid + 1;
-        const puzzleTitle = isSolution ? `Solution ${puzzleNumber}` : `${puzzleNumber}`;
+        const puzzleTitle = isSolution ? `Solution ${puzzleNumber}` : `Puzzle ${puzzleNumber}`;
 
         const solutionId = `solution-${puzzleNumber}`;
         const puzzleId = `puzzle-${puzzleNumber}`;
@@ -95,12 +96,14 @@ class PaperSudoku {
         const configurationPaperSizeElement = document.getElementById('configurationPaperSize');
         const configurationShowSolutionsElement = document.getElementById('configurationShowSolutions');
         const configurationDifficultyElement = document.getElementById('configurationDifficulty');
+        const configurationRequireSymmetryElement = document.getElementById('configurationRequireSymmetry');
 
         // The value of the configurations allowable
         const configurationNumPuzzles = parseInt(configurationNumPuzzlesElement.value);
         const configurationPaperSize = configurationPaperSizeElement.value;
         const configurationShowSolutions = configurationShowSolutionsElement.checked;
         const configurationDifficulty = new Difficulty(configurationDifficultyElement.value);
+        const configurationRequireSymmetry = configurationRequireSymmetryElement.checked;
 
         // Modify visibility and shape of various elements based upon the configurations
         // TODO: make this more robust against 'paperset' name changes
@@ -111,7 +114,7 @@ class PaperSudoku {
 
         // Generate `n` puzzles and display them and their solutions as configured
         for (var pid = 0; pid < configurationNumPuzzles; pid++) {
-            const puzzle = this.generator.generate(configurationDifficulty);
+            const puzzle = this.generator.generate(configurationDifficulty, configurationRequireSymmetry);
             const solution = this.solver.solve(puzzle);
 
             puzzlesContainer.innerHTML += this.displayPuzzle(pid, puzzle, false, configurationShowSolutions);

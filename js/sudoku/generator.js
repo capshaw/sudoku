@@ -58,7 +58,7 @@ var SudokuGenerator = function () {
         }
     }
 
-    const generate = function (difficulty) {
+    const generate = function (difficulty, requireSymmetry) {
         var puzzle = JSON.parse(JSON.stringify(sudokuTemplate));
 
         for(var i = 0; i < 1000; i++) {
@@ -86,6 +86,7 @@ var SudokuGenerator = function () {
             }
         }
 
+        // TODO: Constant retries should be stored somewhere else. Consider >= 10 as well.
         for(var retries = 0; retries < 10; retries++){
             var lastRemovedValues = {};
             while(shouldContinueRemovingValues(sudoku, difficulty)) {
@@ -102,7 +103,9 @@ var SudokuGenerator = function () {
                 lastRemovedValues[ny][nx] = sudoku.get(nx, ny);
 
                 sudoku.remove(x, y);
-                sudoku.remove(nx, ny);
+                if (requireSymmetry) {
+                    sudoku.remove(nx, ny);
+                }
             }
 
             for(var y in lastRemovedValues){
