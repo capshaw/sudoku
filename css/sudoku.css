@@ -98,8 +98,12 @@ a {
     .paperset .paper table {
       margin-bottom: 20px;
       width: 100%;
-      aspect-ratio: 1 / 1;
       border-collapse: collapse; }
+      .paperset .paper table .sudoku-cell {
+        aspect-ratio: 1 / 1;
+        width: 100%;
+        display: grid;
+        align-items: center; }
       .paperset .paper table td {
         border: 1px solid black;
         aspect-ratio: 1 / 1;

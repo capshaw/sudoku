@@ -100,7 +100,7 @@ class PaperSudoku {
         var columns = '';
         for (var i = 0; i < 9; i++) {
             // Being overly specific with width is helpful for some browsers
-            columns += `<td width="11.11%">${row[i] == -1 ? '&nbsp;' : row[i]}</td>`;
+            columns += `<td width="11.11%"><div class="sudoku-cell">${row[i] == -1 ? '&nbsp;' : row[i]}</div></td>`;
         }
         return columns;
     }
@@ -109,7 +109,7 @@ class PaperSudoku {
      * Given either a puzzle or a solution to a sudoku, returns an HTML representation of that 
      * puzzle or solution.
      */
-    displayPuzzle(pid, puzzleOrSolution, isSolution, showSolutions) {
+    displayPuzzle(pid, puzzleOrSolution, isSolution) {
         const puzzleNumber = pid + 1;
         const puzzleTitle = isSolution ? `Solution ${puzzleNumber}` : `Puzzle ${puzzleNumber}`;
 
@@ -133,19 +133,19 @@ class PaperSudoku {
                         return rows;
                     })(puzzleOrSolution)}
                 </table>
-                ${showSolutions ? jumpToAntiLink : ''}
+                ${this.getConfigurationShowSolutions() ? jumpToAntiLink : ''}
             </div>
         `;
     }
 
     addPuzzleToPuzzlesContainer(pid, puzzle) {
         const puzzlesContainer = document.getElementById(PaperSudoku.ID_PUZZLES_CONTAINER);
-        puzzlesContainer.innerHTML += this.displayPuzzle(pid, puzzle, false, configurationShowSolutions);
+        puzzlesContainer.innerHTML += this.displayPuzzle(pid, puzzle, false);
     }
 
     addSolutionToSolutionsContainer(pid, solution) {
         const solutionsContainer = document.getElementById(PaperSudoku.ID_SOLUTIONS_CONTAINER);
-        solutionsContainer.innerHTML += this.displayPuzzle(pid, solution, true, configurationShowSolutions);
+        solutionsContainer.innerHTML += this.displayPuzzle(pid, solution, true);
     }
 
     /**
