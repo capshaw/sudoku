@@ -6,22 +6,9 @@
     <title>Paper Sudoku | Sudoku for Printing</title>
     <link rel="icon" type="image/png" href="img/icon.png" />
     <link rel="stylesheet" type="text/css" href="css/sudoku.css"/>
-    <!-- 
-        TODO: The 2013 version of this used head.js for dependency management. I have removed that 
-        in this stepping-stone version, but there is still a need to modernize how these 'classes'
-        work together. This TODO represents updating these to a modern module-driven style.
-    -->
-    <script type="text/javascript" src="js/util/tuple.js"></script>
-    <script type="text/javascript" src="js/sudoku/difficulty.js"></script>
-    <script type="text/javascript" src="js/sudoku/generator.js"></script>
-    <script type="text/javascript" src="js/sudoku/solver.js"></script>
-    <script type="text/javascript" src="js/sudoku/sudoku.js"></script>
-    <script type="text/javascript" src="js/sudoku/value-checker.js"></script>
-    <script type="text/javascript" src="js/sudoku/verifier.js"></script>
-    <script type="text/javascript" src="js/ui/paper-sudoku.js"></script>
 </head>
 <body>
-    <div id="loadingPopover" class="loading hidden"></div>
+    <div id="loadingPopover" class="loading"></div>
     <div id="options">
         <div class="logo" aria-label="Paper Sudoku logo"></div>
         <h2>
@@ -73,20 +60,23 @@
     </div>
     <div class="paperset" id="overallContainer">
         <div id="puzzlesContainer"></div>
-        <div id="solutionsHeader" class="paper title-page">
+        <div id="solutionsHeader" class="paper title-page hidden">
             <h2>
                 Solutions
             </h2>
         </div>
         <div id="solutionsContainer"></div>
     </div>
-    <script type="text/javascript">
-        const paperSudoku = new PaperSudoku();
-        paperSudoku.regenerateSudoku();
+    <script type="module">
+        import { PaperSudoku } from "./js/ui/PaperSudoku.js";
 
-        function regenerateSudoku() {
+        const paperSudoku = new PaperSudoku();
+
+        window.regenerateSudoku = function() {
             paperSudoku.regenerateSudoku();
         }
+
+        window.regenerateSudoku();
     </script>
 </body>
 </html>

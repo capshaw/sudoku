@@ -1,12 +1,14 @@
+import { ValueChecker } from "./ValueChecker.js";
+
+/**
+ * Given a sudoku puzzle object, find inconsistencies (duplications) in each row, column, and square.
+ * 
+ * The verifier does not actually check the correctness of the puzzle against the solution. It 
+ * only looks for the aforementioned inconsistencies that imply the puzzle to be incorrectly 
+ * solved.
+ */
 class SudokuVerifier {
 
-    /**
-     * Given a sudoku puzzle object, find inconsistencies (duplications) in each row, column, and square.
-     * 
-     * The verifier does not actually check the correctness of the puzzle against the solution. It 
-     * only looks for the aforementioned inconsistencies that imply the puzzle to be incorrectly 
-     * solved.
-     */
     verify(puzzle) {
         var errors = [];
         for(var y = 0; y < 9; y++) {
@@ -50,3 +52,5 @@ class SudokuVerifier {
         return checker.getErrors();
     }
 }
+
+export { SudokuVerifier };

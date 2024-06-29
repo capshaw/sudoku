@@ -26,8 +26,10 @@ class SudokuSolver {
                     }
 
                     column = clone.getColumn(x);
-                    square = clone.getSquare(Math.floor(x/3),
-                                             Math.floor(y/3))
+                    square = clone.getSquare(
+                        Math.floor(x/3),
+                        Math.floor(y/3)
+                    );
 
                     // Set every digit to be available.
                     var choices = [0,0,0,0,0,0,0,0,0];
@@ -65,3 +67,5 @@ class SudokuSolver {
         return clone;
     }
 }
+
+export { SudokuSolver };

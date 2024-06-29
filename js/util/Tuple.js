@@ -7,3 +7,5 @@ class Tuple {
         this.y = yin;
     }
 }
+
+export { Tuple };

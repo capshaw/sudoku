@@ -1,3 +1,7 @@
+import { Difficulty } from "../sudoku/Difficulty.js";
+import { SudokuGenerator } from "../sudoku/SudokuGenerator.js";
+import { SudokuSolver } from "../sudoku/SudokuSolver.js";
+
 /**
  * Acknowledging this is pretty hacky right now. Needs a few refactoring passes.
  */
@@ -175,3 +179,5 @@ class PaperSudoku {
         }
     }
 }
+
+export { PaperSudoku };

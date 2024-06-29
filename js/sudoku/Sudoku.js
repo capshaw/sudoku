@@ -1,3 +1,5 @@
+import { Tuple } from "../util/tuple.js";
+
 /**
  * A model of a Sudoku puzzle
  */
@@ -74,3 +76,5 @@ class Sudoku {
         return count;
     }
 }
+
+export { Sudoku };

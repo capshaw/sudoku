@@ -13,3 +13,5 @@ class Difficulty {
         return `Difficulty.${this.name}`;
     }
 }
+
+export { Difficulty };

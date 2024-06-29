@@ -1,3 +1,7 @@
+import { Difficulty } from "./Difficulty.js";
+import { Sudoku } from "./Sudoku.js";
+import { SudokuSolver } from "./SudokuSolver.js";
+
 /**
  * A sudoku puzzle generator
  */
@@ -128,3 +132,5 @@ class SudokuGenerator {
         return this.lastGeneratedPuzzle;
     }
 }
+
+export { SudokuGenerator };
