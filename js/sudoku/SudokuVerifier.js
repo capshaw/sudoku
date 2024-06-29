@@ -10,15 +10,15 @@ import { ValueChecker } from "./ValueChecker.js";
 class SudokuVerifier {
 
     verify(puzzle) {
-        var errors = [];
-        for(var y = 0; y < 9; y++) {
+        const errors = [];
+        for(let y = 0; y < 9; y++) {
             errors = errors.concat(this.#verifyRow(puzzle, y));
         }
-        for(var x = 0; x < 9; x++) {
+        for(let x = 0; x < 9; x++) {
             errors = errors.concat(this.#verifyColumn(puzzle, x));
         }
-        for(var x = 0; x < 3; x++) {
-            for(var y = 0; y < 3; y++) {
+        for(let x = 0; x < 3; x++) {
+            for(let y = 0; y < 3; y++) {
                 errors = errors.concat(this.#verifySquare(puzzle, x * 3, y * 3));
             }
         }
@@ -26,10 +26,10 @@ class SudokuVerifier {
     }
 
     #verifySquare(puzzle, x, y) {
-        var checker = new ValueChecker();
-        for(var dx = 0; dx < 3; dx++) {
-            for(var dy = 0; dy < 3; dy++) {
-                var tuple = Tuple(x + dx, y + dy);
+        const checker = new ValueChecker();
+        for(let dx = 0; dx < 3; dx++) {
+            for(let dy = 0; dy < 3; dy++) {
+                let tuple = Tuple(x + dx, y + dy);
                 checker.add(puzzle.get(tuple.x, tuple.y), tuple);
             }
         }
@@ -37,16 +37,16 @@ class SudokuVerifier {
     }
 
     #verifyRow(puzzle, y) {
-        var checker = new ValueChecker();
-        for(var x = 0; x < 9; x++) {
+        const checker = new ValueChecker();
+        for(let x = 0; x < 9; x++) {
             checker.add(puzzle.get(x, y), Tuple(x, y));
         }
         return checker.getErrors();
     }
 
     #verifyColumn(puzzle, x) {
-        var checker = new ValueChecker();
-        for(var y = 0; y < 9; y++) {
+        const checker = new ValueChecker();
+        for(let y = 0; y < 9; y++) {
             checker.add(puzzle.get(x, y), Tuple(x, y));
         }
         return checker.getErrors();

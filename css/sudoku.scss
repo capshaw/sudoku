@@ -29,6 +29,10 @@ a {
     top: 0;
     right: 0;
     bottom: 0;
+
+    @media (max-width: 879px) {
+        left: 0;
+    }
 }
 
 #options {
@@ -36,10 +40,21 @@ a {
     top: 20px;
     left: 20px;
     bottom: 20px;
-    width: 200px;
+    width: 240px;
     background: #fff;
     padding: 20px;
     border-radius: 5px;
+    box-sizing: border-box;
+
+    @media (max-width: 879px) {
+        position: unset;
+        top: 20px;
+        right: 20px;
+        bottom: auto;
+        width: auto;
+        max-width: 148mm;
+        margin: auto;
+    }
 
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 
@@ -69,11 +84,18 @@ a {
 
 .paperset {
     margin-top: 20px;
-    margin-left: 200px;
+    margin-left: 280px;
+    margin-right: 20px;
+
+    @media (max-width: 879px) {
+        margin-left: auto;
+        margin-right: auto;
+    }
 
     @media print {
         margin-left: 0;
         margin-top: 0;
+        margin-right: 0;
     }
 
     &.size-A6 {
@@ -89,7 +111,7 @@ a {
     
     &.size-A5 {
         .paper {
-            width: 	148mm;
+            width: 148mm;
             height: 210mm;
 
             &.title-page {
@@ -128,6 +150,7 @@ a {
         padding: 20px;
         box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
         box-sizing: border-box;
+        border-radius: 5px;
 
         @media print {
             box-shadow: none;

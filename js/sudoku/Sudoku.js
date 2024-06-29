@@ -35,18 +35,18 @@ class Sudoku {
     }
 
     getColumn(x) {
-        var column = {};
-        for(var y = 0; y < 9; y++){
+        const column = {};
+        for(let y = 0; y < 9; y++){
             column[y] = this.get(x, y);
         }
         return column;
     }
 
     getSquare(x, y) {
-        var square = {};
-        for(var dy = 0; dy < 3; dy++) {
+        const square = {};
+        for(let dy = 0; dy < 3; dy++) {
             square[y * 3 + dy] = {};
-            for(var dx = 0; dx < 3; dx++) {
+            for(let dx = 0; dx < 3; dx++) {
                 const tuple = new Tuple(x * 3 + dx, y * 3 + dy);
                 square[tuple.y][tuple.x] = this.get(tuple.x, tuple.y);
             }
@@ -55,9 +55,9 @@ class Sudoku {
     }
 
     getClone() {
-        var clone = new Sudoku();
-        for(var y = 0; y < 9; y++) {
-            for(var x = 0; x < 9; x++) {
+        const clone = new Sudoku();
+        for(let y = 0; y < 9; y++) {
+            for(let x = 0; x < 9; x++) {
                 clone.set(x, y, this.get(x,y));
             }
         }
@@ -65,9 +65,9 @@ class Sudoku {
     }
 
     getFilledTiles() {
-        var count = 0;
-        for(var y = 0; y < 9; y++){
-            for(var x = 0; x < 9; x++){
+        let count = 0;
+        for(let y = 0; y < 9; y++){
+            for(let x = 0; x < 9; x++){
                 if(this.get(x, y) != -1 && this.get(x, y) != ""){
                     count++;
                 }

@@ -4,22 +4,21 @@
 class SudokuSolver {
 
     isSolvable(puzzle) {
-        var clone = this.solve(puzzle);
-        return (clone.getFilledTiles() == 81);
+        return (this.solve(puzzle).getFilledTiles() == 81);
     }
 
     solve (puzzle) {
-        var clone = puzzle.getClone();
-        var lastFilledTileCount;
+        const clone = puzzle.getClone();
+        let lastFilledTileCount;
         do {
             lastFilledTileCount = clone.getFilledTiles();
 
-            var square;
-            var row;
-            var column;
-            for(var y = 0; y < 9; y++) {
+            let square;
+            let row;
+            let column;
+            for(let y = 0; y < 9; y++) {
                 row = clone.getRow(y);
-                for(var x = 0; x < 9; x++) {
+                for(let x = 0; x < 9; x++) {
 
                     if(clone.get(x, y) > 0 && clone.get(x, y) < 9){
                         continue;
@@ -32,25 +31,25 @@ class SudokuSolver {
                     );
 
                     // Set every digit to be available.
-                    var choices = [0,0,0,0,0,0,0,0,0];
+                    const choices = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
                     // Mark used digits.
-                    var pos;
+                    let pos;
                     for(pos in row){
                         choices[row[pos] - 1] = 1;
                     }
                     for(pos in column){
                         choices[column[pos] - 1] = 1;
                     }
-                    for(var j in square){
-                        for(var i in square[j]){
+                    for(let j in square){
+                        for(let i in square[j]){
                             choices[square[j][i] - 1] = 1;
                         }
                     }
 
                     // Process to see what remains.
-                    var possibleAnswers = [];
-                    for(var h = 0; h < 9; h++){
+                    let possibleAnswers = [];
+                    for(let h = 0; h < 9; h++){
                         if(choices[h] == 0){
                             possibleAnswers.push(h + 1);
                         }

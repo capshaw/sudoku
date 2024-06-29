@@ -21,17 +21,30 @@ a {
   top: 0;
   right: 0;
   bottom: 0; }
+  @media (max-width: 879px) {
+    #loadingPopover {
+      left: 0; } }
 
 #options {
   position: fixed;
   top: 20px;
   left: 20px;
   bottom: 20px;
-  width: 200px;
+  width: 240px;
   background: #fff;
   padding: 20px;
   border-radius: 5px;
+  box-sizing: border-box;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); }
+  @media (max-width: 879px) {
+    #options {
+      position: unset;
+      top: 20px;
+      right: 20px;
+      bottom: auto;
+      width: auto;
+      max-width: 148mm;
+      margin: auto; } }
   #options h2 {
     font-size: 110%;
     border-bottom: 1px solid #000; }
@@ -52,11 +65,17 @@ a {
 
 .paperset {
   margin-top: 20px;
-  margin-left: 200px; }
+  margin-left: 280px;
+  margin-right: 20px; }
+  @media (max-width: 879px) {
+    .paperset {
+      margin-left: auto;
+      margin-right: auto; } }
   @media print {
     .paperset {
       margin-left: 0;
-      margin-top: 0; } }
+      margin-top: 0;
+      margin-right: 0; } }
   .paperset.size-A6 .paper {
     width: 105mm;
     height: 148mm; }
@@ -83,7 +102,8 @@ a {
     height: 158mm;
     padding: 20px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box; }
+    box-sizing: border-box;
+    border-radius: 5px; }
     @media print {
       .paperset .paper {
         box-shadow: none;

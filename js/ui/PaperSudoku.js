@@ -37,7 +37,7 @@ class PaperSudoku {
         setTimeout(() => {
             this.generatePuzzles();
             this.hideLoadingPopover();
-        }, 50);
+        }, 100);
     }
 
     getConfigurationNumPuzzles() {

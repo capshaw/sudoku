@@ -5,7 +5,7 @@ class ValueChecker {
 
     constructor() {
         this.checker = {}
-        for(var i = 0; i < 9; i++) {
+        for(let i = 0; i < 9; i++) {
             checker[i + 1] = [];
         }
     }
@@ -19,9 +19,9 @@ class ValueChecker {
     }
 
     getErrors() {
-        var errors = [];
-        for(var key in checker) {
-            var val = checker[key];
+        const errors = [];
+        for(let key in checker) {
+            const val = checker[key];
             if(val.length > 1) {
                 errors = errors.concat(val);
             }

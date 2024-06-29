@@ -14,13 +14,13 @@ Currently, the solver can only solve relatively simple sudoku instances that don
 
 There is no build step for the Javascript side of this project. Simply host this folder with whatever simple HTTP server you'd like. Locally I use Python's built in HTTP server:
 
-```
+```bash
 python3 -m http.server
 ```
 
 There is a build step for the SASS / CSS that is currently required to modify the CSS:
 
-```
+```bash
 sass --watch css/sudoku.scss:css/sudoku.css
 ``` 
 
@@ -29,7 +29,5 @@ For convenience, I've included the built CSS in the repo. Not a best practice, b
 ## TODOs and potential next steps
 
 - SASS should no longer be necessary, remove it.
-- Redo generator in modern module-oriented javascript
-- The utility is not currently mobile / small screen friendly. Fix that.
 - Don't needlessly regenerate sudoku (paper size change, etc)
 - Testing
