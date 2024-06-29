@@ -42,20 +42,12 @@
                 Number of puzzles
             </label>
             <input id="configurationNumPuzzles" type="number" min="1" max="1000" value="5"/>
-            <!-- 
-                TODO: This 'configurationShowSolutions' checkbox is styled somewhat strangely here. Consider 
-                improving how this looks and feels. 
-            -->
-            <label for="configurationShowSolutions">
-                Include solutions
-            </label>
-            <input id="configurationShowSolutions" type="checkbox" checked="true"/>
             <label for="configurationPaperSize">
                 Paper Size
             </label>
             <select id="configurationPaperSize">
-                <option value="A5">A5</option>
                 <option value="A6">A6</option>
+                <option value="A5" selected>A5</option>
                 <option value="Letter">Letter</option>
             </select>
             <label for="configurationDifficulty">
@@ -66,15 +58,17 @@
                 <option value="Medium" selected>Medium</option>
             </select>
             <label for="configurationRequireSymmetry">
-                Require symmetry
+                <input id="configurationRequireSymmetry" type="checkbox" checked="true"/> Require symmetry
             </label>
-            <input id="configurationRequireSymmetry" type="checkbox" checked="true"/>
-            <label>
+            <label for="configurationShowSolutions">
+                <input id="configurationShowSolutions" type="checkbox" checked="true"/> Include solutions
+            </label>
+            <!-- <label>
                 Number per page
             </label>
             <em>
                 Coming someday
-            </em>
+            </em> -->
         </form>
     </div>
     <div class="paperset" id="overallContainer">

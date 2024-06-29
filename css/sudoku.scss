@@ -151,7 +151,7 @@ a {
             .sudoku-cell {
                 aspect-ratio: 1 / 1;
                 width: 100%;
-                display:grid;
+                display: grid;
                 align-items:center;
             }
 
@@ -181,5 +181,20 @@ a {
                 border-left: 4px solid black;
             }
         }
+    }
+}
+
+input[type=number],
+select {
+    width: 100%;
+    padding: 7px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    border: 1px solid #000;
+    border-radius: 5px;
+
+    &:focus {
+        border: 1px solid rgb(110, 110, 255);
+        outline: none;
     }
 }
