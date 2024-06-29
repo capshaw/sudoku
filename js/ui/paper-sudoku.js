@@ -18,8 +18,8 @@ class PaperSudoku {
     static ID_CONFIG_REQUIRE_SYMMETRY = 'configurationRequireSymmetry';
 
     constructor() {
-        this.generator = SudokuGenerator();
-        this.solver = SudokuSolver();
+        this.generator = new SudokuGenerator();
+        this.solver = new SudokuSolver();
     }
 
     regenerateSudoku() {

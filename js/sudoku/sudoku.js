@@ -1,84 +1,76 @@
-// A container for a Sudoku puzzle.
-var Sudoku = function () {
+/**
+ * A model of a Sudoku puzzle
+ */
+class Sudoku {
 
-    var filledTiles = 0;
-    var puzzle = {};
+    constructor() {
+        this.puzzle = {};
+    }
 
-    var set = function (x, y, v) {
-        if(puzzle[y] == undefined) {
-            puzzle[y] = {};
+    set(x, y, v) {
+        if(this.puzzle[y] == undefined) {
+            this.puzzle[y] = {};
         }
-        puzzle[y][x] = v;
+        this.puzzle[y][x] = v;
     }
 
-    var remove = function (x, y) {
-        set(x, y, -1);
+    remove(x, y) {
+        this.set(x, y, -1);
     }
 
-    var get = function (x, y) {
-        if (puzzle[y] !== undefined && puzzle[y][x] !== undefined) {
-            return puzzle[y][x];
+    get(x, y) {
+        if (this.puzzle[y] !== undefined && this.puzzle[y][x] !== undefined) {
+            return this.puzzle[y][x];
         }
         return -1;
     }
 
-    var getRow = function (y) {
-        if(puzzle[y] !== undefined) {
-            return puzzle[y];
+    getRow(y) {
+        if(this.puzzle[y] !== undefined) {
+            return this.puzzle[y];
         }
         return {};
     }
 
-    var getColumn = function (x) {
+    getColumn(x) {
         var column = {};
         for(var y = 0; y < 9; y++){
-            column[y] = get(x, y);
+            column[y] = this.get(x, y);
         }
         return column;
     }
 
-    var getSquare = function (x, y) {
+    getSquare(x, y) {
         var square = {};
         for(var dy = 0; dy < 3; dy++) {
             square[y * 3 + dy] = {};
             for(var dx = 0; dx < 3; dx++) {
-                tuple = Tuple(x * 3 + dx, y * 3 + dy);
-                square[tuple.y][tuple.x] = get(tuple.x, tuple.y);
+                const tuple = new Tuple(x * 3 + dx, y * 3 + dy);
+                square[tuple.y][tuple.x] = this.get(tuple.x, tuple.y);
             }
         }
         return square;
     }
 
-    var getClone = function () {
-        var clone = Sudoku();
+    getClone() {
+        var clone = new Sudoku();
         for(var y = 0; y < 9; y++) {
             for(var x = 0; x < 9; x++) {
-                clone.set(x, y, get(x,y));
+                clone.set(x, y, this.get(x,y));
             }
         }
         return clone;
     }
 
-    var getFilledTiles = function () {
+    getFilledTiles() {
         var count = 0;
         for(var y = 0; y < 9; y++){
             for(var x = 0; x < 9; x++){
-                if(get(x, y) != -1 && get(x, y) != ""){
+                if(this.get(x, y) != -1 && this.get(x, y) != ""){
                     count++;
                 }
             }
         }
         return count;
-    }
-
-    return {
-        set: set,
-        remove: remove,
-        get: get,
-        getRow: getRow,
-        getColumn: getColumn,
-        getSquare: getSquare,
-        getClone: getClone,
-        getFilledTiles: getFilledTiles
     }
 }

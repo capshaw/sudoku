@@ -1,12 +1,14 @@
-// Provides functionality for solving a sudoku puzzle.
-var SudokuSolver = function () {
+/**
+ * A sudoku puzzle solver
+ */ 
+class SudokuSolver {
 
-    var isSolvable = function (puzzle) {
-        var clone = solve(puzzle);
+    isSolvable(puzzle) {
+        var clone = this.solve(puzzle);
         return (clone.getFilledTiles() == 81);
     }
 
-    var solve = function (puzzle) {
+    solve (puzzle) {
         var clone = puzzle.getClone();
         var lastFilledTileCount;
         do {
@@ -45,7 +47,7 @@ var SudokuSolver = function () {
                     }
 
                     // Process to see what remains.
-                    possibleAnswers = [];
+                    var possibleAnswers = [];
                     for(var h = 0; h < 9; h++){
                         if(choices[h] == 0){
                             possibleAnswers.push(h + 1);
@@ -61,10 +63,5 @@ var SudokuSolver = function () {
         } while (lastFilledTileCount < clone.getFilledTiles());
 
         return clone;
-    }
-
-    return {
-        isSolvable: isSolvable,
-        solve: solve
     }
 }

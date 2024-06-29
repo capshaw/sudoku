@@ -1,10 +1,10 @@
-// Generates a Sudoku puzzle
-var SudokuGenerator = function () {
+/**
+ * A sudoku puzzle generator
+ */
+class SudokuGenerator {
 
-    const EASY_STARTING_TILE_LIMIT = 50;
-    const solver = SudokuSolver();
-    var lastGeneratedPuzzle = new Sudoku();
-    var sudokuTemplate = [
+    static EASY_STARTING_TILE_LIMIT = 50;
+    static SUDOKU_TEMPLATE = [
         [1, 2, 3, 4, 5, 6, 7, 8, 9],
         [4, 5, 6, 7, 8, 9, 1, 2, 3],
         [7, 8, 9, 1, 2, 3, 4, 5, 6],
@@ -14,16 +14,21 @@ var SudokuGenerator = function () {
         [3, 4, 5, 6, 7, 8, 9, 1, 2],
         [6, 7, 8, 9, 1, 2, 3, 4, 5],
         [9, 1, 2, 3, 4, 5, 6, 7, 8]
-    ]
+    ];
 
-    var swapRows = function (puzzle, a, b) {
+    constructor() {
+        this.solver = new SudokuSolver();
+        this.lastGeneratedPuzzle = null;
+    }
+
+    #swapRows(puzzle, a, b) {
         var temp = puzzle[a];
         puzzle[a] = puzzle[b];
         puzzle[b] = temp;
         return puzzle;
     }
 
-    var swapColumns = function (puzzle, a, b) {
+    #swapColumns(puzzle, a, b) {
         for(var i = 0; i < 9; i++){
             var temp = puzzle[i][a];
             puzzle[i][a] = puzzle[i][b];
@@ -32,7 +37,7 @@ var SudokuGenerator = function () {
         return puzzle;
     }
 
-    var swapValues = function (puzzle, a, b) {
+    #swapValues(puzzle, a, b) {
         for(var i = 0; i < 9; i++) {
             for(var j = 0; j < 9; j++) {
                 var value = puzzle[i][j];
@@ -47,19 +52,19 @@ var SudokuGenerator = function () {
         return puzzle;
     }
 
-    const shouldContinueRemovingValues = function (sudoku, difficulty) {
+    #shouldContinueRemovingValues(sudoku, difficulty) {
         switch (difficulty.name) {
             case Difficulty.Easy.name: return (
-                solver.isSolvable(sudoku) &&
-                sudoku.getFilledTiles() >= EASY_STARTING_TILE_LIMIT
+                this.solver.isSolvable(sudoku) &&
+                sudoku.getFilledTiles() >= SudokuGenerator.EASY_STARTING_TILE_LIMIT
             );
-            case Difficulty.Medium.name: return solver.isSolvable(sudoku);
+            case Difficulty.Medium.name: return this.solver.isSolvable(sudoku);
             default: throw new Error(`Unsupported difficulty ${difficulty.name}`);
         }
     }
 
-    const generate = function (difficulty, requireSymmetry) {
-        var puzzle = JSON.parse(JSON.stringify(sudokuTemplate));
+    generate(difficulty, requireSymmetry) {
+        var puzzle = JSON.parse(JSON.stringify(SudokuGenerator.SUDOKU_TEMPLATE));
 
         for(var i = 0; i < 1000; i++) {
 
@@ -73,9 +78,9 @@ var SudokuGenerator = function () {
             var b = Math.floor(a/3) * 3 + v;
 
             switch(type){
-                case 0: puzzle = swapRows(puzzle, a, b); break;
-                case 1: puzzle = swapColumns(puzzle, a, b); break;
-                case 2: puzzle = swapValues(puzzle, a + 1, c + 1); break;
+                case 0: puzzle = this.#swapRows(puzzle, a, b); break;
+                case 1: puzzle = this.#swapColumns(puzzle, a, b); break;
+                case 2: puzzle = this.#swapValues(puzzle, a + 1, c + 1); break;
             }
         }
 
@@ -89,7 +94,7 @@ var SudokuGenerator = function () {
         // TODO: Constant retries should be stored somewhere else. Consider >= 10 as well.
         for(var retries = 0; retries < 10; retries++){
             var lastRemovedValues = {};
-            while(shouldContinueRemovingValues(sudoku, difficulty)) {
+            while(this.#shouldContinueRemovingValues(sudoku, difficulty)) {
                 var x = Math.floor((Math.random() * 9));
                 var y = Math.floor((Math.random() * 9));
                 var nx = 8 - x;
@@ -115,16 +120,11 @@ var SudokuGenerator = function () {
             }
         }
 
-        lastGeneratedPuzzle = sudoku.getClone();
+        this.lastGeneratedPuzzle = sudoku.getClone();
         return sudoku;
     }
 
-    var getLastGeneratedPuzzle = function () {
-        return lastGeneratedPuzzle;
-    }
-
-    return {
-        generate: generate,
-        getLastGeneratedPuzzle: getLastGeneratedPuzzle
+    getLastGeneratedPuzzle() {
+        return this.lastGeneratedPuzzle;
     }
 }

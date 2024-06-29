@@ -68,7 +68,8 @@ a {
       line-height: calc(210mm - 40px); }
   .paperset.size-Letter .paper {
     width: 8.5in;
-    height: 11in; }
+    height: 11in;
+    font-size: larger; }
     .paperset.size-Letter .paper.title-page {
       line-height: calc(11in - 40px); }
   .paperset .paper {

@@ -1,17 +1,24 @@
-// Collects values and tells you whether it's state is valid when asked
-var ValueChecker = function () {
+/**
+ * A small helper utility class that tracks (value, location) pairs and will report duplicates.
+ */
+class ValueChecker {
 
-    var checker = {}
-    for(var i = 0; i < 9; i++) {
-        checker[i + 1] = []
+    constructor() {
+        this.checker = {}
+        for(var i = 0; i < 9; i++) {
+            checker[i + 1] = [];
+        }
     }
 
-    var add = function (value, location) {
-        if(!checker[value]) return;
+    add(value, location) {
+        if(!checker[value]) {
+            // TODO: better error handling here
+            return;
+        }
         checker[value] = checker[value].concat(location);
     }
 
-    var getErrors = function () {
+    getErrors() {
         var errors = [];
         for(var key in checker) {
             var val = checker[key];
@@ -20,10 +27,5 @@ var ValueChecker = function () {
             }
         }
         return errors;
-    }
-
-    return {
-        add: add,
-        getErrors: getErrors
     }
 }
