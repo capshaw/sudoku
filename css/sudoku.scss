@@ -9,7 +9,7 @@ body {
     }
 
     ::selection {
-        background-color: rgb(255, 182, 208);
+        background-color: rgb(254, 206, 46);
     }
 }
 
@@ -30,7 +30,7 @@ a {
     right: 0;
     bottom: 0;
 
-    @media (max-width: 879px) {
+    @media (max-width: 600px) {
         left: 0;
     }
 }
@@ -46,7 +46,7 @@ a {
     border-radius: 5px;
     box-sizing: border-box;
 
-    @media (max-width: 879px) {
+    @media (max-width: 600px) {
         position: unset;
         top: 20px;
         right: 20px;
@@ -87,7 +87,7 @@ a {
     margin-left: 280px;
     margin-right: 20px;
 
-    @media (max-width: 879px) {
+    @media (max-width: 600px) {
         margin-left: auto;
         margin-right: auto;
     }
@@ -100,35 +100,58 @@ a {
 
     &.size-A6 {
         .paper {
-            width: 105mm;
-            height: 148mm;
+            @media print {
+                max-width: 105mm;
+                width: 105mm;
+                aspect-ratio: unset;
+            }
 
             &.title-page {
-                line-height: calc(148mm - 40px);
+                padding-top: 200px;
+                @media print {
+                    padding-top: calc(148mm / 2 - 3em);
+                }
             }
+
+            aspect-ratio: 105/148;
         }
     }
     
     &.size-A5 {
         .paper {
-            width: 148mm;
-            height: 210mm;
+            @media print {
+                max-width: 148mm;
+                width: 148mm;
+                aspect-ratio: unset;
+            }
 
             &.title-page {
-                line-height: calc(210mm - 40px);
+                padding-top: 200px;
+                @media print {
+                    padding-top: calc(210mm / 2 - 3em);
+                }
             }
+
+            aspect-ratio: 148/210;
         }
     }
 
     &.size-Letter {
         .paper {
-            width: 8.5in;
-            height: 11in;
-            font-size: larger;
+            @media print {
+                max-width: 8.5in;
+                width: 8.5in;
+                aspect-ratio: unset;
+            }
 
             &.title-page {
-                line-height: calc(11in - 40px);
+                padding-top: 200px;
+                @media print {
+                    padding-top: calc(11in / 2 - 3em);
+                }
             }
+
+            aspect-ratio: 8.5/11;
         }
     }
 
@@ -143,9 +166,7 @@ a {
     .paper {
         background: #fff;
         margin: 20px auto;
-
-        width: 119mm;
-        height: 158mm;
+        max-width: 600px;
 
         padding: 20px;
         box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
@@ -164,20 +185,16 @@ a {
         }
 
         &.title-page {
-            // Unfortunately flexbox seems to break `break-before` so use old-school text centering
+            // Unfortunately flexbox seems to break `break-before` so use "good enough" text centering
 
             h1 {
                 font-size: 3em;
-                margin: 0;
                 text-align: center;
-                vertical-align: middle;
             }
             
             h2 {
                 font-size: 2em;
-                margin: 0;
                 text-align: center;
-                vertical-align: middle;
             }
         }
 
