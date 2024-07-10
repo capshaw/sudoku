@@ -31,3 +31,6 @@ For convenience, I've included the built CSS in the repo. Not a best practice, b
 - SASS should no longer be necessary, remove it.
 - Don't needlessly regenerate sudoku (paper size change, etc)
 - Testing
+- Better abstraction for options
+- Share link
+- Page jumps due to removing content
