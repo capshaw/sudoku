@@ -27,13 +27,13 @@ class InputNumeric extends Input {
         return selector.value;
     }
 
-    connectedCallback() {
-        this.renderInput(/* html */ `
+    getInputRender() {
+        return /* html */`
             <label for="${this.name}">
                 ${this.header}
                 <input id="${this.name}" type="number" min="${this.min}" max="${this.max}" value="${this.value}"/>
             </label>
-        `);
+        `;
     }
 }
 

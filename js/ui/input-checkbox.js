@@ -26,13 +26,13 @@ class InputCheckbox extends Input {
         return selector.checked;
     }
 
-    connectedCallback() {
-        this.renderInput(/* html */`
+    getInputRender() {
+        return /* html */`
             <label for="${this.name}">
                 <input id="${this.name}" type="checkbox" checked="${this.value}"/> ${this.header}<br>
                 <small>${this.summary}</small>
             </label>
-        `);
+        `;
     }
 }
 
