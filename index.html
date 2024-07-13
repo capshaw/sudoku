@@ -25,7 +25,7 @@
         <h2>
             Options
         </h2>
-        <form onChange="regenerateSudoku()">
+        <form>
             <input-numeric
                 name="configurationNumPuzzles"
                 header="Number of puzzles"
@@ -53,7 +53,6 @@
                 header="Include solutions"
                 summary="Solutions are printed at the back of the puzzle set"
                 value="true"></input-checkbox>
-            </label>
         </form>
         <div id="printButtonContainer">
             <button id="printButton" onClick="print()">Print</button>
@@ -72,9 +71,6 @@
         import { PaperSudoku } from "./src/app/paper-sudoku.js";
 
         const paperSudoku = new PaperSudoku();
-        window.regenerateSudoku = function(config) {
-            paperSudoku.regenerateSudoku(config);
-        }
 
         let config = {
             configurationPaperSize: 'A5',
@@ -88,11 +84,10 @@
             console.log(event.detail);
             config[event.detail.key] = event.detail.value;
             console.log(config);
-            window.regenerateSudoku(config);
+            paperSudoku.regenerateSudoku(config);
         });
 
-        window.regenerateSudoku(config);
-
+        paperSudoku.regenerateSudoku(config);
     </script>
 </body>
 </html>

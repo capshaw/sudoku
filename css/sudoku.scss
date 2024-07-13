@@ -9,10 +9,10 @@ body {
     @media print {
         background: #fff;
     }
+}
 
-    ::selection {
-        background-color: rgb(254, 206, 46);
-    }
+::selection {
+    background-color: rgb(254, 206, 46);
 }
 
 a {
@@ -87,7 +87,7 @@ a {
         position: unset;
         width: auto;
     }
-    
+
     #printButton {
         width: 100%;
         height: 40px;
@@ -100,7 +100,7 @@ a {
         cursor: pointer;
 
         &:hover {
-            background: #222222;  
+            background: #222222;
         }
     }
 }
@@ -149,7 +149,7 @@ a {
             aspect-ratio: 105/148;
         }
     }
-    
+
     &.size-A5 {
         .paper {
             @media print {
@@ -224,7 +224,7 @@ a {
                 font-size: 3em;
                 text-align: center;
             }
-            
+
             h2 {
                 font-size: 2em;
                 text-align: center;

@@ -28,14 +28,19 @@ class PaperSudoku {
         this.generator = new SudokuGenerator();
         this.solver = new SudokuSolver();
 
+        // TODO: these should be a unified data structure likely
+        this.puzzleCache = [];
+        this.solutionCache = [];
+
         // TODO: is there a better place to do this?
         customElements.define('input-checkbox', InputCheckbox);
         customElements.define('input-numeric', InputNumeric);
         customElements.define('input-select', InputSelect);
     }
 
-    regenerateSudoku(config) {
-        this.config = config;
+    regenerateSudoku(newConfig) {
+        const shouldHardRegenerate = this.#shouldHardRegenerate(this.config, newConfig);
+        this.config = JSON.parse(JSON.stringify(newConfig));
 
         // Reset the visibility of all containers and remove their content
         this.hideSolutionsHeader();
@@ -45,9 +50,25 @@ class PaperSudoku {
 
         // Generate the puzzles and set the correct visibility of various elements
         setTimeout(() => {
-            this.generatePuzzles();
+            this.generatePuzzles(shouldHardRegenerate);
             this.hideLoadingPopover();
         }, 100);
+    }
+
+    /**
+     * Certain property changes invalidated old puzzles that have been generated and should force a
+     * complete regeneration.
+     */
+    #shouldHardRegenerate(oldConfig, newConfig) {
+        return (
+            !oldConfig || (
+                newConfig[PaperSudoku.ID_CONFIG_REQUIRE_SYMMETRY] !=
+                oldConfig[PaperSudoku.ID_CONFIG_REQUIRE_SYMMETRY]
+            ) || (
+                newConfig[PaperSudoku.ID_CONFIG_DIFFICULTY] !=
+                oldConfig[PaperSudoku.ID_CONFIG_DIFFICULTY]
+            )
+        )
     }
 
     getConfigurationNumPuzzles() {
@@ -165,7 +186,12 @@ class PaperSudoku {
     /**
      * Based on the configurations the user has set, generate and display requested puzzles.
      */
-    generatePuzzles() {
+    generatePuzzles(shouldHardRegenerate) {
+        if (shouldHardRegenerate) {
+            this.puzzleCache = [];
+            this.solutionCache = [];
+        }
+
         this.setPaperSize(this.getConfigurationPaperSize());
 
         const configurationShowSolutions = this.getConfigurationShowSolutions();
@@ -174,18 +200,41 @@ class PaperSudoku {
         }
 
         const configurationNumPuzzles = this.getConfigurationNumPuzzles();
-        const configurationDifficulty = this.getConfigurationDifficulty();
-        const configurationRequireSymmetry = this.getConfigurationRequireSymmetry();
 
         // Generate `n` puzzles and display them and their solutions as configured
         for (var pid = 0; pid < configurationNumPuzzles; pid++) {
-            const puzzle = this.generator.generate(configurationDifficulty, configurationRequireSymmetry);
-            const solution = this.solver.solve(puzzle);
+            const puzzle = this.#getCachedPuzzleOrMakeOne(pid);
+            const solution = this.#getCachedSolutionOrMakeOne(pid);
 
             this.addPuzzleToPuzzlesContainer(pid, puzzle);
             if (configurationShowSolutions) {
                 this.addSolutionToSolutionsContainer(pid, solution);
             }
+        }
+    }
+
+    #getCachedPuzzleOrMakeOne(pid) {
+        if (pid < this.puzzleCache.length) {
+            return this.puzzleCache[pid];
+        } else {
+            const puzzle = this.generator.generate(
+                this.getConfigurationDifficulty(),
+                this.getConfigurationRequireSymmetry()
+            );
+            this.puzzleCache.push(puzzle);
+            return puzzle;
+        }
+    }
+
+    #getCachedSolutionOrMakeOne(pid) {
+        if (pid < this.solutionCache.length) {
+            return this.solutionCache[pid];
+        } else {
+            // TODO: this whole function is not great, especially this assumption. Redoing data structure will help
+            const puzzle = this.puzzleCache[pid];
+            const solution = this.solver.solve(puzzle);
+            this.solutionCache.push(solution);
+            return solution;
         }
     }
 }

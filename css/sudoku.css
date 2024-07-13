@@ -6,8 +6,9 @@ body {
   @media print {
     body {
       background: #fff; } }
-  body ::selection {
-    background-color: #fece2e; }
+
+::selection {
+  background-color: #fece2e; }
 
 a {
   color: #000; }

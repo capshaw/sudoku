@@ -56,6 +56,8 @@
     #renderCSS() {
         return /* html */`
             <style>
+                @import "../../../css/sudoku.css";
+
                 label {
                     display: block;
                     margin-top: 20px;
