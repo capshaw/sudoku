@@ -34,3 +34,4 @@ For convenience, I've included the built CSS in the repo. Not a best practice, b
 - Better abstraction for options
 - Share link
 - Page jumps due to removing content
+- Multiple per page

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <meta name="description" content="A Sudoku generator for creating printed sets."/>
+    <meta name="description" content="A Sudoku generator for creating printed puzzle sets"/>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Paper Sudoku | Sudoku for Printing</title>
     <link rel="icon" type="image/png" href="img/icon.png" />
@@ -19,46 +19,41 @@
             Welcome! This is a sudoku generator optimized for print or tablet usage.
         </p>
         <p>
-            To use, first configure your options below and then use your browser print 
+            To use, first configure your options below and then use your browser print
             functionality. Be mindful of the browser options and paper size you have set there.
         </p>
         <h2>
             Options
         </h2>
         <form onChange="regenerateSudoku()">
-            <label for="configurationNumPuzzles">
-                Number of puzzles
+            <input-numeric
+                name="configurationNumPuzzles"
+                header="Number of puzzles"
+                min="1"
+                max="1000"
+                value="5"></input-numeric>
+            <input-select
+                name="configurationPaperSize"
+                header="Paper Size"
+                options="A6,A5,Letter"
+                value="A5"></input-select>
+            <input-select
+                name="configurationDifficulty"
+                header="Difficulty"
+                options="Easy,Medium"
+                value="Medium"></input-select>
+            </input-select>
+            <input-checkbox
+                name="configurationRequireSymmetry"
+                header="Clue symmetry"
+                summary="Makes prettier rotationally symmetrical puzzles"
+                value="true"></input-checkbox>
+            <input-checkbox
+                name="configurationShowSolutions"
+                header="Include solutions"
+                summary="Solutions are printed at the back of the puzzle set"
+                value="true"></input-checkbox>
             </label>
-            <input id="configurationNumPuzzles" type="number" min="1" max="1000" value="5"/>
-            <label for="configurationPaperSize">
-                Paper Size
-            </label>
-            <select id="configurationPaperSize">
-                <option value="A6">A6</option>
-                <option value="A5" selected>A5</option>
-                <option value="Letter">Letter</option>
-            </select>
-            <label for="configurationDifficulty">
-                Difficulty
-            </label>
-            <select id="configurationDifficulty">
-                <option value="Easy">Easy</option>
-                <option value="Medium" selected>Medium</option>
-            </select>
-            <label for="configurationRequireSymmetry">
-                <input id="configurationRequireSymmetry" type="checkbox" checked="true"/> Clue symmetry<br>
-                <small>Makes prettier rotationally symmetrical puzzles</small>
-            </label>
-            <label for="configurationShowSolutions">
-                <input id="configurationShowSolutions" type="checkbox" checked="true"/> Include solutions<br>
-                <small>Solutions are printed at the back of the puzzle set</small>
-            </label>
-            <!-- <label>
-                Number per page
-            </label>
-            <em>
-                Coming someday
-            </em> -->
         </form>
         <div id="printButtonContainer">
             <button id="printButton" onClick="print()">Print</button>
@@ -74,15 +69,30 @@
         <div id="solutionsContainer"></div>
     </div>
     <script type="module">
-        import { PaperSudoku } from "./js/ui/PaperSudoku.js";
+        import { PaperSudoku } from "./js/ui/paper-sudoku.js";
 
         const paperSudoku = new PaperSudoku();
-
-        window.regenerateSudoku = function() {
-            paperSudoku.regenerateSudoku();
+        window.regenerateSudoku = function(config) {
+            paperSudoku.regenerateSudoku(config);
         }
 
-        window.regenerateSudoku();
+        let config = {
+            configurationPaperSize: 'A5',
+            configurationDifficulty: 'Medium',
+            configurationNumPuzzles: 5,
+            configurationRequireSymmetry: true,
+            configurationShowSolutions: true,
+        };
+
+        document.addEventListener('change-configuration', event => {
+            console.log(event.detail);
+            config[event.detail.key] = event.detail.value;
+            console.log(config);
+            window.regenerateSudoku(config);
+        });
+
+        window.regenerateSudoku(config);
+
     </script>
 </body>
 </html>

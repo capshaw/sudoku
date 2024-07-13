@@ -1,6 +1,6 @@
 /**
  * A sudoku puzzle solver
- */ 
+ */
 class SudokuSolver {
 
     isSolvable(puzzle) {

@@ -1,4 +1,4 @@
-import { Tuple } from "../util/Tuple.js";
+import { Tuple } from "../util/tuple.js";
 
 /**
  * A model of a Sudoku puzzle

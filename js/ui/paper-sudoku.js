@@ -1,6 +1,9 @@
-import { Difficulty } from "../sudoku/Difficulty.js";
-import { SudokuGenerator } from "../sudoku/SudokuGenerator.js";
-import { SudokuSolver } from "../sudoku/SudokuSolver.js";
+import { Difficulty } from "../sudoku/difficulty.js";
+import { SudokuGenerator } from "../sudoku/sudoku-generator.js";
+import { SudokuSolver } from "../sudoku/sudoku-solver.js";
+import { InputCheckbox } from "./input-checkbox.js";
+import { InputNumeric } from "./input-numeric.js";
+import { InputSelect } from "./input-select.js";
 
 /**
  * Acknowledging this is pretty hacky right now. Needs a few refactoring passes.
@@ -24,9 +27,16 @@ class PaperSudoku {
     constructor() {
         this.generator = new SudokuGenerator();
         this.solver = new SudokuSolver();
+
+        // TODO: is there a better place to do this?
+        customElements.define('input-checkbox', InputCheckbox);
+        customElements.define('input-numeric', InputNumeric);
+        customElements.define('input-select', InputSelect);
     }
 
-    regenerateSudoku() {
+    regenerateSudoku(config) {
+        this.config = config;
+
         // Reset the visibility of all containers and remove their content
         this.hideSolutionsHeader();
         this.showLoadingPopover();
@@ -41,23 +51,23 @@ class PaperSudoku {
     }
 
     getConfigurationNumPuzzles() {
-        return parseInt(document.getElementById(PaperSudoku.ID_CONFIG_NUM_PUZZLES).value);
+        return this.config[PaperSudoku.ID_CONFIG_NUM_PUZZLES];
     }
 
     getConfigurationPaperSize() {
-        return document.getElementById(PaperSudoku.ID_CONFIG_PAPER_SIZE).value;
+        return this.config[PaperSudoku.ID_CONFIG_PAPER_SIZE];
     }
 
     getConfigurationShowSolutions() {
-        return document.getElementById(PaperSudoku.ID_CONFIG_SHOW_SOLUTIONS).checked;
+        return this.config[PaperSudoku.ID_CONFIG_SHOW_SOLUTIONS];
     }
 
     getConfigurationDifficulty() {
-        return new Difficulty(document.getElementById(PaperSudoku.ID_CONFIG_DIFFICULTY).value);
+        return new Difficulty(this.config[PaperSudoku.ID_CONFIG_DIFFICULTY]);
     }
 
     getConfigurationRequireSymmetry() {
-        return document.getElementById(PaperSudoku.ID_CONFIG_REQUIRE_SYMMETRY).checked;
+        return this.config[PaperSudoku.ID_CONFIG_REQUIRE_SYMMETRY];
     }
 
     emptySolutionsContainer() {
@@ -110,7 +120,7 @@ class PaperSudoku {
     }
 
     /**
-     * Given either a puzzle or a solution to a sudoku, returns an HTML representation of that 
+     * Given either a puzzle or a solution to a sudoku, returns an HTML representation of that
      * puzzle or solution.
      */
     displayPuzzle(pid, puzzleOrSolution, isSolution) {
@@ -125,7 +135,7 @@ class PaperSudoku {
         const jumpToAntiLink = `<a href="#${antiId}">${jumpToAntiText}</a>`;
         const parent = this;
 
-        return `
+        return /* html */ `
             <div class="paper" id="${id}">
                 <h2>${puzzleTitle}</h2>
                 <table>

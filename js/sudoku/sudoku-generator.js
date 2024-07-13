@@ -1,6 +1,6 @@
-import { Difficulty } from "./Difficulty.js";
-import { Sudoku } from "./Sudoku.js";
-import { SudokuSolver } from "./SudokuSolver.js";
+import { Difficulty } from "./difficulty.js";
+import { Sudoku } from "./sudoku.js";
+import { SudokuSolver } from "./sudoku-solver.js";
 
 /**
  * A sudoku puzzle generator
