@@ -1,9 +1,9 @@
 import { Difficulty } from "../sudoku/difficulty.js";
-import { SudokuGenerator } from "../sudoku/sudoku-generator.js";
-import { SudokuSolver } from "../sudoku/sudoku-solver.js";
-import { InputCheckbox } from "./input-checkbox.js";
-import { InputNumeric } from "./input-numeric.js";
-import { InputSelect } from "./input-select.js";
+import { SudokuGenerator } from "../sudoku/generator.js";
+import { SudokuSolver } from "../sudoku/solver.js";
+import { InputCheckbox } from "../components/input/checkbox.js";
+import { InputNumeric } from "../components/input/numeric.js";
+import { InputSelect } from "../components/input/select.js";
 
 /**
  * Acknowledging this is pretty hacky right now. Needs a few refactoring passes.
