@@ -27,29 +27,29 @@
         </h2>
         <form>
             <input-numeric
-                name="configurationNumPuzzles"
+                name="puzzleCount"
                 header="Number of puzzles"
                 min="1"
                 max="1000"
                 value="5"></input-numeric>
             <input-select
-                name="configurationPaperSize"
+                name="paperSize"
                 header="Paper Size"
                 options="A6,A5,Letter"
                 value="A5"></input-select>
             <input-select
-                name="configurationDifficulty"
+                name="difficulty"
                 header="Difficulty"
                 options="Easy,Medium"
                 value="Medium"></input-select>
             </input-select>
             <input-checkbox
-                name="configurationRequireSymmetry"
+                name="requireSymmetry"
                 header="Clue symmetry"
                 summary="Makes prettier rotationally symmetrical puzzles"
                 value="true"></input-checkbox>
             <input-checkbox
-                name="configurationShowSolutions"
+                name="showSolutions"
                 header="Include solutions"
                 summary="Solutions are printed at the back of the puzzle set"
                 value="true"></input-checkbox>
@@ -69,25 +69,42 @@
     </div>
     <script type="module">
         import { PaperSudoku } from "./src/app/paper-sudoku.js";
+        import { SudokuConfiguration } from "./src/sudoku/configuration.js";
+        import { Difficulty } from "./src/sudoku/difficulty.js";
 
+        // TODO: paper size class like difficulty
         const paperSudoku = new PaperSudoku();
-
-        let config = {
-            configurationPaperSize: 'A5',
-            configurationDifficulty: 'Medium',
-            configurationNumPuzzles: 5,
-            configurationRequireSymmetry: true,
-            configurationShowSolutions: true,
-        };
+        let configuration = new SudokuConfiguration(Difficulty.Medium, 'A5', 5, true, true);
 
         document.addEventListener('change-configuration', event => {
             console.log(event.detail);
-            config[event.detail.key] = event.detail.value;
-            console.log(config);
-            paperSudoku.regenerateSudoku(config);
+            configuration = configuration.copyOf();
+            console.log(configuration);
+            paperSudoku.regenerateSudoku(configuration);
+
+            // TODO: make these constants
+            switch (event.detail.key) {
+                case 'paperSize':
+                    configuration.paperSize = event.detail.value;
+                    break;
+                case 'difficulty':
+                    configuration.difficulty = new Difficulty(event.detail.value);
+                    break;
+                case 'puzzleCount':
+                    configuration.puzzleCount = event.detail.value;
+                    break;
+                case 'requireSymmetry':
+                    configuration.requireSymmetry = event.detail.value;
+                    break;
+                case 'showSolutions':
+                    configuration.showSolutions = event.detail.value;
+                    break;
+                default:
+                    throw Error(`Event handling for type '${event.detail.key}'' not implemented`);
+            }
         });
 
-        paperSudoku.regenerateSudoku(config);
+        paperSudoku.regenerateSudoku(configuration);
     </script>
 </body>
 </html>

@@ -18,12 +18,6 @@ class PaperSudoku {
     static ID_SOLUTIONS_CONTAINER = 'solutionsContainer';
     static ID_SOLUTIONS_HEADER = 'solutionsHeader';
 
-    static ID_CONFIG_NUM_PUZZLES = 'configurationNumPuzzles';
-    static ID_CONFIG_PAPER_SIZE = 'configurationPaperSize';
-    static ID_CONFIG_SHOW_SOLUTIONS = 'configurationShowSolutions';
-    static ID_CONFIG_DIFFICULTY = 'configurationDifficulty';
-    static ID_CONFIG_REQUIRE_SYMMETRY = 'configurationRequireSymmetry';
-
     constructor() {
         this.generator = new SudokuGenerator();
         this.solver = new SudokuSolver();
@@ -40,7 +34,7 @@ class PaperSudoku {
 
     regenerateSudoku(newConfig) {
         const shouldHardRegenerate = this.#shouldHardRegenerate(this.config, newConfig);
-        this.config = JSON.parse(JSON.stringify(newConfig));
+        this.config = newConfig;
 
         // Reset the visibility of all containers and remove their content
         this.hideSolutionsHeader();
@@ -62,33 +56,35 @@ class PaperSudoku {
     #shouldHardRegenerate(oldConfig, newConfig) {
         return (
             !oldConfig || (
-                newConfig[PaperSudoku.ID_CONFIG_REQUIRE_SYMMETRY] !=
-                oldConfig[PaperSudoku.ID_CONFIG_REQUIRE_SYMMETRY]
+                newConfig.requireSymmetry !=
+                oldConfig.requireSymmetry
             ) || (
-                newConfig[PaperSudoku.ID_CONFIG_DIFFICULTY] !=
-                oldConfig[PaperSudoku.ID_CONFIG_DIFFICULTY]
+                // TODO: could implement equals in class
+                newConfig.difficulty.name !=
+                oldConfig.difficulty.name
             )
         )
     }
 
-    getConfigurationNumPuzzles() {
-        return this.config[PaperSudoku.ID_CONFIG_NUM_PUZZLES];
+    // TODO: these are probably no long necessary, clean up
+    getPuzzleCount() {
+        return this.config.puzzleCount;
     }
 
-    getConfigurationPaperSize() {
-        return this.config[PaperSudoku.ID_CONFIG_PAPER_SIZE];
+    getPaperSize() {
+        return this.config.paperSize;
     }
 
-    getConfigurationShowSolutions() {
-        return this.config[PaperSudoku.ID_CONFIG_SHOW_SOLUTIONS];
+    getShowSolutions() {
+        return this.config.showSolutions;
     }
 
-    getConfigurationDifficulty() {
-        return new Difficulty(this.config[PaperSudoku.ID_CONFIG_DIFFICULTY]);
+    getDifficulty() {
+        return this.config.difficulty;
     }
 
-    getConfigurationRequireSymmetry() {
-        return this.config[PaperSudoku.ID_CONFIG_REQUIRE_SYMMETRY];
+    getRequireSymmetry() {
+        return this.config.requireSymmetry;
     }
 
     emptySolutionsContainer() {
@@ -168,7 +164,7 @@ class PaperSudoku {
                         return rows;
                     })(puzzleOrSolution)}
                 </table>
-                ${this.getConfigurationShowSolutions() ? jumpToAntiLink : ''}
+                ${this.getShowSolutions() ? jumpToAntiLink : ''}
             </div>
         `;
     }
@@ -192,22 +188,22 @@ class PaperSudoku {
             this.solutionCache = [];
         }
 
-        this.setPaperSize(this.getConfigurationPaperSize());
+        this.setPaperSize(this.getPaperSize());
 
-        const configurationShowSolutions = this.getConfigurationShowSolutions();
-        if (configurationShowSolutions) {
+        const showSolutions = this.getShowSolutions();
+        if (showSolutions) {
             this.showSolutionsHeader();
         }
 
-        const configurationNumPuzzles = this.getConfigurationNumPuzzles();
+        const puzzleCount = this.getPuzzleCount();
 
         // Generate `n` puzzles and display them and their solutions as configured
-        for (var pid = 0; pid < configurationNumPuzzles; pid++) {
+        for (var pid = 0; pid < puzzleCount; pid++) {
             const puzzle = this.#getCachedPuzzleOrMakeOne(pid);
             const solution = this.#getCachedSolutionOrMakeOne(pid);
 
             this.addPuzzleToPuzzlesContainer(pid, puzzle);
-            if (configurationShowSolutions) {
+            if (showSolutions) {
                 this.addSolutionToSolutionsContainer(pid, solution);
             }
         }
@@ -218,8 +214,8 @@ class PaperSudoku {
             return this.puzzleCache[pid];
         } else {
             const puzzle = this.generator.generate(
-                this.getConfigurationDifficulty(),
-                this.getConfigurationRequireSymmetry()
+                this.getDifficulty(),
+                this.getRequireSymmetry()
             );
             this.puzzleCache.push(puzzle);
             return puzzle;

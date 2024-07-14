@@ -5,12 +5,22 @@ class Difficulty {
     static Easy = new Difficulty('Easy');
     static Medium = new Difficulty('Medium');
 
+    #name;
+
     constructor(name) {
-        this.name = name;
+        this.#name = name;
+    }
+
+    get name() {
+        return this.#name;
+    }
+
+    set name(name) {
+        this.#name = name;
     }
 
     toString() {
-        return `Difficulty.${this.name}`;
+        return `Difficulty.${this.#name}`;
     }
 }
 
