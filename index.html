@@ -71,40 +71,12 @@
         import { PaperSudoku } from "./src/app/paper-sudoku.js";
         import { SudokuConfiguration } from "./src/sudoku/configuration.js";
         import { Difficulty } from "./src/sudoku/difficulty.js";
+        import { PaperSize } from "./src/sudoku/paper-size.js";
 
-        // TODO: paper size class like difficulty
         const paperSudoku = new PaperSudoku();
-        let configuration = new SudokuConfiguration(Difficulty.Medium, 'A5', 5, true, true);
-
-        document.addEventListener('change-configuration', event => {
-            console.log(event.detail);
-            configuration = configuration.copyOf();
-            console.log(configuration);
-            paperSudoku.regenerateSudoku(configuration);
-
-            // TODO: make these constants
-            switch (event.detail.key) {
-                case 'paperSize':
-                    configuration.paperSize = event.detail.value;
-                    break;
-                case 'difficulty':
-                    configuration.difficulty = new Difficulty(event.detail.value);
-                    break;
-                case 'puzzleCount':
-                    configuration.puzzleCount = event.detail.value;
-                    break;
-                case 'requireSymmetry':
-                    configuration.requireSymmetry = event.detail.value;
-                    break;
-                case 'showSolutions':
-                    configuration.showSolutions = event.detail.value;
-                    break;
-                default:
-                    throw Error(`Event handling for type '${event.detail.key}'' not implemented`);
-            }
-        });
-
-        paperSudoku.regenerateSudoku(configuration);
+        // TODO: how to make sure these always are the same as the HTML above
+        const configuration = new SudokuConfiguration(Difficulty.Medium, PaperSize.A5, 5, true, true);
+        paperSudoku.initialize(configuration);
     </script>
 </body>
 </html>

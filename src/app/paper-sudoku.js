@@ -21,6 +21,7 @@ class PaperSudoku {
     constructor() {
         this.generator = new SudokuGenerator();
         this.solver = new SudokuSolver();
+        this.config = null;
 
         // TODO: these should be a unified data structure likely
         this.puzzleCache = [];
@@ -30,6 +31,42 @@ class PaperSudoku {
         customElements.define('input-checkbox', InputCheckbox);
         customElements.define('input-numeric', InputNumeric);
         customElements.define('input-select', InputSelect);
+    }
+
+    // TODO: Lots of constants to fix including event, and keys
+    initialize (configuration) {
+        this.config = configuration;
+        this.regenerateSudoku(configuration);
+
+        // TODO: not sure if it's normal to reference 'document' in module like this
+        document.addEventListener('change-configuration', event => {
+            console.log(event.detail);
+            const newConfig = this.config.copyOf();
+
+            // TODO: make these constants
+            switch (event.detail.key) {
+                case 'paperSize':
+                    newConfig.paperSize = new PaperSize(event.detail.value);
+                    break;
+                case 'difficulty':
+                    newConfig.difficulty = new Difficulty(event.detail.value);
+                    break;
+                case 'puzzleCount':
+                    newConfig.puzzleCount = event.detail.value;
+                    break;
+                case 'requireSymmetry':
+                    newConfig.requireSymmetry = event.detail.value;
+                    break;
+                case 'showSolutions':
+                    newConfig.showSolutions = event.detail.value;
+                    break;
+                default:
+                    throw Error(`Event handling for type '${event.detail.key}'' not implemented`);
+            }
+
+            console.log(newConfig);
+            this.regenerateSudoku(newConfig);
+        });
     }
 
     regenerateSudoku(newConfig) {
@@ -114,7 +151,7 @@ class PaperSudoku {
     setPaperSize(paperSize) {
         // TODO: make this more robust against 'paperset' name changes
         const overallContainerElement = document.getElementById(PaperSudoku.ID_OVERALL_CONTAINER);
-        overallContainerElement.classList = `paperset size-${paperSize}`;
+        overallContainerElement.classList = `paperset size-${paperSize.name}`;
     }
 
     /**
