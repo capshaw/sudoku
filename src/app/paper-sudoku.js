@@ -4,6 +4,10 @@ import { SudokuSolver } from "../sudoku/solver.js";
 import { InputCheckbox } from "../components/input/checkbox.js";
 import { InputNumeric } from "../components/input/numeric.js";
 import { InputSelect } from "../components/input/select.js";
+import { PaperSize } from "../sudoku/paper-size.js";
+import { Sidebar } from "../components/sidebar/sidebar.js";
+import { PrintButton } from "../components/print-button/print-button.js";
+import { PaperSudokuLogo } from "../components/paper-sudoku-logo/paper-sudoku-logo.js";
 
 /**
  * Acknowledging this is pretty hacky right now. Needs a few refactoring passes.
@@ -31,6 +35,9 @@ class PaperSudoku {
         customElements.define('input-checkbox', InputCheckbox);
         customElements.define('input-numeric', InputNumeric);
         customElements.define('input-select', InputSelect);
+        customElements.define('app-sidebar', Sidebar);
+        customElements.define('print-button', PrintButton);
+        customElements.define('paper-sudoku-logo', PaperSudokuLogo);
     }
 
     // TODO: Lots of constants to fix including event, and keys
@@ -101,27 +108,6 @@ class PaperSudoku {
                 oldConfig.difficulty.name
             )
         )
-    }
-
-    // TODO: these are probably no long necessary, clean up
-    getPuzzleCount() {
-        return this.config.puzzleCount;
-    }
-
-    getPaperSize() {
-        return this.config.paperSize;
-    }
-
-    getShowSolutions() {
-        return this.config.showSolutions;
-    }
-
-    getDifficulty() {
-        return this.config.difficulty;
-    }
-
-    getRequireSymmetry() {
-        return this.config.requireSymmetry;
     }
 
     emptySolutionsContainer() {
@@ -201,7 +187,7 @@ class PaperSudoku {
                         return rows;
                     })(puzzleOrSolution)}
                 </table>
-                ${this.getShowSolutions() ? jumpToAntiLink : ''}
+                ${this.config.showSolutions ? jumpToAntiLink : ''}
             </div>
         `;
     }
@@ -225,14 +211,14 @@ class PaperSudoku {
             this.solutionCache = [];
         }
 
-        this.setPaperSize(this.getPaperSize());
+        this.setPaperSize(this.config.paperSize);
 
-        const showSolutions = this.getShowSolutions();
+        const showSolutions = this.config.showSolutions;
         if (showSolutions) {
             this.showSolutionsHeader();
         }
 
-        const puzzleCount = this.getPuzzleCount();
+        const puzzleCount = this.config.puzzleCount;
 
         // Generate `n` puzzles and display them and their solutions as configured
         for (var pid = 0; pid < puzzleCount; pid++) {
@@ -251,8 +237,8 @@ class PaperSudoku {
             return this.puzzleCache[pid];
         } else {
             const puzzle = this.generator.generate(
-                this.getDifficulty(),
-                this.getRequireSymmetry()
+                this.config.difficulty,
+                this.config.requireSymmetry
             );
             this.puzzleCache.push(puzzle);
             return puzzle;

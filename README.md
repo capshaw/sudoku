@@ -4,7 +4,7 @@
 
 This project is a print-focused sudoku generator. It supports quick generation of puzzles with the intention of the puzzles either being printed to paper or to PDF (for use with tablets).
 
-This project has gone through several iterations over the decade or so that it has existed. It originally started as an online Sudoku generator, solver, and UI that allowed users to play sudoku in a browser window. 
+This project has gone through several iterations over the decade or so that it has existed. It originally started as an online Sudoku generator, solver, and UI that allowed users to play sudoku in a browser window.
 
 ## Solver Limitations
 
@@ -22,7 +22,7 @@ There is a build step for the SASS / CSS that is currently required to modify th
 
 ```bash
 sass --watch css/sudoku.scss:css/sudoku.css
-``` 
+```
 
 For convenience, I've included the built CSS in the repo. Not a best practice, but convenient for anyone who just wants to play with the Javascript. I also have a desire to move away from SASS here, but that is in the TODO pile.
 
@@ -35,3 +35,4 @@ For convenience, I've included the built CSS in the repo. Not a best practice, b
 - Share link
 - Page jumps due to removing content
 - Multiple per page
+- Optional build step for fun

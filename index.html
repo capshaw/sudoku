@@ -3,61 +3,16 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="description" content="A Sudoku generator for creating printed puzzle sets"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Paper Sudoku | Sudoku for Printing</title>
-    <link rel="icon" type="image/png" href="img/icon.png" />
+    <link rel="icon" type="image/png" href="img/icon.png"/>
     <link rel="stylesheet" type="text/css" href="css/sudoku.css"/>
 </head>
 <body>
+    <!-- Intentionally not a JS module for quick loading speed. Perhaps make it one embedded below. -->
     <div id="loadingPopover" class="loading"></div>
-    <div id="options">
-        <div class="logo" aria-label="Paper Sudoku logo"></div>
-        <h2>
-            About
-        </h2>
-        <p>
-            Welcome! This is a sudoku generator optimized for print or tablet usage.
-        </p>
-        <p>
-            To use, first configure your options below and then use your browser print
-            functionality. Be mindful of the browser options and paper size you have set there.
-        </p>
-        <h2>
-            Options
-        </h2>
-        <form>
-            <input-numeric
-                name="puzzleCount"
-                header="Number of puzzles"
-                min="1"
-                max="1000"
-                value="5"></input-numeric>
-            <input-select
-                name="paperSize"
-                header="Paper Size"
-                options="A6,A5,Letter"
-                value="A5"></input-select>
-            <input-select
-                name="difficulty"
-                header="Difficulty"
-                options="Easy,Medium"
-                value="Medium"></input-select>
-            </input-select>
-            <input-checkbox
-                name="requireSymmetry"
-                header="Clue symmetry"
-                summary="Makes prettier rotationally symmetrical puzzles"
-                value="true"></input-checkbox>
-            <input-checkbox
-                name="showSolutions"
-                header="Include solutions"
-                summary="Solutions are printed at the back of the puzzle set"
-                value="true"></input-checkbox>
-        </form>
-        <div id="printButtonContainer">
-            <button id="printButton" onClick="print()">Print</button>
-        </div>
-    </div>
+    <app-sidebar></app-sidebar>
+    <!-- [Start] Stuff that will be extracted to <app-body> -->
     <div class="paperset" id="overallContainer">
         <div id="puzzlesContainer"></div>
         <div id="solutionsHeader" class="paper title-page hidden">
@@ -67,6 +22,7 @@
         </div>
         <div id="solutionsContainer"></div>
     </div>
+    <!-- [End] Stuff that will be extracted to <app-body> -->
     <script type="module">
         import { PaperSudoku } from "./src/app/paper-sudoku.js";
         import { SudokuConfiguration } from "./src/sudoku/configuration.js";
