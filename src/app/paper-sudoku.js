@@ -1,96 +1,50 @@
-import { Difficulty } from "../sudoku/difficulty.js";
-import { SudokuGenerator } from "../sudoku/generator.js";
-import { SudokuSolver } from "../sudoku/solver.js";
-import { InputCheckbox } from "../components/input/checkbox.js";
-import { InputNumeric } from "../components/input/numeric.js";
-import { InputSelect } from "../components/input/select.js";
-import { PaperSize } from "../sudoku/paper-size.js";
-import { Sidebar } from "../components/sidebar/sidebar.js";
-import { PrintButton } from "../components/print-button/print-button.js";
-import { PaperSudokuLogo } from "../components/paper-sudoku-logo/paper-sudoku-logo.js";
+import { SudokuGenerator } from '../sudoku/generator.js';
+import { SudokuSolver } from '../sudoku/solver.js';
+import { SudokuConfiguration } from './sudoku-configuration.js';
+import { EventManager, CONFIGURATION_CHANGE_EVENT_NAME } from './events.js';
+import { SudokuCache } from './sudoku-cache.js';
 
 /**
- * Acknowledging this is pretty hacky right now. Needs a few refactoring passes.
+ * Acknowledging this is pretty hacky right now. Still needs a few refactoring passes.
  */
-class PaperSudoku {
-    static HIDDEN_CLASS_NAME = 'hidden';
-    static EMPTY_CONTAINER_STATE = '';
-
-    static ID_LOADING_POPOVER = 'loadingPopover';
-    static ID_OVERALL_CONTAINER = 'overallContainer';
-    static ID_PUZZLES_CONTAINER = 'puzzlesContainer';
-    static ID_SOLUTIONS_CONTAINER = 'solutionsContainer';
-    static ID_SOLUTIONS_HEADER = 'solutionsHeader';
+class PaperSudoku extends HTMLElement {
 
     constructor() {
+        super();
+
         this.generator = new SudokuGenerator();
         this.solver = new SudokuSolver();
-        this.config = null;
+        this.puzzleCache = new SudokuCache();
+        this.solutionCache = new SudokuCache();
+        this.config = SudokuConfiguration.fresh();
 
-        // TODO: these should be a unified data structure likely
-        this.puzzleCache = [];
-        this.solutionCache = [];
+        this.shadow = this.attachShadow({
+            mode: 'open',
+        });
 
-        // TODO: is there a better place to do this?
-        customElements.define('input-checkbox', InputCheckbox);
-        customElements.define('input-numeric', InputNumeric);
-        customElements.define('input-select', InputSelect);
-        customElements.define('app-sidebar', Sidebar);
-        customElements.define('print-button', PrintButton);
-        customElements.define('paper-sudoku-logo', PaperSudokuLogo);
-    }
+        // TODO: this should be refactored so this knows less about the implementation details
+        document.addEventListener(CONFIGURATION_CHANGE_EVENT_NAME, event => {
+            const oldConfig = this.config;
+            this.config = EventManager.adjustConfiguration(this.config, event);
 
-    // TODO: Lots of constants to fix including event, and keys
-    initialize (configuration) {
-        this.config = configuration;
-        this.regenerateSudoku(configuration);
-
-        // TODO: not sure if it's normal to reference 'document' in module like this
-        document.addEventListener('change-configuration', event => {
-            console.log(event.detail);
-            const newConfig = this.config.copyOf();
-
-            // TODO: make these constants
-            switch (event.detail.key) {
-                case 'paperSize':
-                    newConfig.paperSize = new PaperSize(event.detail.value);
-                    break;
-                case 'difficulty':
-                    newConfig.difficulty = new Difficulty(event.detail.value);
-                    break;
-                case 'puzzleCount':
-                    newConfig.puzzleCount = event.detail.value;
-                    break;
-                case 'requireSymmetry':
-                    newConfig.requireSymmetry = event.detail.value;
-                    break;
-                case 'showSolutions':
-                    newConfig.showSolutions = event.detail.value;
-                    break;
-                default:
-                    throw Error(`Event handling for type '${event.detail.key}'' not implemented`);
+            if (!this.config.isComplete()) {
+                console.log(`[PaperSudoku] Not generating output with incomplete configuration.`);
+                return;
             }
 
-            console.log(newConfig);
-            this.regenerateSudoku(newConfig);
+            if (this.#shouldHardRegenerate(oldConfig, this.config)) {
+                this.puzzleCache.clear();
+                this.solutionCache.clear();
+            }
+
+            this.#render();
         });
     }
 
-    regenerateSudoku(newConfig) {
-        const shouldHardRegenerate = this.#shouldHardRegenerate(this.config, newConfig);
-        this.config = newConfig;
-
-        // Reset the visibility of all containers and remove their content
-        this.hideSolutionsHeader();
-        this.showLoadingPopover();
-        this.emptyPuzzlesContainer();
-        this.emptySolutionsContainer();
-
-        // Generate the puzzles and set the correct visibility of various elements
-        setTimeout(() => {
-            this.generatePuzzles(shouldHardRegenerate);
-            this.hideLoadingPopover();
-        }, 100);
+    connectedCallback() {
+        if (this.config.isComplete()) {
+            this.#render();
+        }
     }
 
     /**
@@ -99,7 +53,7 @@ class PaperSudoku {
      */
     #shouldHardRegenerate(oldConfig, newConfig) {
         return (
-            !oldConfig || (
+            !oldConfig || !oldConfig.isComplete() || (
                 newConfig.requireSymmetry !=
                 oldConfig.requireSymmetry
             ) || (
@@ -110,51 +64,244 @@ class PaperSudoku {
         )
     }
 
-    emptySolutionsContainer() {
-        document.getElementById(PaperSudoku.ID_SOLUTIONS_CONTAINER).innerHTML = PaperSudoku.EMPTY_CONTAINER_STATE;
+    #getCachedPuzzleOrMakeOne(pid) {
+        if (this.puzzleCache.hasCachedPuzzle(pid)) {
+            return this.puzzleCache.getCachedPuzzle(pid);
+        } else {
+            const puzzle = this.generator.generate(
+                this.config.difficulty,
+                this.config.requireSymmetry
+            );
+            this.puzzleCache.setCachedPuzzle(pid, puzzle);
+            return puzzle;
+        }
     }
 
-    emptyPuzzlesContainer() {
-        document.getElementById(PaperSudoku.ID_PUZZLES_CONTAINER).innerHTML = PaperSudoku.EMPTY_CONTAINER_STATE;
+    #getCachedSolutionOrMakeOne(pid) {
+        if (this.solutionCache.hasCachedPuzzle(pid)) {
+            return this.solutionCache.getCachedPuzzle(pid);
+        } else {
+            const puzzle = this.#getCachedPuzzleOrMakeOne(pid);
+            const solution = this.solver.solve(puzzle);
+            this.solutionCache.setCachedPuzzle(pid, solution);
+            return solution;
+        }
     }
 
-    showSolutionsHeader() {
-        document.getElementById(PaperSudoku.ID_SOLUTIONS_HEADER).classList.remove(PaperSudoku.HIDDEN_CLASS_NAME);
+    #render() {
+        this.shadow.innerHTML = this.#renderCSS() + /* html */`
+            <div class="paperset size-${this.config.paperSize.name}">
+                ${this.#displayPuzzles()}
+                ${this.#displaySolutions()}
+            </div>
+        `;
     }
 
-    hideSolutionsHeader() {
-        document.getElementById(PaperSudoku.ID_SOLUTIONS_HEADER).classList.add(PaperSudoku.HIDDEN_CLASS_NAME);
+    // TODO: this is so long that it implies that this probably needs to be broken into multiple components
+    #renderCSS() {
+        return /* html */`
+            <style>
+                @import "src/app/paper-sudoku.css";
+
+                .paperset {
+                    margin-top: 20px;
+                    margin-left: 280px;
+                    margin-right: 20px;
+                }
+
+                @media (max-width: 600px) {
+                    .paperset {
+                        margin-left: auto;
+                        margin-right: auto;
+                        padding-left: 20px;
+                        padding-right: 20px;
+                    }
+                }
+
+                @media print {
+                    .paperset {
+                        margin-left: 0;
+                        margin-top: 0;
+                        margin-right: 0;
+                    }
+                }
+
+                table {
+                    margin-bottom: 20px;
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+
+                /* Safari doesn't seem to allow aspect-ratio on tables. That's why this extra div exists. */
+                .sudoku-cell {
+                    aspect-ratio: 1 / 1;
+                    width: 100%;
+                    display: grid;
+                    align-items:center;
+                }
+
+                td {
+                    border: 1px solid black;
+                    aspect-ratio: 1 / 1;
+                    text-align: center;
+                }
+
+                tr:nth-of-type(3n) td {
+                    border-bottom: 4px solid black;
+                }
+
+                tr:nth-of-type(1) td {
+                    border-top: 4px solid black;
+                }
+
+                td:nth-of-type(3n) {
+                    border-right: 4px solid black;
+                }
+
+                td:nth-of-type(1) {
+                    border-left: 4px solid black;
+                }
+
+                h1, h2 {
+                    margin-top: 0;
+                }
+
+                .title-page h1 {
+                    font-size: 3em;
+                    text-align: center;
+                }
+
+                .title-page h2 {
+                    font-size: 2em;
+                    text-align: center;
+                }
+
+                @media print {
+                    #puzzlesContainer .paper:first-of-type {
+                        break-before: avoid;
+                    }
+                }
+
+                /* TODO: refactor this.. copy/pasted from SCSS output */
+                .paperset.size-A6 .paper {
+                    aspect-ratio: 105/148; }
+                    @media print {
+                        .paperset.size-A6 .paper {
+                        max-width: 105mm;
+                        width: 105mm;
+                        aspect-ratio: unset; } }
+                    .paperset.size-A6 .paper.title-page {
+                        padding-top: 200px; }
+                        @media print {
+                        .paperset.size-A6 .paper.title-page {
+                            padding-top: calc(148mm / 2 - 3em); } }
+                    .paperset.size-A5 .paper {
+                    aspect-ratio: 148/210; }
+                    @media print {
+                        .paperset.size-A5 .paper {
+                        max-width: 148mm;
+                        width: 148mm;
+                        aspect-ratio: unset; } }
+                    .paperset.size-A5 .paper.title-page {
+                        padding-top: 200px; }
+                        @media print {
+                        .paperset.size-A5 .paper.title-page {
+                            padding-top: calc(210mm / 2 - 3em); } }
+                    .paperset.size-Letter .paper {
+                    aspect-ratio: 8.5/11; }
+                    @media print {
+                        .paperset.size-Letter .paper {
+                        max-width: 8.5in;
+                        width: 8.5in;
+                        aspect-ratio: unset; } }
+                    .paperset.size-Letter .paper.title-page {
+                        padding-top: 200px; }
+                        @media print {
+                        .paperset.size-Letter .paper.title-page {
+                            padding-top: calc(11in / 2 - 3em); } }
+                    .paperset .paper {
+                    background: #fff;
+                    margin: 20px auto;
+                    max-width: 600px;
+                    padding: 20px;
+                    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+                    box-sizing: border-box;
+                    border-radius: 5px; }
+                    @media print {
+                        .paperset .paper {
+                        box-shadow: none;
+                        margin: auto;
+                        padding: 0;
+                        break-before: page; } }
+
+            </style>
+        `;
     }
 
-    showLoadingPopover() {
-        document.getElementById(PaperSudoku.ID_LOADING_POPOVER).classList.remove(PaperSudoku.HIDDEN_CLASS_NAME);
+    /**
+     * Returns an HTML string representing the puzzles to display.
+     */
+    #displayPuzzles() {
+        let puzzles = '';
+        for (let i = 0; i < this.config.puzzleCount; i++) {
+            puzzles += this.#displayPuzzle(i, this.#getCachedPuzzleOrMakeOne(i), false);
+        }
+
+        return /* html */`
+            <div id="puzzlesContainer">
+                ${puzzles}
+            </div>
+        `;
     }
 
-    hideLoadingPopover() {
-        document.getElementById(PaperSudoku.ID_LOADING_POPOVER).classList.add(PaperSudoku.HIDDEN_CLASS_NAME);
-    }
+    /**
+     * Depending on whether or not the application is configured to display solutions, return
+     * a string representing those solutions or an empty string otherwise.
+     */
+    #displaySolutions() {
+        if (!this.config.showSolutions) {
+            return ``;
+        }
 
-    setPaperSize(paperSize) {
-        // TODO: make this more robust against 'paperset' name changes
-        const overallContainerElement = document.getElementById(PaperSudoku.ID_OVERALL_CONTAINER);
-        overallContainerElement.classList = `paperset size-${paperSize.name}`;
+        let solutions = '';
+        for (let i = 0; i < this.config.puzzleCount; i++) {
+            solutions += this.#displayPuzzle(i, this.#getCachedSolutionOrMakeOne(i), true);
+        }
+
+        return /* html */`
+            <div id="solutionsHeader" class="paper title-page">
+                <h2>
+                    Solutions
+                </h2>
+            </div>
+            <div>
+                ${solutions}
+            </div>
+        `;
     }
 
     /**
      * Returns the HTML representation of a sudoku row.
      */
-    displayRow(row) {
-        return `<tr>${this.displayColumns(row)}</tr>`;
+    #displayRow(row) {
+        return /* html */`
+            <tr>${this.#displayColumns(row)}</tr>
+        `;
     }
 
     /**
-     * Returns the HTML representation of the columns within a sudoku row.
+     * Returns the HTML representation of the columns within a sudoku row. Note that the hard-coded
+     * percentage for the <td> width is helpful/necessary for display in some browsers.
      */
-    displayColumns(row) {
-        var columns = '';
-        for (var i = 0; i < 9; i++) {
+    #displayColumns(row) {
+        let columns = '';
+        for (let i = 0; i < 9; i++) {
             // Being overly specific with width is helpful for some browsers
-            columns += `<td width="11.11%"><div class="sudoku-cell">${row[i] == -1 ? '&nbsp;' : row[i]}</div></td>`;
+            columns += /* html */`
+                <td width="11.11%">
+                    <div class="sudoku-cell">${row[i] == -1 ? '&nbsp;' : row[i]}</div>
+                </td>
+            `;
         }
         return columns;
     }
@@ -163,98 +310,23 @@ class PaperSudoku {
      * Given either a puzzle or a solution to a sudoku, returns an HTML representation of that
      * puzzle or solution.
      */
-    displayPuzzle(pid, puzzleOrSolution, isSolution) {
-        const puzzleNumber = pid + 1;
-        const puzzleTitle = isSolution ? `Solution ${puzzleNumber}` : `Puzzle ${puzzleNumber}`;
-
-        const solutionId = `solution-${puzzleNumber}`;
-        const puzzleId = `puzzle-${puzzleNumber}`;
-        const id = isSolution ? solutionId : puzzleId;
-        const antiId = isSolution ? puzzleId : solutionId;
-        const jumpToAntiText = isSolution ? `Jump to puzzle` : `Jump to solution`;
-        const jumpToAntiLink = `<a href="#${antiId}">${jumpToAntiText}</a>`;
+    #displayPuzzle(pid, puzzleOrSolution, isSolution) {
+        const puzzleNumber = pid + 1
         const parent = this;
-
-        return /* html */ `
-            <div class="paper" id="${id}">
-                <h2>${puzzleTitle}</h2>
+        return /* html */`
+            <div class="paper">
+                <h2>${isSolution ? `Solution ${puzzleNumber}` : `Puzzle ${puzzleNumber}`}</h2>
                 <table>
                     ${(function generateRows(puzzleOrSolution) {
-                        var rows = '';
-                        for (var j = 0; j < 9; j++) {
-                            rows += parent.displayRow(puzzleOrSolution.getRow(j));
+                        let rows = '';
+                        for (let j = 0; j < 9; j++) {
+                            rows += parent.#displayRow(puzzleOrSolution.getRow(j));
                         }
                         return rows;
                     })(puzzleOrSolution)}
                 </table>
-                ${this.config.showSolutions ? jumpToAntiLink : ''}
             </div>
         `;
-    }
-
-    addPuzzleToPuzzlesContainer(pid, puzzle) {
-        const puzzlesContainer = document.getElementById(PaperSudoku.ID_PUZZLES_CONTAINER);
-        puzzlesContainer.innerHTML += this.displayPuzzle(pid, puzzle, false);
-    }
-
-    addSolutionToSolutionsContainer(pid, solution) {
-        const solutionsContainer = document.getElementById(PaperSudoku.ID_SOLUTIONS_CONTAINER);
-        solutionsContainer.innerHTML += this.displayPuzzle(pid, solution, true);
-    }
-
-    /**
-     * Based on the configurations the user has set, generate and display requested puzzles.
-     */
-    generatePuzzles(shouldHardRegenerate) {
-        if (shouldHardRegenerate) {
-            this.puzzleCache = [];
-            this.solutionCache = [];
-        }
-
-        this.setPaperSize(this.config.paperSize);
-
-        const showSolutions = this.config.showSolutions;
-        if (showSolutions) {
-            this.showSolutionsHeader();
-        }
-
-        const puzzleCount = this.config.puzzleCount;
-
-        // Generate `n` puzzles and display them and their solutions as configured
-        for (var pid = 0; pid < puzzleCount; pid++) {
-            const puzzle = this.#getCachedPuzzleOrMakeOne(pid);
-            const solution = this.#getCachedSolutionOrMakeOne(pid);
-
-            this.addPuzzleToPuzzlesContainer(pid, puzzle);
-            if (showSolutions) {
-                this.addSolutionToSolutionsContainer(pid, solution);
-            }
-        }
-    }
-
-    #getCachedPuzzleOrMakeOne(pid) {
-        if (pid < this.puzzleCache.length) {
-            return this.puzzleCache[pid];
-        } else {
-            const puzzle = this.generator.generate(
-                this.config.difficulty,
-                this.config.requireSymmetry
-            );
-            this.puzzleCache.push(puzzle);
-            return puzzle;
-        }
-    }
-
-    #getCachedSolutionOrMakeOne(pid) {
-        if (pid < this.solutionCache.length) {
-            return this.solutionCache[pid];
-        } else {
-            // TODO: this whole function is not great, especially this assumption. Redoing data structure will help
-            const puzzle = this.puzzleCache[pid];
-            const solution = this.solver.solve(puzzle);
-            this.solutionCache.push(solution);
-            return solution;
-        }
     }
 }
 

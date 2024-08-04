@@ -1,5 +1,5 @@
 /**
- *
+ * A button that invokes the browser's print() functionality when clicked.
  */
 class PrintButton extends HTMLElement {
 
@@ -13,6 +13,8 @@ class PrintButton extends HTMLElement {
     connectedCallback() {
         this.shadow.innerHTML = /* html */`
             <style>
+                @import "src/app/paper-sudoku.css";
+
                 div {
                     position: fixed;
                     left: 20px;

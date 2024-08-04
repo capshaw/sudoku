@@ -1,4 +1,4 @@
-import { Input } from "./input.js";
+import { Input } from './input.js';
 
 /**
  * Represents a numeric input item in our configuration.

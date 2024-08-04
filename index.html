@@ -5,34 +5,50 @@
     <meta name="description" content="A Sudoku generator for creating printed puzzle sets"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Paper Sudoku | Sudoku for Printing</title>
-    <link rel="icon" type="image/png" href="img/icon.png"/>
-    <link rel="stylesheet" type="text/css" href="css/sudoku.css"/>
+    <link rel="icon" type="image/png" href="icon.png"/>
+    <link rel="stylesheet" type="text/css" href="src/app/paper-sudoku.css"/>
 </head>
 <body>
-    <!-- Intentionally not a JS module for quick loading speed. Perhaps make it one embedded below. -->
-    <div id="loadingPopover" class="loading"></div>
-    <app-sidebar></app-sidebar>
-    <!-- [Start] Stuff that will be extracted to <app-body> -->
-    <div class="paperset" id="overallContainer">
-        <div id="puzzlesContainer"></div>
-        <div id="solutionsHeader" class="paper title-page hidden">
-            <h2>
-                Solutions
-            </h2>
-        </div>
-        <div id="solutionsContainer"></div>
-    </div>
-    <!-- [End] Stuff that will be extracted to <app-body> -->
+    <paper-sudoku-root></paper-sudoku-root>
     <script type="module">
-        import { PaperSudoku } from "./src/app/paper-sudoku.js";
-        import { SudokuConfiguration } from "./src/sudoku/configuration.js";
-        import { Difficulty } from "./src/sudoku/difficulty.js";
-        import { PaperSize } from "./src/sudoku/paper-size.js";
+        import { InputCheckbox } from './src/app/components/input/input-checkbox.js';
+        import { InputNumeric } from './src/app/components/input/input-numeric.js';
+        import { InputSelect } from './src/app/components/input/input-select.js';
+        import { PaperSudoku } from './src/app/paper-sudoku.js';
+        import { PaperSudokuLogo } from './src/app/components/paper-sudoku-logo/paper-sudoku-logo.js';
+        import { PrintButton } from './src/app/components/print-button/print-button.js';
+        import { Sidebar } from './src/app/components/sidebar/sidebar.js';
 
-        const paperSudoku = new PaperSudoku();
-        // TODO: how to make sure these always are the same as the HTML above
-        const configuration = new SudokuConfiguration(Difficulty.Medium, PaperSize.A5, 5, true, true);
-        paperSudoku.initialize(configuration);
+        /**
+         * The single root element for the entire application. Instantiates the two core parts of
+         * the application: the sidebar and the main body where the sudoku puzzles are displayed.
+         */
+        class PaperSudokuRoot extends HTMLElement {
+
+            constructor() {
+                super();
+                this.shadow = this.attachShadow({
+                    mode: 'open',
+                });
+            }
+
+            connectedCallback() {
+                this.shadow.innerHTML = /* html */`
+                    <app-sidebar></app-sidebar>
+                    <paper-sudoku></paper-sudoku>
+                `;
+            }
+        }
+
+        /* Consider if there is a better place to register these. Not clear on best practices. */
+        customElements.define('paper-sudoku-root', PaperSudokuRoot);
+        customElements.define('paper-sudoku', PaperSudoku);
+        customElements.define('app-sidebar', Sidebar);
+        customElements.define('input-checkbox', InputCheckbox);
+        customElements.define('input-numeric', InputNumeric);
+        customElements.define('input-select', InputSelect);
+        customElements.define('print-button', PrintButton);
+        customElements.define('paper-sudoku-logo', PaperSudokuLogo);
     </script>
 </body>
 </html>

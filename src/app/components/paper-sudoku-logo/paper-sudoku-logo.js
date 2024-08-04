@@ -1,5 +1,5 @@
 /**
- *
+ * A simple HTML element that displays the logo of the application.
  */
 class PaperSudokuLogo extends HTMLElement {
 
@@ -13,9 +13,11 @@ class PaperSudokuLogo extends HTMLElement {
     connectedCallback() {
         this.shadow.innerHTML = /* html */`
             <style>
+                @import "src/app/paper-sudoku.css";
+
                 div {
                     display: inline-block;
-                    background: url('src/components/paper-sudoku-logo/paper-sudoku-logo.png') no-repeat;
+                    background: url('src/app/components/paper-sudoku-logo/paper-sudoku-logo.png') no-repeat;
                     width: 200px;
                     height: 20px;
                     background-size: contain;

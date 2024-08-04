@@ -1,3 +1,5 @@
+import { CONFIGURATION_CHANGE_EVENT_NAME } from '../../events.js';
+
 /**
  *
  */
@@ -11,19 +13,19 @@
     }
 
     getValue() {
-        throw Error("`getValue()` not implemented in abstract class");
+        throw Error('`getValue()` not implemented in abstract class');
     }
 
     getSelectorKey() {
-        throw Error("`getSelectorKey()` not implemented in abstract class");
+        throw Error('`getSelectorKey()` not implemented in abstract class');
     }
 
     getSelectorValue(selector) {
-        throw Error("`getSelectorValue()` not implemented in abstract class");
+        throw Error('`getSelectorValue()` not implemented in abstract class');
     }
 
     getInputRender() {
-        throw Error("`getInputRender()` not implemented in abstract class");
+        throw Error('`getInputRender()` not implemented in abstract class');
     }
 
     attributeChangedCallback(property, oldValue, newValue) {
@@ -32,15 +34,16 @@
         }
 
         this[property] = newValue;
-
         if (property == 'value') {
-            this.shadow.dispatchEvent(new CustomEvent('change-configuration', {
+            const details = {
+                key: this.name,
+                value: this.getValue(),
+            };
+            console.log(`[${this.constructor.name}] Dispatching '${CONFIGURATION_CHANGE_EVENT_NAME}' event with details`, details);
+            this.shadow.dispatchEvent(new CustomEvent(CONFIGURATION_CHANGE_EVENT_NAME, {
                 bubbles: true,
                 composed: true,
-                detail: {
-                    key: this.name,
-                    value: this.getValue(),
-                },
+                detail: details,
             }));
         }
     }
@@ -56,7 +59,7 @@
     #renderCSS() {
         return /* html */`
             <style>
-                @import "../../../css/sudoku.css";
+                @import "src/app/paper-sudoku.css";
 
                 label {
                     display: block;

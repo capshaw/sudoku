@@ -1,4 +1,4 @@
-import { Input } from "./input.js";
+import { Input } from './input.js';
 
 /**
  * Represents a binary input item in our configuration.
@@ -29,7 +29,7 @@ class InputCheckbox extends Input {
     getInputRender() {
         return /* html */`
             <label for="${this.name}">
-                <input id="${this.name}" type="checkbox" checked="${this.value}"/> ${this.header}<br>
+                <input id="${this.name}" type="checkbox" ${this.getValue() ? 'checked' : ''} /> ${this.header}<br>
                 <small>${this.summary}</small>
             </label>
         `;

@@ -1,7 +1,6 @@
-
-
 /**
- *
+ * The side portion of the application that allows the user to modify the configuration of the
+ * generated sudoku puzzles.
  */
 class Sidebar extends HTMLElement {
 
@@ -15,7 +14,7 @@ class Sidebar extends HTMLElement {
     connectedCallback() {
         this.shadow.innerHTML = /* html */`
             <style>
-                @import "../../../css/sudoku.css";
+                @import "src/app/paper-sudoku.css";
 
                 #options {
                     position: fixed;

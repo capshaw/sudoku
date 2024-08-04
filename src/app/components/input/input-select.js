@@ -1,4 +1,4 @@
-import { Input } from "./input.js";
+import { Input } from './input.js';
 
 /**
  * Represents a single select item in the configuration
@@ -46,7 +46,7 @@ class InputSelect extends Input {
             <label for="${this.name}">
                 ${this.header}
                 <select id="${this.name}">
-                    ${this.options.split(',').map((option) => /* html */ `
+                    ${this.options.split(',').map((option) => /* html */`
                         <option value="${option}" ${option == this.value ? 'selected' : ''}>
                             ${option}
                         </option>

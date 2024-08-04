@@ -1,0 +1,33 @@
+body {
+    background: #eee;
+    font-family: sans-serif;
+    padding: 0;
+    margin: 0;
+
+}
+
+@media print {
+    body {
+        background: #fff;
+    }
+}
+
+::selection {
+    background-color: rgb(254, 206, 46);
+    color: #000;
+}
+
+a {
+    color: #000;
+}
+
+#loadingPopover {
+    background: rgba(240, 240, 240, 0.8) url("../img/loading.gif") no-repeat center center;
+    backdrop-filter: blur(5px);
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+}

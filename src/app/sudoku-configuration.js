@@ -1,3 +1,6 @@
+/**
+ * Container class for storing a configuration / options for generating sudoku puzzles.
+ */
 class SudokuConfiguration {
     #difficulty;
     #paperSize;
@@ -13,6 +16,10 @@ class SudokuConfiguration {
         this.#showSolutions = showSolutions;
     }
 
+    static fresh() {
+        return new SudokuConfiguration(null, null, null, null, null);
+    }
+
     copyOf() {
         return new SudokuConfiguration(
             this.#difficulty,
@@ -20,6 +27,16 @@ class SudokuConfiguration {
             this.#puzzleCount,
             this.#requireSymmetry,
             this.#showSolutions,
+        )
+    }
+
+    isComplete() {
+        return (
+            this.#difficulty !== null &&
+            this.#paperSize !== null &&
+            this.#puzzleCount !== null &&
+            this.#requireSymmetry !== null &&
+            this.#showSolutions !== null
         )
     }
 
