@@ -37,7 +37,12 @@ class PaperSudoku extends HTMLElement {
                 this.solutionCache.clear();
             }
 
-            this.#render();
+            this.#renderLoading();
+
+            const parent = this;
+            setTimeout(function () {
+                parent.#render();
+            }, 500);
         });
     }
 
@@ -97,6 +102,12 @@ class PaperSudoku extends HTMLElement {
         `;
     }
 
+    #renderLoading() {
+        this.shadow.innerHTML = /* html */`
+            <loading-indicator></loading-indicator>
+        `;
+    }
+
     // TODO: this is so long that it implies that this probably needs to be broken into multiple components
     #renderCSS() {
         return /* html */`
@@ -109,6 +120,7 @@ class PaperSudoku extends HTMLElement {
                     margin-right: 20px;
                 }
 
+                /* TODO: put this in a constant and share across components */
                 @media (max-width: 600px) {
                     .paperset {
                         margin-left: auto;
