@@ -3,6 +3,7 @@ import {
     STANDARD_PADDING_PX,
     SIDEBAR_WIDTH_PX,
     STANDARD_BORDER_RADIUS_PX,
+    Z_INDEX_SIDEBAR,
 } from '../../constants.js';
 
 import {
@@ -48,7 +49,7 @@ class Sidebar extends HTMLElement {
                     overflow: scroll;
                     padding-bottom: 100px;
                     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-                    z-index: 5;
+                    z-index: ${Z_INDEX_SIDEBAR};
                 }
 
                 div h2 {

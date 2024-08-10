@@ -2,6 +2,7 @@ import {
     VIEWPORT_BREAK_WIDTH_PX,
     STANDARD_PADDING_PX,
     SIDEBAR_WIDTH_PX,
+    Z_INDEX_LOADING_INDICATOR,
  } from '../../constants.js';
 
 /**
@@ -34,7 +35,7 @@ class LoadingIndicator extends HTMLElement {
                     top: 0;
                     right: 0;
                     bottom: 0;
-                    z-index: 10;
+                    z-index: ${Z_INDEX_LOADING_INDICATOR};
                 }
 
                 @media (max-width: ${VIEWPORT_BREAK_WIDTH_PX}px) {
