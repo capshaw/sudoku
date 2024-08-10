@@ -1,0 +1,19 @@
+// Common global sizing and values
+const VIEWPORT_BREAK_WIDTH_PX = 600;
+const STANDARD_PADDING_PX = 20;
+const STANDARD_BORDER_RADIUS_PX = 5;
+
+// The configuration side bar
+const SIDEBAR_CONTENT_WIDTH_PX = 200;
+const SIDEBAR_WIDTH_PX = SIDEBAR_CONTENT_WIDTH_PX + STANDARD_PADDING_PX * 2;
+
+// Z-indices for tracking
+// TODO
+
+export {
+    VIEWPORT_BREAK_WIDTH_PX ,
+    STANDARD_PADDING_PX,
+    STANDARD_BORDER_RADIUS_PX,
+    SIDEBAR_WIDTH_PX,
+    SIDEBAR_CONTENT_WIDTH_PX,
+};

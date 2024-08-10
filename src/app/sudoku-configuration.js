@@ -1,4 +1,6 @@
 /**
+ * SudokuConfiguration.
+ *
  * Container class for storing a configuration / options for generating sudoku puzzles.
  */
 class SudokuConfiguration {

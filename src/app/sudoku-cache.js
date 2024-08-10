@@ -1,4 +1,6 @@
 /**
+ * SudokuCache.
+ *
  * A simple cache for storing generated sudoku puzzles.
  */
 class SudokuCache {

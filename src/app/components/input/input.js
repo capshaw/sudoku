@@ -1,7 +1,12 @@
+import { STANDARD_BORDER_RADIUS_PX, STANDARD_PADDING_PX } from '../../constants.js';
 import { CONFIGURATION_CHANGE_EVENT_NAME } from '../../events.js';
 
 /**
+ * Input
  *
+ * The abstract base class that the various configuration inputs in the app extend from. This
+ * element often will have required observed elements, but those are defined by the concrete
+ * implementations of this class.
  */
  class Input extends HTMLElement {
 
@@ -59,11 +64,11 @@ import { CONFIGURATION_CHANGE_EVENT_NAME } from '../../events.js';
     #renderCSS() {
         return /* html */`
             <style>
-                @import "src/app/paper-sudoku.css";
+                @import 'src/app/paper-sudoku.css';
 
                 label {
                     display: block;
-                    margin-top: 20px;
+                    margin-top: ${STANDARD_PADDING_PX}px;
                     font-weight: bold;
                 }
 
@@ -80,13 +85,14 @@ import { CONFIGURATION_CHANGE_EVENT_NAME } from '../../events.js';
                     margin-top: 5px;
                     box-sizing: border-box;
                     border: 1px solid #000;
-                    border-radius: 5px;
+                    border-radius: ${STANDARD_BORDER_RADIUS_PX}px;
                     -webkit-appearance: none;
+                }
 
-                    &:focus {
-                        border: 1px solid rgb(110, 110, 255);
-                        outline: none;
-                    }
+                input[type=number]:focus,
+                select:focus {
+                    border: 1px solid rgb(110, 110, 255);
+                    outline: none;
                 }
             </style>`;
     }

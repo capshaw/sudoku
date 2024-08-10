@@ -1,7 +1,15 @@
 import { Input } from './input.js';
 
 /**
- * Represents a binary input item in our configuration.
+ * InputCheckbox.
+ *
+ * A binary input item in the application configuration. This element has five required observed
+ * attributes: name, header, summary, value.
+ *
+ * @attribute name    The programmatic identifier of the element
+ * @attribute header  The label text for the InputNumeric
+ * @attribute summary Additional descriptive text to explain what the input does
+ * @attribute value   The default/current value of the input
  */
 class InputCheckbox extends Input {
 
