@@ -35,7 +35,7 @@ class EventManager {
                 newConfig.showSolutions = event.detail.value;
                 break;
             default:
-                throw Error(`Event handling for type '${event.detail.key}'' not implemented`);
+                throw Error(`Event handling for type '${event.detail.key}' not implemented`);
         }
 
         return newConfig;
