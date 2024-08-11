@@ -12,7 +12,7 @@ import {
     CONFIGURATION_KEY_PUZZLE_COUNT,
     CONFIGURATION_KEY_REQUIRE_SYMMETRY,
     CONFIGURATION_KEY_SHOW_SOLUTIONS,
-} from '../../events.js';
+} from '../../event-manager.js';
 
 /**
  * Sidebar.

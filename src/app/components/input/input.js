@@ -1,5 +1,5 @@
 import { STANDARD_BORDER_RADIUS_PX, STANDARD_PADDING_PX } from '../../constants.js';
-import { CONFIGURATION_CHANGE_EVENT_NAME } from '../../events.js';
+import { CONFIGURATION_CHANGE_EVENT_NAME } from '../../event-manager.js';
 
 /**
  * Input

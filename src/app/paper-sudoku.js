@@ -1,7 +1,7 @@
 import { SudokuGenerator } from '../sudoku/generator.js';
 import { SudokuSolver } from '../sudoku/solver.js';
 import { SudokuConfiguration } from './sudoku-configuration.js';
-import { EventManager, CONFIGURATION_CHANGE_EVENT_NAME } from './events.js';
+import { EventManager, CONFIGURATION_CHANGE_EVENT_NAME } from './event-manager.js';
 import { SudokuCache } from './sudoku-cache.js';
 
 /**
