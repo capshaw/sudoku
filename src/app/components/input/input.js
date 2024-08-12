@@ -1,5 +1,5 @@
 import { STANDARD_BORDER_RADIUS_PX, STANDARD_PADDING_PX } from '../../constants.js';
-import { CONFIGURATION_CHANGE_EVENT_NAME } from '../../event-manager.js';
+import { EventManager } from '../../event-manager.js';
 
 /**
  * Input
@@ -40,16 +40,12 @@ import { CONFIGURATION_CHANGE_EVENT_NAME } from '../../event-manager.js';
 
         this[property] = newValue;
         if (property == 'value') {
-            const details = {
-                key: this.name,
-                value: this.getValue(),
-            };
-            console.log(`[${this.constructor.name}] Dispatching '${CONFIGURATION_CHANGE_EVENT_NAME}' event with details`, details);
-            this.shadow.dispatchEvent(new CustomEvent(CONFIGURATION_CHANGE_EVENT_NAME, {
-                bubbles: true,
-                composed: true,
-                detail: details,
-            }));
+            EventManager.publishStateChangeEvent(
+                this.constructor.name,
+                this.name,
+                this.getValue(),
+                this.shadow
+            );
         }
     }
 

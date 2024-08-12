@@ -1,7 +1,7 @@
 import { SudokuGenerator } from '../sudoku/generator.js';
 import { SudokuSolver } from '../sudoku/solver.js';
 import { SudokuConfiguration } from './sudoku-configuration.js';
-import { EventManager, CONFIGURATION_CHANGE_EVENT_NAME } from './event-manager.js';
+import { EventManager } from './event-manager.js';
 import { SudokuCache } from './sudoku-cache.js';
 
 /**
@@ -23,7 +23,7 @@ class PaperSudoku extends HTMLElement {
         });
 
         // TODO: this should be refactored so this knows less about the implementation details
-        document.addEventListener(CONFIGURATION_CHANGE_EVENT_NAME, event => {
+        EventManager.addEventListener(event => {
             const oldConfig = this.config;
             this.config = EventManager.adjustConfiguration(this.config, event);
 

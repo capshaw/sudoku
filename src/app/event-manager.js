@@ -15,6 +15,26 @@ const CONFIGURATION_KEY_SHOW_SOLUTIONS = 'showSolutions';
  * The central hub for all event-driven functionality in the application.
  */
 class EventManager {
+
+    static publishStateChangeEvent(identifier, key, value, shadow) {
+        const details = {
+            key: key,
+            value: value,
+        };
+        console.log(`[${identifier}] Dispatching '${CONFIGURATION_CHANGE_EVENT_NAME}' event with details`, details);
+        shadow.dispatchEvent(new CustomEvent(CONFIGURATION_CHANGE_EVENT_NAME, {
+            bubbles: true,
+            composed: true,
+            detail: details,
+        }));
+    }
+
+    static addEventListener(handler) {
+        document.addEventListener(CONFIGURATION_CHANGE_EVENT_NAME, event => {
+            return handler(event);
+        });
+    }
+
     static adjustConfiguration(configuration, event) {
         const newConfig = configuration.copyOf();
 
@@ -45,7 +65,6 @@ class EventManager {
 
 export {
     EventManager,
-    CONFIGURATION_CHANGE_EVENT_NAME,
     CONFIGURATION_KEY_PAPER_SIZE,
     CONFIGURATION_KEY_DIFFICULTY,
     CONFIGURATION_KEY_PUZZLE_COUNT,
